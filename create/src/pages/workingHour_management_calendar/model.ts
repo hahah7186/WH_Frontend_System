@@ -1,14 +1,26 @@
 import { AnyAction, Reducer } from 'redux';
 import { EffectsCommandMap } from 'dva';
-import { addProjectDateMapping, queryProjectDateMapping, removeProjectDateMapping, updateProjectDateMapping,queryMember } from './service';
+import {
+  addProjectDateMapping,
+  queryProjectDateCalMapping,
+  removeProjectDateMapping,
+  updateProjectDateMapping,
+  queryMember,
+  queryProjectDateCalMappingByDay,
+  exportProjectDateCalMapping,
+} from './service';
 
-import { WHListData,MemberSearch } from './data.d';
-
+import { WHListData, MemberSearch } from './data.d';
 
 export interface WHStateType {
   data: WHListData;
-  member:MemberSearch;
+  //member:MemberSearch;
 }
+
+// export interface WHModelStateType {
+//   data: WHListDataByDay;
+//   //member:MemberSearch;
+// }
 
 export type Effect = (
   action: AnyAction,
@@ -20,10 +32,12 @@ export interface ModelType {
   state: WHStateType;
   effects: {
     fetch: Effect;
+    fetchByDay: Effect;
     add: Effect;
     remove: Effect;
     update: Effect;
     fetchMember: Effect;
+    export: Effect;
   };
   reducers: {
     save: Reducer<WHStateType>;
@@ -32,36 +46,55 @@ export interface ModelType {
 }
 
 const Model: ModelType = {
-  namespace: 'listTableList',
+  namespace: 'dateProjectList',
 
   state: {
     data: {
-      list: [],
-      pagination: {},
-      result:-1,
-      columns:[],
-      comments:[],
+      dateProjectListByDay: {},
+      dateProjectList: [],
+      monthProjectList: [],
+      monthProjectListByMon: {},
+      result: -1,
+      resMsg: '',
+      memberList: [],
     },
-    member:{
-      list:[],
-      count:-1,
-    },
+    // member:{
+    //   list:[],
+    //   count:-1,
+    // },
   },
 
   effects: {
-    *fetch({ payload,callback }, { call, put }) {
+    *fetch({ payload, callback }, { call, put }) {
       // debugger
-      const response = yield call(queryProjectDateMapping, payload);
+      const response = yield call(queryProjectDateCalMapping, payload);
       yield put({
         type: 'save',
         payload: response,
       });
       if (callback) callback();
     },
-    *fetchMember({ payload,callback }, { call, put }) {
-       
+    *export({ payload, callback }, { call, put }) {
+      // debugger
+      const response = yield call(exportProjectDateCalMapping, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback();
+    },
+    *fetchByDay({ payload, callback }, { call, put }) {
+      // debugger
+      const response = yield call(queryProjectDateCalMappingByDay, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback();
+    },
+    *fetchMember({ payload, callback }, { call, put }) {
       const response = yield call(queryMember, payload);
-      
+
       yield put({
         type: 'save',
         payload: response,
@@ -87,7 +120,6 @@ const Model: ModelType = {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      // debugger
       const response = yield call(updateProjectDateMapping, payload);
       yield put({
         type: 'save',
@@ -99,11 +131,11 @@ const Model: ModelType = {
 
   reducers: {
     save(state, action) {
+      // debugger
       return {
         ...state,
         data: action.payload,
-        member: action.payload,
-        
+        // member: action.payload,
       };
     },
     // saveMember(state, action){

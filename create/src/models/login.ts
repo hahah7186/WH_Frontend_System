@@ -3,12 +3,14 @@ import { parse, stringify } from 'qs';
 
 import { EffectsCommandMap } from 'dva';
 import { routerRedux } from 'dva/router';
+import { getPageQuery } from '@/utils/utils';
 
-export function getPageQuery(): {
-  [key: string]: string;
-} {
-  return parse(window.location.href.split('?')[1]);
-}
+// export function getPageQuery(): {
+//   [key: string]: string;
+// } {
+//   debugger
+//   return parse(window.location.href.split('?')[1]);
+// }
 
 export type Effect = (
   action: AnyAction,
@@ -52,6 +54,7 @@ const Model: ModelType = {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
+      debugger;
       return {
         ...state,
         status: payload.status,

@@ -5,28 +5,28 @@ import { queryCurrent, query as queryUsers } from '@/services/user';
 
 export interface CurrentUser {
   avatar?: string;
-  id?:number;
+  id?: number;
   name?: string;
   name_en?: string;
-  email?:string;
-  gId?:string;
+  email?: string;
+  gId?: string;
   group?: userGroup;
-  role?:userRole;
-  branch?:userBranch;
-  mobile?:string;
+  role?: userRole;
+  branch?: userBranch;
+  mobile?: string;
 }
 
-export interface userGroup{
-    text:string;
-    value:number;
+export interface userGroup {
+  text: string;
+  value: number;
 }
-export interface userRole{
-  text:string;
-  value:number;
+export interface userRole {
+  text: string;
+  value: number;
 }
-export interface userBranch{
-  text:string;
-  value:number;
+export interface userBranch {
+  text: string;
+  value: number;
 }
 
 export interface UserModelState {
@@ -61,8 +61,9 @@ const UserModel: UserModelType = {
         payload: response,
       });
     },
-    *fetchCurrent({payload}, { call, put }) {
-      const response = yield call(queryCurrent,payload);
+    *fetchCurrent({ payload }, { call, put }) {
+      const response = yield call(queryCurrent, payload);
+      // debugger
       yield put({
         type: 'saveCurrentUser',
         payload: response,
@@ -71,8 +72,8 @@ const UserModel: UserModelType = {
   },
 
   reducers: {
-    
     saveCurrentUser(state, action) {
+      // debugger
       return {
         ...state,
         currentUser: action.payload || {},
@@ -84,7 +85,7 @@ const UserModel: UserModelType = {
       },
       action,
     ) {
-      debugger
+      // debugger
       return {
         ...state,
         currentUser: {

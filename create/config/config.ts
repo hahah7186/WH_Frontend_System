@@ -82,89 +82,89 @@ export default {
   devtool: isAntDesignProPreview ? 'source-map' : false,
   // umi routes: https://umijs.org/zh/guide/router.html
 
-    routes: [
-      //user-login
+  routes: [
+    //user-login
+    {
+      path: '/user',
+      component: '../layouts/UserLayout',
+      routes: [
         {
-          path: '/user',
-          component: '../layouts/UserLayout',
-          routes: [
-            {
-              path: '/',
-              redirect: '/user/user-login',
-            },  
-            {
-              name: 'login',
-              path: '/user/user-login',
-              component: './user/user-login',
-            },
-            {
-              component: '404',
-            },
-          ],
-        }, 
-      //app
-      {
-        path: '/',
-        component: '../layouts/BasicLayout',
-        Routes: ['src/pages/Authorized'],
-        authority: ['admin', 'user'],
-        routes: [
-          {
-            path: '/',
-            redirect: '/user/user-login',
-            authorith: ['admin', 'user'],
-          },
-          {
-            name: 'main_page',
-            path: '/main_page',
-            component: './main_page',
-            icon: 'dashboard',
-          },
-          {
-            name: 'account_management',
-            path: '/account_management',
-            component: './account_management',
-            icon: 'account-book',
-          },
-          {
-            name: 'member_management',
-            path: '/member_management',
-            component: './member_management',
-            icon: 'user',
-          },
-          {
-            name: 'customer_management',
-            path: '/customer_management',
-            component: './customer_management',
-            icon: 'aliwangwang',
-          },
-          {
-            name: 'project_management',
-            path: '/project_management',
-            component: './project_management',
-            icon: 'project',
-          },
-          {
-            name: 'workingHour_management',
-            path: '/workingHour_management',
-            component: './workingHour_management',
-            icon: 'clock-circle',
-          },
-          // {
-          //   name: 'workingHour_management_calendar',
-          //   path: '/workingHour_management_calendar',
-          //   component: './workingHour_management_calendar',
-          //   icon: 'clock-circle',
-          // },
-          {
-            component: './404',
-          },
-        ],
-      },
-      {
-        component: './404',
-      },
-    ],
+          path: '/',
+          redirect: '/user/user-login',
+        },
+        {
+          name: 'login',
+          path: '/user/user-login',
+          component: './user/user-login',
+        },
+        {
+          component: '404',
+        },
+      ],
+    },
+    //app
+    {
+      path: '/',
+      component: '../layouts/BasicLayout',
+      Routes: ['src/pages/Authorized'],
+      authority: ['admin', 'user'],
+      routes: [
+        {
+          path: '/',
+          redirect: '/user/user-login',
+          authorith: ['admin', 'user'],
+        },
+        // {
+        //   name: 'main_page',
+        //   path: '/main_page',
+        //   component: './main_page',
+        //   icon: 'dashboard',
+        // },
+        {
+          name: 'account_management',
+          path: '/account_management',
+          component: './account_management',
+          icon: 'account-book',
+        },
+        {
+          name: 'member_management',
+          path: '/member_management',
+          component: './member_management',
+          icon: 'user',
+        },
+        {
+          name: 'customer_management',
+          path: '/customer_management',
+          component: './customer_management',
+          icon: 'aliwangwang',
+        },
+        {
+          name: 'project_management',
+          path: '/project_management',
+          component: './project_management',
+          icon: 'project',
+        },
+        // {
+        //   name: 'workingHour_management',
+        //   path: '/workingHour_management',
+        //   component: './workingHour_management',
+        //   icon: 'clock-circle',
+        // },
+        {
+          name: 'workingHour_management_calendar',
+          path: '/workingHour_management_calendar',
+          component: './workingHour_management_calendar',
+          icon: 'clock-circle',
+        },
+        {
+          component: './404',
+        },
+      ],
+    },
+    {
+      component: './404',
+    },
+  ],
 
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
@@ -187,7 +187,7 @@ export default {
         resourcePath: string;
       },
       _: string,
-      localName: string
+      localName: string,
     ) => {
       if (
         context.resourcePath.includes('node_modules') ||
@@ -215,13 +215,19 @@ export default {
     basePath: '/',
   },
   chainWebpack: webpackPlugin,
-  
-  proxy: {
-    '/api': {
-      target: 'http://139.24.238.191:8080',
-      changeOrigin: true,
-      pathRewrite: { '^/api': '' },
-    },
-  },
-  
+
+  // proxy: {
+  //   '/api': {
+  //     target: 'http://127.0.0.1:8080',
+  //     changeOrigin: true,
+  //     pathRewrite: { '^/api': '' },
+  //   },
+  // },
+  // proxy: {
+  //   '/api': {
+  //     target: 'http://127.0.0.1:8080',
+  //     changeOrigin: true,
+  //     pathRewrite: { '^/api': '' },
+  //   },
+  // },
 } as IConfig;

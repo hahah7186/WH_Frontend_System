@@ -1,26 +1,57 @@
-import { Avatar, Card, Col, Dropdown, Form, Icon, List, Menu, Row, Select, Tooltip ,Button,Input ,Pagination ,DatePicker,message,Popconfirm,Switch,  Divider,/*Tag,*/ } from 'antd';
-import React, { Component,Fragment } from 'react';
+import {
+  Avatar,
+  Card,
+  Col,
+  Dropdown,
+  Form,
+  Icon,
+  List,
+  Menu,
+  Row,
+  Select,
+  Tooltip,
+  Button,
+  Input,
+  Pagination,
+  DatePicker,
+  message,
+  Popconfirm,
+  Switch,
+  Divider /*Tag,*/,
+} from 'antd';
+import React, { Component, Fragment } from 'react';
 // import moment from "moment";
 import { Dispatch } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
 import { connect } from 'dva';
 //import numeral from 'numeral';
 import { StateType } from './model';
-import { ListItemData,ListItemDataType,/*MemberSelect,*/CustomerSelect,/*, ListItemParams*/ ListPagination,FiscalYearItem,Member,AccountExportItem,supportType, projectRunStatus} from './data.d';
+import {
+  ListItemData,
+  ListItemDataType,
+  /*MemberSelect,*/ CustomerSelect,
+  /*, ListItemParams*/ ListPagination,
+  FiscalYearItem,
+  Member,
+  AccountExportItem,
+  supportType,
+  projectRunStatus,
+} from './data.d';
 //import StandardFormRow from './components/StandardFormRow';
 //import TagSelect from './components/TagSelect';
 import styles from './style.less';
 //import ProportionSales from '../main_page/components/ProportionSales';
-import /*UpdateForm,*/ { FormValsType } from './components/UpdateForm/UpdateForm';
+import { /*UpdateForm,*/ FormValsType } from './components/UpdateForm/UpdateForm';
 import ModifyForm from './components/ModifyForm/ModifyForm';
 import CreateForm from './components/CreateForm/CreateForm';
 import moment from 'moment';
 import StandardTable, { StandardTableColumnProps } from './components/StandardTable';
-import { formatMessage,FormattedMessage } from 'umi-plugin-react/locale';
+import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
 
-export interface StateType {
-  data: ListItemData;
-}
+// 2020/07/13 huzhonghao
+// export interface StateType {
+//   data: ListItemData;
+// }
 
 // interface ListItemDataState {
 //   formValues: { [key: string]: string };
@@ -88,27 +119,26 @@ interface SearchListApplicationsProps extends FormComponentProps {
 }
 
 class SearchListApplications extends Component<SearchListApplicationsProps> {
-
   state: ListState = {
     modifyModalVisible: false,
     updateModalVisible: false,
     createModalVisible: false,
 
-    tableListVisible:false,
-    cardListVisible:true,
+    tableListVisible: false,
+    cardListVisible: true,
 
     expandForm: false,
     //formValues: {},
     stepFormValues: {},
-    apcList:[],
-    bdList:[],
-    pssList:[],
-    salesList:[],
-    customerList:[],
-    accountList:[],
-    fiscalList:[],
-    supportTypeList:[],
-    projectRunStatusList:[],
+    apcList: [],
+    bdList: [],
+    pssList: [],
+    salesList: [],
+    customerList: [],
+    accountList: [],
+    fiscalList: [],
+    supportTypeList: [],
+    projectRunStatusList: [],
     //初始化分页
     pagination: {
       total: 1,
@@ -135,17 +165,17 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
       dataIndex: 'engineers',
     },
     {
-      title: "BD",
+      title: 'BD',
       dataIndex: 'bd',
     },
     // {
     //   title: <FormattedMessage id="project.ColumnPss" />,
     //   dataIndex: 'pss',
-    // },    
+    // },
     // {
     //   title: <FormattedMessage id="project.ColumnSales" />,
     //   dataIndex: 'sales',
-    // },        
+    // },
     {
       title: <FormattedMessage id="project.ColumnPlanWorkingHours" />,
       dataIndex: 'plan_working_hours',
@@ -183,7 +213,8 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
       render: (text, record) => (
         <Fragment>
           <a onClick={() => this.handleModifyModalVisible(true, record)}>
-            <FormattedMessage id="project.ColumnOperation.Modify" /></a>
+            <FormattedMessage id="project.ColumnOperation.Modify" />
+          </a>
           {/* <Divider type="vertical" />
             <Popconfirm
                       title={formatMessage({ id: 'project.CardPopconfirm.Remove.Title' })}
@@ -195,67 +226,69 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
               <a><FormattedMessage id="project.ColumnOperation.Remove" /></a>
             </Popconfirm> */}
           <Divider type="vertical" />
-            <Popconfirm
-                        title={formatMessage({ id: 'project.CardPopconfirm.Complete.Title' })}
-                        onConfirm = {() => this.handleChangeStatus(record.id,4,record.status_id)}
-                        onCancel={this.completeCancel}
-                        okText={formatMessage({ id: 'project.CardPopconfirm.Complete.OkText' })}
-                        cancelText={formatMessage({ id: 'project.CardPopconfirm.Complete.CancelText' })}
-                      >
-                <a><FormattedMessage id="project.ColumnOperation.Complete" /></a>
-            </Popconfirm>
+          <Popconfirm
+            title={formatMessage({ id: 'project.CardPopconfirm.Complete.Title' })}
+            onConfirm={() => this.handleChangeStatus(record.id, 4, record.status_id)}
+            onCancel={this.completeCancel}
+            okText={formatMessage({ id: 'project.CardPopconfirm.Complete.OkText' })}
+            cancelText={formatMessage({ id: 'project.CardPopconfirm.Complete.CancelText' })}
+          >
+            <a>
+              <FormattedMessage id="project.ColumnOperation.Complete" />
+            </a>
+          </Popconfirm>
           <Divider type="vertical" />
-            <Dropdown key="ellipsis" overlay={this.listMenu(record)} trigger={['click']}>
-                      <Icon type="ellipsis" />
-            </Dropdown> 
+          <Dropdown key="ellipsis" overlay={this.listMenu(record)} trigger={['click']}>
+            <Icon type="ellipsis" />
+          </Dropdown>
         </Fragment>
       ),
     },
     {
-      title: "Operation Status",
+      title: 'Operation Status',
       dataIndex: 'status_name',
     },
   ];
-//list view 的每行下来菜单
-  listMenu = (item) => (
+  //list view 的每行下来菜单
+  listMenu = item => (
     <Menu /*onClick={onClickDropdownMenu.bind(this,item)}*/>
       <Menu.Item>
         <Popconfirm
-                  title={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Approved.Title' })}
-                  onConfirm = {()=>this.handleChangeStatus(item.id,3,item.status_id)}
-                  onCancel={this.removeCancel}
-                  okText={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Approved.OkText' })}
-                  cancelText={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Approved.CancelText' })}
-                >
-        <a target="_blank" rel="noopener noreferrer" >
-          <FormattedMessage id="project.DropDownMenu.ApprovedText" />
-        </a>
+          title={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Approved.Title' })}
+          onConfirm={() => this.handleChangeStatus(item.id, 3, item.status_id)}
+          onCancel={this.removeCancel}
+          okText={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Approved.OkText' })}
+          cancelText={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Approved.CancelText' })}
+        >
+          <a target="_blank" rel="noopener noreferrer">
+            <FormattedMessage id="project.DropDownMenu.ApprovedText" />
+          </a>
         </Popconfirm>
       </Menu.Item>
       <Menu.Item>
         <Popconfirm
-                    title={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Abandoned.Title' })}
-                    onConfirm = {()=>this.handleChangeStatus(item.id,1,item.status_id)}
-                    onCancel={this.removeCancel}
-                    okText={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Abandoned.OkText' })}
-                    cancelText={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Abandoned.CancelText' })}
-                  >
-        <a target="_blank" rel="noopener noreferrer" >
-          <FormattedMessage id="project.DropDownMenu.AbandonedText" />
-        </a>
+          title={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Abandoned.Title' })}
+          onConfirm={() => this.handleChangeStatus(item.id, 1, item.status_id)}
+          onCancel={this.removeCancel}
+          okText={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Abandoned.OkText' })}
+          cancelText={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Abandoned.CancelText' })}
+        >
+          <a target="_blank" rel="noopener noreferrer">
+            <FormattedMessage id="project.DropDownMenu.AbandonedText" />
+          </a>
         </Popconfirm>
       </Menu.Item>
       <Menu.Item>
-      <Popconfirm
-                    title={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Archived.Title' })}
-                    onConfirm = {()=>this.handleChangeStatus(item.id,5,item.status_id)}
-                    onCancel={this.removeCancel}
-                    okText={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Archived.OkText' })}
-                    cancelText={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Archived.CancelText' })}
-                  >
-        <a target="_blank" rel="noopener noreferrer" >
-          <FormattedMessage id="project.DropDownMenu.ArchivedText" />
-        </a>
+        <Popconfirm
+          title={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Archived.Title' })}
+          onConfirm={() => this.handleChangeStatus(item.id, 5, item.status_id)}
+          onCancel={this.removeCancel}
+          okText={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Archived.OkText' })}
+          cancelText={formatMessage({ id: 'project.DropDownMenu.Popconfirm.Archived.CancelText' })}
+        >
+          <a target="_blank" rel="noopener noreferrer">
+            <FormattedMessage id="project.DropDownMenu.ArchivedText" />
+          </a>
         </Popconfirm>
       </Menu.Item>
     </Menu>
@@ -266,7 +299,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     dispatch({
       type: 'searchListApplications/fetch',
       payload: {
-        currentUser: localStorage.getItem("userId"),
+        currentUser: localStorage.getItem('userId'),
         //apc: localStorage.getItem("userId"),
       },
       callback: () => {
@@ -283,7 +316,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
           accountList: data.accountList,
           supportTypeList: data.supportTypeList,
           projectRunStatusList: data.projectRunStatusList,
-          pagination: data.pagination
+          pagination: data.pagination,
         });
       },
     });
@@ -294,87 +327,109 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     const { dispatch, form } = this.props;
 
     this.setState({
-      pagination:{
+      pagination: {
         pageSize: pageSize,
         currentPage: page,
-      }
+      },
     });
 
-    let start_time_1 ;
-    let start_time_2 ;
+    let start_time_1;
+    let start_time_2;
     let end_time_1;
-    let end_time_2 ;
-    start_time_1 = typeof(form.getFieldValue("start_time"))== "undefined" ? '':form.getFieldValue("start_time")[0].format('YYYY-MM-DD');
-    start_time_2 = typeof(form.getFieldValue("start_time"))== "undefined" ? '':form.getFieldValue("start_time")[1].format('YYYY-MM-DD');
-    end_time_1 = typeof(form.getFieldValue("end_time"))== "undefined" ? '':form.getFieldValue("end_time")[0].format('YYYY-MM-DD');
-    end_time_2 = typeof(form.getFieldValue("end_time"))== "undefined" ? '':form.getFieldValue("end_time")[1].format('YYYY-MM-DD');
+    let end_time_2;
+    start_time_1 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[0].format('YYYY-MM-DD');
+    start_time_2 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[1].format('YYYY-MM-DD');
+    end_time_1 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[0].format('YYYY-MM-DD');
+    end_time_2 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[1].format('YYYY-MM-DD');
     form.validateFields((err, values) => {
-       if (!err) {
-         dispatch({
-           type: 'searchListApplications/fetch',
-           payload: {
-             currentPage:page, 
-             pageSize:pageSize,
-             customer_name: form.getFieldValue("customer_name"),
-             project_name: form.getFieldValue("project_name"),
-             support_type: form.getFieldValue("support_type"),
-             status: form.getFieldValue("status"),
-             sales: form.getFieldValue("sales"),
-             apc: form.getFieldValue("apc"),
-             start_time_1: start_time_1,
-             start_time_2: start_time_2,
-             end_time_1: end_time_1,
-             end_time_2: end_time_2,
-             currentUser: localStorage.getItem("userId"),
-            },
-         });
-        }
+      if (!err) {
+        dispatch({
+          type: 'searchListApplications/fetch',
+          payload: {
+            currentPage: page,
+            pageSize: pageSize,
+            customer_name: form.getFieldValue('customer_name'),
+            project_name: form.getFieldValue('project_name'),
+            support_type: form.getFieldValue('support_type'),
+            status: form.getFieldValue('status'),
+            sales: form.getFieldValue('sales'),
+            apc: form.getFieldValue('apc'),
+            start_time_1: start_time_1,
+            start_time_2: start_time_2,
+            end_time_1: end_time_1,
+            end_time_2: end_time_2,
+            currentUser: localStorage.getItem('userId'),
+          },
+        });
+      }
     });
   };
   // 回调函数,每页显示多少条
-  onShowSizeChange =(current, size)=> {
+  onShowSizeChange = (current, size) => {
     const { dispatch, form } = this.props;
 
     this.setState({
-      pagination:{
+      pagination: {
         pageSize: size,
         currentPage: current,
-      }
+      },
     });
 
-    let start_time_1 ;
-    let start_time_2 ;
+    let start_time_1;
+    let start_time_2;
     let end_time_1;
-    let end_time_2 ;
-    start_time_1 = typeof(form.getFieldValue("start_time"))== "undefined" ? '':form.getFieldValue("start_time")[0].format('YYYY-MM-DD');
-    start_time_2 = typeof(form.getFieldValue("start_time"))== "undefined" ? '':form.getFieldValue("start_time")[1].format('YYYY-MM-DD');
-    end_time_1 = typeof(form.getFieldValue("end_time"))== "undefined" ? '':form.getFieldValue("end_time")[0].format('YYYY-MM-DD');
-    end_time_2 = typeof(form.getFieldValue("end_time"))== "undefined" ? '':form.getFieldValue("end_time")[1].format('YYYY-MM-DD');
+    let end_time_2;
+    start_time_1 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[0].format('YYYY-MM-DD');
+    start_time_2 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[1].format('YYYY-MM-DD');
+    end_time_1 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[0].format('YYYY-MM-DD');
+    end_time_2 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[1].format('YYYY-MM-DD');
     form.validateFields((err, values) => {
-       if (!err) {
-         dispatch({
-           type: 'searchListApplications/fetch',
-           payload: {
-             currentPage:current, 
-             pageSize:size,
-             customer_name: form.getFieldValue("customer_name"),
-             project_name: form.getFieldValue("project_name"),
-             support_type: form.getFieldValue("support_type"),
-             status: form.getFieldValue("status"),
-             sales: form.getFieldValue("sales"),
-             apc: form.getFieldValue("apc"),
-             start_time_1: start_time_1,
-             start_time_2: start_time_2,
-             end_time_1: end_time_1,
-             end_time_2: end_time_2,
-             currentUser: localStorage.getItem("userId"),
-            },
-         });
-       }
-     });
-
-
-  }
+      if (!err) {
+        dispatch({
+          type: 'searchListApplications/fetch',
+          payload: {
+            currentPage: current,
+            pageSize: size,
+            customer_name: form.getFieldValue('customer_name'),
+            project_name: form.getFieldValue('project_name'),
+            support_type: form.getFieldValue('support_type'),
+            status: form.getFieldValue('status'),
+            sales: form.getFieldValue('sales'),
+            apc: form.getFieldValue('apc'),
+            start_time_1: start_time_1,
+            start_time_2: start_time_2,
+            end_time_1: end_time_1,
+            end_time_2: end_time_2,
+            currentUser: localStorage.getItem('userId'),
+          },
+        });
+      }
+    });
+  };
 
   handleFormReset = () => {
     const { form, dispatch } = this.props;
@@ -382,7 +437,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     dispatch({
       type: 'searchListApplications/fetch',
       payload: {
-        currentUser: localStorage.getItem("userId"),
+        currentUser: localStorage.getItem('userId'),
         //apc: localStorage.getItem("userId"),
       },
       callback: () => {
@@ -398,28 +453,28 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
           customerList: data.customerList,
           accountList: data.accountList,
           fiscalList: data.fiscalList,
-          pagination: data.pagination
+          pagination: data.pagination,
         });
       },
     });
   };
-//更新project状态
+  //更新project状态
   handleUpdateModalVisible = (flag?: boolean, item?: FormValsType) => {
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: item || {},
     });
   };
-//修改project信息
+  //修改project信息
   handleModifyModalVisible = (flag?: boolean, record?: FormValsType) => {
     //debugger
-    
+
     this.setState({
       modifyModalVisible: !!flag,
       stepFormValues: record || {},
     });
   };
-//新增project信息
+  //新增project信息
   handleCreateModalVisible = (flag?: boolean) => {
     this.setState({
       createModalVisible: !!flag,
@@ -437,66 +492,76 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     });
   };
 
-  completeCancel(e){
+  completeCancel(e) {
     message.warning(formatMessage({ id: 'project.CompleteCancelTips' }));
   }
 
-  handleChangeStatus = (projectId: number,changeStatus: number,currentStatus: number) => {
-
-    switch(currentStatus){
-      case 1://废弃
-          message.error(formatMessage({ id: 'project.AbandonedError' }));
+  handleChangeStatus = (projectId: number, changeStatus: number, currentStatus: number) => {
+    switch (currentStatus) {
+      case 1: //废弃
+        message.error(formatMessage({ id: 'project.AbandonedError' }));
+        return;
+      case 2: //新建
+        if (changeStatus == 4 || changeStatus == 5) {
+          message.error(formatMessage({ id: 'project.NewCreateError' }));
           return;
-      case 2://新建
-          if(changeStatus == 4 || changeStatus == 5){
-            message.error(formatMessage({ id: 'project.NewCreateError' }));
-            return;
-          }
-          break;
-      case 3://审核通过
-          if(changeStatus == 1){
-            message.error(formatMessage({ id: 'project.ApprovedError.ChangeAbandoned' }));
-            return;
-          }
-          else if(changeStatus== 2){
-            message.error(formatMessage({ id: 'project.ApprovedError.ChangeNewCreate' }));
-            return;
-          }else if(changeStatus == 5){
-            message.error(formatMessage({ id: 'project.ApprovedError.ChangeArchived' }));
-            return;
-          }
-          break;
-      case 4://完成
-          if(changeStatus == 1){
-            message.error(formatMessage({ id: 'project.CompletedError.ChangeAbandoned' }));
-            return;
-          }else if(changeStatus== 2){
-            message.error(formatMessage({ id: 'project.CompletedError.ChangeNewCreate' }));
-            return;
-          }else if(changeStatus== 3){
-            message.error(formatMessage({ id: 'project.CompletedError.ChangeApproved' }));
-            return;
-          }else if(changeStatus== 4){
-            message.error(formatMessage({ id: 'project.CompletedError.ChangeCompleted' }));
-            return;
-          }
-          break;
-      case 5://归档
-            message.error(formatMessage({ id: 'project.ArchivedError' }));
-            return;
+        }
+        break;
+      case 3: //审核通过
+        if (changeStatus == 1) {
+          message.error(formatMessage({ id: 'project.ApprovedError.ChangeAbandoned' }));
+          return;
+        } else if (changeStatus == 2) {
+          message.error(formatMessage({ id: 'project.ApprovedError.ChangeNewCreate' }));
+          return;
+        } else if (changeStatus == 5) {
+          message.error(formatMessage({ id: 'project.ApprovedError.ChangeArchived' }));
+          return;
+        }
+        break;
+      case 4: //完成
+        if (changeStatus == 1) {
+          message.error(formatMessage({ id: 'project.CompletedError.ChangeAbandoned' }));
+          return;
+        } else if (changeStatus == 2) {
+          message.error(formatMessage({ id: 'project.CompletedError.ChangeNewCreate' }));
+          return;
+        } else if (changeStatus == 3) {
+          message.error(formatMessage({ id: 'project.CompletedError.ChangeApproved' }));
+          return;
+        } else if (changeStatus == 4) {
+          message.error(formatMessage({ id: 'project.CompletedError.ChangeCompleted' }));
+          return;
+        }
+        break;
+      case 5: //归档
+        message.error(formatMessage({ id: 'project.ArchivedError' }));
+        return;
     }
 
-    const { dispatch,form } = this.props;
+    const { dispatch, form } = this.props;
 
-    let start_time_1 ;
-    let start_time_2 ;
+    let start_time_1;
+    let start_time_2;
     let end_time_1;
-    let end_time_2 ;
-    start_time_1 = typeof(form.getFieldValue("start_time"))== "undefined" ? '':form.getFieldValue("start_time")[0].format('YYYY-MM-DD');
-    start_time_2 = typeof(form.getFieldValue("start_time"))== "undefined" ? '':form.getFieldValue("start_time")[1].format('YYYY-MM-DD');
-    end_time_1 = typeof(form.getFieldValue("end_time"))== "undefined" ? '':form.getFieldValue("end_time")[0].format('YYYY-MM-DD');
-    end_time_2 = typeof(form.getFieldValue("end_time"))== "undefined" ? '':form.getFieldValue("end_time")[1].format('YYYY-MM-DD');
-    
+    let end_time_2;
+    start_time_1 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[0].format('YYYY-MM-DD');
+    start_time_2 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[1].format('YYYY-MM-DD');
+    end_time_1 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[0].format('YYYY-MM-DD');
+    end_time_2 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[1].format('YYYY-MM-DD');
+
     form.validateFields((err, values) => {
       if (!err) {
         dispatch({
@@ -504,70 +569,82 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
           payload: {
             project_id: projectId,
             changeStatus: changeStatus,
-            currentPage:this.state.pagination.current, 
-            pageSize:this.state.pagination.pageSize,
+            currentPage: this.state.pagination.current,
+            pageSize: this.state.pagination.pageSize,
             //for search 的 form values
-            fs_customer_name: form.getFieldValue("customer_name"),
-            fs_project_name: form.getFieldValue("project_name"),
-            fs_support_type: form.getFieldValue("support_type"),
-            fs_status: form.getFieldValue("status"),
-            fs_sales: form.getFieldValue("sales"),
-            fs_apc: form.getFieldValue("apc"),
+            fs_customer_name: form.getFieldValue('customer_name'),
+            fs_project_name: form.getFieldValue('project_name'),
+            fs_support_type: form.getFieldValue('support_type'),
+            fs_status: form.getFieldValue('status'),
+            fs_sales: form.getFieldValue('sales'),
+            fs_apc: form.getFieldValue('apc'),
             fs_start_time_1: start_time_1,
             fs_start_time_2: start_time_2,
             fs_end_time_1: end_time_1,
-            fs_end_time_2: end_time_2,            
+            fs_end_time_2: end_time_2,
           },
           callback: () => {
             const {
               searchListApplications: { data },
             } = this.props;
-            if(data.result == 1){
+            if (data.result == 1) {
               message.success(formatMessage({ id: 'project.HandleChangeStatusTips.Successed' }));
-            }else{
+            } else {
               message.error(formatMessage({ id: 'project.HandleChangeStatusTips.Failed' }));
             }
           },
         });
       }
     });
-  }
+  };
 
   removeCancel(e) {
     message.warning(formatMessage({ id: 'project.RemoveCancelTips' }));
-  } 
+  }
 
-  handleSwitchView = (checked:boolean) => {
+  handleSwitchView = (checked: boolean) => {
     //列表-true,卡片-false
     // debugger
-    if(checked){
+    if (checked) {
       this.setState({
-        cardListVisible:true,
-        tableListVisible:false,
-      })
-    }else{
+        cardListVisible: true,
+        tableListVisible: false,
+      });
+    } else {
       this.setState({
-        cardListVisible:false,
-        tableListVisible:true,
-      })
+        cardListVisible: false,
+        tableListVisible: true,
+      });
     }
   };
 
   handleRemove = (projectId: number) => {
-    message.warning("Not support now!");
+    message.warning('Not support now!');
     return;
 
-    const { dispatch,form } = this.props;
+    const { dispatch, form } = this.props;
 
-    let start_time_1 ;
-    let start_time_2 ;
+    let start_time_1;
+    let start_time_2;
     let end_time_1;
-    let end_time_2 ;
-    start_time_1 = typeof(form.getFieldValue("start_time"))== "undefined" ? '':form.getFieldValue("start_time")[0].format('YYYY-MM-DD');
-    start_time_2 = typeof(form.getFieldValue("start_time"))== "undefined" ? '':form.getFieldValue("start_time")[1].format('YYYY-MM-DD');
-    end_time_1 = typeof(form.getFieldValue("end_time"))== "undefined" ? '':form.getFieldValue("end_time")[0].format('YYYY-MM-DD');
-    end_time_2 = typeof(form.getFieldValue("end_time"))== "undefined" ? '':form.getFieldValue("end_time")[1].format('YYYY-MM-DD');
-    
+    let end_time_2;
+    start_time_1 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[0].format('YYYY-MM-DD');
+    start_time_2 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[1].format('YYYY-MM-DD');
+    end_time_1 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[0].format('YYYY-MM-DD');
+    end_time_2 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[1].format('YYYY-MM-DD');
+
     form.validateFields((err, values) => {
       if (!err) {
         dispatch({
@@ -575,50 +652,59 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
           payload: {
             project_id: projectId,
 
-            currentPage:this.state.pagination.current, 
-            pageSize:this.state.pagination.pageSize,
+            currentPage: this.state.pagination.current,
+            pageSize: this.state.pagination.pageSize,
             //for search 的 form values
-            fs_customer_name: form.getFieldValue("customer_name"),
-            fs_project_name: form.getFieldValue("project_name"),
-            fs_support_type: form.getFieldValue("support_type"),
-            fs_status: form.getFieldValue("status"),
-            fs_sales: form.getFieldValue("sales"),
-            fs_apc: form.getFieldValue("apc"),
+            fs_customer_name: form.getFieldValue('customer_name'),
+            fs_project_name: form.getFieldValue('project_name'),
+            fs_support_type: form.getFieldValue('support_type'),
+            fs_status: form.getFieldValue('status'),
+            fs_sales: form.getFieldValue('sales'),
+            fs_apc: form.getFieldValue('apc'),
             fs_start_time_1: start_time_1,
             fs_start_time_2: start_time_2,
             fs_end_time_1: end_time_1,
-            fs_end_time_2: end_time_2,            
+            fs_end_time_2: end_time_2,
           },
           callback: () => {
-            
             const {
               searchListApplications: { data },
             } = this.props;
-            
-              if(data.result == 1){
-                message.success(formatMessage({ id: 'project.HandleRemoveTips.Successed' }));
-              }else{
-                message.error(formatMessage({ id: 'project.HandleRemoveTips.Failed' }));
-              }
+
+            if (data.result == 1) {
+              message.success(formatMessage({ id: 'project.HandleRemoveTips.Successed' }));
+            } else {
+              message.error(formatMessage({ id: 'project.HandleRemoveTips.Failed' }));
+            }
           },
         });
       }
     });
-
   };
 
-
   handleCreate = (fields: FormValsType) => {
-    const { dispatch,form } = this.props;
+    const { dispatch, form } = this.props;
 
-    let start_time_1 ;
-    let start_time_2 ;
+    let start_time_1;
+    let start_time_2;
     let end_time_1;
-    let end_time_2 ;
-    start_time_1 = typeof(form.getFieldValue("start_time"))== "undefined" ? '':form.getFieldValue("start_time")[0].format('YYYY-MM-DD');
-    start_time_2 = typeof(form.getFieldValue("start_time"))== "undefined" ? '':form.getFieldValue("start_time")[1].format('YYYY-MM-DD');
-    end_time_1 = typeof(form.getFieldValue("end_time"))== "undefined" ? '':form.getFieldValue("end_time")[0].format('YYYY-MM-DD');
-    end_time_2 = typeof(form.getFieldValue("end_time"))== "undefined" ? '':form.getFieldValue("end_time")[1].format('YYYY-MM-DD');
+    let end_time_2;
+    start_time_1 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[0].format('YYYY-MM-DD');
+    start_time_2 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[1].format('YYYY-MM-DD');
+    end_time_1 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[0].format('YYYY-MM-DD');
+    end_time_2 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[1].format('YYYY-MM-DD');
 
     const currentPage = this.state.pagination.current;
     const pageSize = this.state.pagination.pageSize;
@@ -629,22 +715,22 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
         dispatch({
           type: 'searchListApplications/create',
           payload: {
-            keys:fields.keys,
-            accountName:fields.accountName,
-            accountVol:fields.accountVol,
-            fiscalYear:fields.fiscalYear,
-            bd:fields.bd,
-            sales:fields.sales,
-            pss:fields.pss,
+            keys: fields.keys,
+            accountName: fields.accountName,
+            accountVol: fields.accountVol,
+            fiscalYear: fields.fiscalYear,
+            bd: fields.bd,
+            sales: fields.sales,
+            pss: fields.pss,
             engineers: fields.engineers,
-            owner:fields.owner,
-            hourRate:fields.hour_rate,
-            planWorkingHours:fields.plan_working_hours,
-            planBudget:fields.plan_budget,
-            projectCode:fields.project_code,
-            so_no:fields.so_no,
-            currentPage:currentPage, 
-            pageSize:pageSize,
+            owner: fields.owner,
+            hourRate: fields.hour_rate,
+            planWorkingHours: fields.plan_working_hours,
+            planBudget: fields.plan_budget,
+            projectCode: fields.project_code,
+            so_no: fields.so_no,
+            currentPage: currentPage,
+            pageSize: pageSize,
             id: fields.id,
             customer_id: fields.customer_id,
             end_time: moment(fields.end_time).format('YYYY-MM-DD HH:mm:ss'),
@@ -656,159 +742,201 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
             support_type: fields.support_type,
             support_reason: fields.support_reason,
             update_time: moment(fields.update_time).format('YYYY-MM-DD HH:mm:ss'),
-            update_user: localStorage.getItem("userId"),
-            
+            update_user: localStorage.getItem('userId'),
+
             //for search 的 form values
-            fs_customer_name: form.getFieldValue("customer_name"),
-            fs_project_name: form.getFieldValue("project_name"),
-            fs_support_type: form.getFieldValue("support_type"),
-            fs_status: form.getFieldValue("status"),
-            fs_sales: form.getFieldValue("sales"),
-            fs_apc: form.getFieldValue("apc"),
+            fs_customer_name: form.getFieldValue('customer_name'),
+            fs_project_name: form.getFieldValue('project_name'),
+            fs_support_type: form.getFieldValue('support_type'),
+            fs_status: form.getFieldValue('status'),
+            fs_sales: form.getFieldValue('sales'),
+            fs_apc: form.getFieldValue('apc'),
             fs_start_time_1: start_time_1,
             fs_start_time_2: start_time_2,
             fs_end_time_1: end_time_1,
             fs_end_time_2: end_time_2,
             // currentUser: localStorage.getItem("userId"),
-           },
-           callback: () => {
-              const {
-                searchListApplications: { data },
-              } = this.props;
-              if(data.result == 1){
-                this.setState({
-                  pagination:data.pagination,
-                })
-                message.success(data.resultMessage);
-              }else{
-                message.error(data.resultMessage);
-              }
+          },
+          callback: () => {
+            const {
+              searchListApplications: { data },
+            } = this.props;
+            if (data.result == 1) {
+              this.setState({
+                pagination: data.pagination,
+              });
+              message.success(data.resultMessage);
+            } else {
+              message.error(data.resultMessage);
+            }
 
-              this.handleCreateModalVisible();
+            this.handleCreateModalVisible();
           },
         });
       }
     });
-
   };
 
   handleModify = (fields: FormValsType) => {
     //debugger
-    
-    const { dispatch,form } = this.props;
 
-    let start_time_1 ;
-    let start_time_2 ;
-    let end_time_1 ;
-    let end_time_2 ;
-    start_time_1 = typeof(form.getFieldValue("start_time"))== "undefined" ? '':form.getFieldValue("start_time")[0].format('YYYY-MM-DD');
-    start_time_2 = typeof(form.getFieldValue("start_time"))== "undefined" ? '':form.getFieldValue("start_time")[1].format('YYYY-MM-DD');
-    end_time_1 = typeof(form.getFieldValue("end_time"))== "undefined" ? '':form.getFieldValue("end_time")[0].format('YYYY-MM-DD');
-    end_time_2 = typeof(form.getFieldValue("end_time"))== "undefined" ? '':form.getFieldValue("end_time")[1].format('YYYY-MM-DD');
+    const { dispatch, form } = this.props;
+
+    let start_time_1;
+    let start_time_2;
+    let end_time_1;
+    let end_time_2;
+    start_time_1 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[0].format('YYYY-MM-DD');
+    start_time_2 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[1].format('YYYY-MM-DD');
+    end_time_1 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[0].format('YYYY-MM-DD');
+    end_time_2 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[1].format('YYYY-MM-DD');
 
     const currentPage = this.state.pagination.current;
     const pageSize = this.state.pagination.pageSize;
-// debugger
+    // debugger
     form.validateFields((err, values) => {
       if (!err) {
         dispatch({
           type: 'searchListApplications/update',
           payload: {
-            currentPage:currentPage, 
-            pageSize:pageSize,
+            currentPage: currentPage,
+            pageSize: pageSize,
             project_id: fields.project_id,
-            keys:fields.keys,
-            accountName:fields.accountName,
-            accountVol:fields.accountVol,
-            fiscalYear:fields.fiscalYear,
+            keys: fields.keys,
+            accountName: fields.accountName,
+            accountVol: fields.accountVol,
+            fiscalYear: fields.fiscalYear,
             customer_id: fields.customer_id,
             engineer: fields.engineer,
             bd: fields.bd,
             pss: fields.pss,
             sales: fields.sales,
-            owner:fields.owner,
-            hourRate:fields.hour_rate,
-            planWorkingHours:fields.plan_working_hours,
-            planBudget:fields.plan_budget,
-            projectCode:fields.project_code,
-            so_no:fields.so_no,
+            owner: fields.owner,
+            hourRate: fields.hour_rate,
+            planWorkingHours: fields.plan_working_hours,
+            planBudget: fields.plan_budget,
+            projectCode: fields.project_code,
+            so_no: fields.so_no,
             end_time: moment(fields.end_time).format('YYYY-MM-DD HH:mm:ss'),
             plan_working_hours: fields.plan_working_hours,
             project_name: fields.project_name,
             sales_order_volume: fields.sales_order_volume,
             start_time: moment(fields.start_time).format('YYYY-MM-DD HH:mm:ss'),
             status: fields.status_id,
-            project_run_status:fields.project_run_status_id,
+            project_run_status: fields.project_run_status_id,
             support_reason: fields.support_reason,
             update_time: moment(fields.update_time).format('YYYY-MM-DD HH:mm:ss'),
-            update_user: localStorage.getItem("userId"),
+            update_user: localStorage.getItem('userId'),
             //for search 的 form values
-            fs_customer_name: form.getFieldValue("customer_name"),
-            fs_project_name: form.getFieldValue("project_name"),
-            fs_support_type: form.getFieldValue("support_type"),
-            fs_status: form.getFieldValue("status"),
-            fs_sales: form.getFieldValue("sales"),
-            fs_apc: form.getFieldValue("apc"),
+            fs_customer_name: form.getFieldValue('customer_name'),
+            fs_project_name: form.getFieldValue('project_name'),
+            fs_support_type: form.getFieldValue('support_type'),
+            fs_status: form.getFieldValue('status'),
+            fs_sales: form.getFieldValue('sales'),
+            fs_apc: form.getFieldValue('apc'),
             fs_start_time_1: start_time_1,
             fs_start_time_2: start_time_2,
             fs_end_time_1: end_time_1,
             fs_end_time_2: end_time_2,
-           },
-           callback: () => {
+          },
+          callback: () => {
             const {
               searchListApplications: { data },
             } = this.props;
-            if(data.result == 1){
+            if (data.result == 1) {
               this.setState({
-                pagination:data.pagination,
-              })
+                pagination: data.pagination,
+              });
               message.success(data.resultMessage);
-            }else{
+            } else {
               message.error(data.resultMessage);
             }
-              this.handleModifyModalVisible();
+            this.handleModifyModalVisible();
           },
         });
       }
     });
-
   };
 
   renderForm() {
     const { form } = this.props;
     const { getFieldDecorator } = form;
     // debugger
-    const apcOptions = typeof(this.state.apcList)=="undefined"?[]:this.state.apcList.map(d => <Option key={d.member_id}>{d.member_name}</Option>);
-    const bdOptions = typeof(this.state.bdList)=="undefined"?[]:this.state.bdList.map(d => <Option key={d.member_id}>{d.member_name}</Option>);
-    const pssOptions = typeof(this.state.pssList)=="undefined"?[]:this.state.pssList.map(d => <Option key={d.member_id}>{d.member_name}</Option>);
-    const salesOptions = typeof(this.state.salesList)=="undefined"?[]:this.state.salesList.map(d => <Option key={d.member_id}>{d.member_name}</Option>);
-    const cusOptions = typeof(this.state.customerList)=="undefined"?[]:this.state.customerList.map(d => <Option key={d.value}>{d.text}</Option>);
+    const apcOptions =
+      typeof this.state.apcList == 'undefined'
+        ? []
+        : this.state.apcList.map(d => <Option key={d.member_id}>{d.member_name}</Option>);
+    const bdOptions =
+      typeof this.state.bdList == 'undefined'
+        ? []
+        : this.state.bdList.map(d => <Option key={d.member_id}>{d.member_name}</Option>);
+    const pssOptions =
+      typeof this.state.pssList == 'undefined'
+        ? []
+        : this.state.pssList.map(d => <Option key={d.member_id}>{d.member_name}</Option>);
+    const salesOptions =
+      typeof this.state.salesList == 'undefined'
+        ? []
+        : this.state.salesList.map(d => <Option key={d.member_id}>{d.member_name}</Option>);
+    const cusOptions =
+      typeof this.state.customerList == 'undefined'
+        ? []
+        : this.state.customerList.map(d => <Option key={d.value}>{d.text}</Option>);
 
     // const currentUserId = localStorage.getItem("userId");
     // const currentRoleId = localStorage.getItem("currentUser_roleId");
-    
+
     return (
       <Form layout="inline">
         {/* 第一行 */}
         <Row gutter={0}>
           <Col span={6}>
             <FormItem label={formatMessage({ id: 'project.SearchItemProjectName' })}>
-              {getFieldDecorator('project_name')(<Input placeholder={formatMessage({ id: 'project.SearchInputTips' })} style={{width: '15em' }}/>)}
+              {getFieldDecorator('project_name')(
+                <Input
+                  placeholder={formatMessage({ id: 'project.SearchInputTips' })}
+                  style={{ width: '15em' }}
+                />,
+              )}
             </FormItem>
           </Col>
           <Col span={6}>
             <FormItem label={formatMessage({ id: 'project.SearchItemSupportType' })}>
-              {getFieldDecorator('support_type')(<Select placeholder={formatMessage({ id: 'project.SearchSelectTips' })} style={{width: '15em' }}>
-                  <Option value="1"><FormattedMessage id="project.SupportTypeOption.After" /></Option>
-                  <Option value="2"><FormattedMessage id="project.SupportTypeOption.Before" /></Option>
-                  <Option value="3"><FormattedMessage id="project.SupportTypeOption.Train" /></Option>
-                </Select>,)}
+              {getFieldDecorator('support_type')(
+                <Select
+                  placeholder={formatMessage({ id: 'project.SearchSelectTips' })}
+                  style={{ width: '15em' }}
+                >
+                  <Option value="1">
+                    <FormattedMessage id="project.SupportTypeOption.After" />
+                  </Option>
+                  <Option value="2">
+                    <FormattedMessage id="project.SupportTypeOption.Before" />
+                  </Option>
+                  <Option value="3">
+                    <FormattedMessage id="project.SupportTypeOption.Train" />
+                  </Option>
+                </Select>,
+              )}
             </FormItem>
           </Col>
           <Col span={6}>
             <FormItem label={formatMessage({ id: 'project.SearchItemCustomer' })}>
-              {getFieldDecorator('customer_id',
-              // {initialValue:1,}
+              {getFieldDecorator(
+                'customer_id',
+                // {initialValue:1,}
               )(
                 <Select
                   showSearch
@@ -817,157 +945,175 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
                   optionFilterProp="children"
                 >
                   {cusOptions}
-                </Select>
+                </Select>,
               )}
             </FormItem>
           </Col>
-          
+
           <Col span={6}>
             <FormItem label={formatMessage({ id: 'project.SearchItemCurrentStatus' })}>
-              {getFieldDecorator('status')(<Select placeholder={formatMessage({ id: 'project.SearchSelectTips' })} style={{width: '15em' }}>
-                  <Option value="1"><FormattedMessage id="project.StatusOption.Abandoned" /></Option>
-                  <Option value="2"><FormattedMessage id="project.StatusOption.NewCreate" /></Option>
-                  <Option value="3"><FormattedMessage id="project.StatusOption.Approved" /></Option>
-                  <Option value="4"><FormattedMessage id="project.StatusOption.Completed" /></Option>
-                  <Option value="5"><FormattedMessage id="project.StatusOption.Archived" /></Option>
-                </Select>,)}
+              {getFieldDecorator('status')(
+                <Select
+                  placeholder={formatMessage({ id: 'project.SearchSelectTips' })}
+                  style={{ width: '15em' }}
+                >
+                  <Option value="1">
+                    <FormattedMessage id="project.StatusOption.Abandoned" />
+                  </Option>
+                  <Option value="2">
+                    <FormattedMessage id="project.StatusOption.NewCreate" />
+                  </Option>
+                  <Option value="3">
+                    <FormattedMessage id="project.StatusOption.Approved" />
+                  </Option>
+                  <Option value="4">
+                    <FormattedMessage id="project.StatusOption.Completed" />
+                  </Option>
+                  <Option value="5">
+                    <FormattedMessage id="project.StatusOption.Archived" />
+                  </Option>
+                </Select>,
+              )}
             </FormItem>
           </Col>
-          
-          </Row>
-          {/* 第二行 */}
-          <Row gutter={0}>
+        </Row>
+        {/* 第二行 */}
+        <Row gutter={0}>
           <Col span={6}>
             <FormItem label={formatMessage({ id: 'project.SearchItemApcMember' })}>
-              {getFieldDecorator('apc',{
-            })(
-               <Select
-                showSearch
-                mode="multiple"
-                style={{ width: '15em' }}
-               >
-                 {apcOptions}
-              </Select>
+              {getFieldDecorator('apc', {})(
+                <Select showSearch mode="multiple" style={{ width: '15em' }}>
+                  {apcOptions}
+                </Select>,
               )}
             </FormItem>
           </Col>
 
           <Col span={6}>
             <FormItem label={formatMessage({ id: 'project.SearchItemBdMember' })}>
-              {getFieldDecorator('bd',{
-            })(
-               <Select
-                showSearch
-                mode="multiple"
-                style={{ width: '15em' }}
-               >
-                 {bdOptions}
-              </Select>
+              {getFieldDecorator('bd', {})(
+                <Select showSearch mode="multiple" style={{ width: '15em' }}>
+                  {bdOptions}
+                </Select>,
               )}
             </FormItem>
           </Col>
 
           <Col span={6}>
             <FormItem label={formatMessage({ id: 'project.SearchItemPssMember' })}>
-              {getFieldDecorator('pss',{
-            })(
-               <Select
-                showSearch
-                mode="multiple"
-                style={{ width: '15em' }}
-               >
-                 {pssOptions}
-              </Select>
+              {getFieldDecorator('pss', {})(
+                <Select showSearch mode="multiple" style={{ width: '15em' }}>
+                  {pssOptions}
+                </Select>,
               )}
             </FormItem>
           </Col>
 
           <Col span={6}>
             <FormItem label={formatMessage({ id: 'project.SearchItemSalesMember' })}>
-              {getFieldDecorator('sales',{
-            })(
-               <Select
-                showSearch
-                mode="multiple"
-                style={{ width: '15em' }}
-               >
-                 {salesOptions}
-              </Select>
+              {getFieldDecorator('sales', {})(
+                <Select showSearch mode="multiple" style={{ width: '15em' }}>
+                  {salesOptions}
+                </Select>,
               )}
             </FormItem>
           </Col>
-          
-          </Row>
-          {/* 第三行 */}
-          <Row gutter={0}>
+        </Row>
+        {/* 第三行 */}
+        <Row gutter={0}>
           <Col span={6}>
             <FormItem label={formatMessage({ id: 'project.SearchItemStartTime' })}>
-              {getFieldDecorator('start_time')(<RangePicker format="YYYY-MM-DD" 
-             style={{ width: '15em' }} /*onChange={this.onDateChange}*/ />)}
+              {getFieldDecorator('start_time')(
+                <RangePicker
+                  format="YYYY-MM-DD"
+                  style={{ width: '15em' }} /*onChange={this.onDateChange}*/
+                />,
+              )}
             </FormItem>
           </Col>
           <Col span={6}>
             <FormItem label={formatMessage({ id: 'project.SearchItemEndTime' })}>
-            {getFieldDecorator('end_time')(<RangePicker format="YYYY-MM-DD" 
-             style={{ width: '15em' }} /*onChange={onChange}*/ />)}
+              {getFieldDecorator('end_time')(
+                <RangePicker
+                  format="YYYY-MM-DD"
+                  style={{ width: '15em' }} /*onChange={onChange}*/
+                />,
+              )}
             </FormItem>
           </Col>
           <Col span={6}>
-              <Button style={{ marginLeft: '30em',}} onClick={this.handleFormReset}>
-                            <FormattedMessage id="customer.CustomerButtonReset" />
-              </Button>
+            <Button style={{ marginLeft: '30em' }} onClick={this.handleFormReset}>
+              <FormattedMessage id="customer.CustomerButtonReset" />
+            </Button>
           </Col>
 
-          <Col span={3}>
-
-          </Col>
-          <Col span={3}>
-    
-          </Col>
+          <Col span={3}></Col>
+          <Col span={3}></Col>
         </Row>
         {/* 第四行 */}
         <Row gutter={0}>
-          <Col span={6}>    
-            <div className={styles.tableListOperator} style={{marginTop:'2em'}}>
-              <Button icon="plus" type="primary" onClick={() => this.handleCreateModalVisible(true)}>
-                  <FormattedMessage id="project.ButtonNewCreate" />
+          <Col span={6}>
+            <div className={styles.tableListOperator} style={{ marginTop: '2em' }}>
+              <Button
+                icon="plus"
+                type="primary"
+                onClick={() => this.handleCreateModalVisible(true)}
+              >
+                <FormattedMessage id="project.ButtonNewCreate" />
               </Button>
-              <Button icon="export" style={{marginLeft:"2em"}} onClick={() => message.warning(formatMessage({ id: 'project.ButtonExportProject.Tips' }))}>
-                  <FormattedMessage id="project.ButtonExportProject" />
+              <Button
+                icon="export"
+                style={{ marginLeft: '2em' }}
+                onClick={() =>
+                  message.warning(formatMessage({ id: 'project.ButtonExportProject.Tips' }))
+                }
+              >
+                <FormattedMessage id="project.ButtonExportProject" />
               </Button>
             </div>
           </Col>
-          <Col span={6}>   
-
-          </Col>
-          <Col span={6}>              
- 
-          </Col>
-          <Col span={4}>    
-          </Col>
-          <Col span={2}>             
-            <div className={styles.tableListOperator} style={{marginTop:'2.4em'}}>
-       
+          <Col span={6}></Col>
+          <Col span={6}></Col>
+          <Col span={4}></Col>
+          <Col span={2}>
+            <div className={styles.tableListOperator} style={{ marginTop: '2.4em' }}>
               <label>{formatMessage({ id: 'project.Form.SwitchTips' })}</label>
-    
-              <Switch size="default" checkedChildren={formatMessage({ id: 'project.SwitchView.Card' })} 
-                      unCheckedChildren={formatMessage({ id: 'project.SwitchView.List' })} onChange={(checked) => this.handleSwitchView(checked)} defaultChecked />
+
+              <Switch
+                size="default"
+                checkedChildren={formatMessage({ id: 'project.SwitchView.Card' })}
+                unCheckedChildren={formatMessage({ id: 'project.SwitchView.List' })}
+                onChange={checked => this.handleSwitchView(checked)}
+                defaultChecked
+              />
             </div>
           </Col>
-
         </Row>
       </Form>
     );
   }
 
   render() {
-    const {  /*updateModalVisible,*/createModalVisible,modifyModalVisible, stepFormValues,apcList,customerList,bdList,pssList,salesList,fiscalList,accountList,supportTypeList,projectRunStatusList } = this.state;
+    const {
+      /*updateModalVisible,*/ createModalVisible,
+      modifyModalVisible,
+      stepFormValues,
+      apcList,
+      customerList,
+      bdList,
+      pssList,
+      salesList,
+      fiscalList,
+      accountList,
+      supportTypeList,
+      projectRunStatusList,
+    } = this.state;
     //debugger
     const modifyMethods = {
       handleModifyModalVisible: this.handleModifyModalVisible,
       handleModify: this.handleModify,
     };
-    
+
     const createMethods = {
       handleCreateModalVisible: this.handleCreateModalVisible,
       handleCreate: this.handleCreate,
@@ -977,48 +1123,52 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
       searchListApplications: { data },
       loading,
     } = this.props;
-  
+
     const list = data.list;
     const pagination = data.pagination;
- 
+
     const CardInfo: React.FC<{
       workingHour: React.ReactNode;
       currentStatus: React.ReactNode;
     }> = ({ workingHour, currentStatus }) => (
       <div className={styles.cardInfo}>
         <div>
-          <p><FormattedMessage id="project.CardInfo.WorkingHour" /></p>
+          <p>
+            <FormattedMessage id="project.CardInfo.WorkingHour" />
+          </p>
           <p>{workingHour}h</p>
         </div>
         <div>
-          <p><FormattedMessage id="project.CardInfo.CurrentStatus" /></p>
+          <p>
+            <FormattedMessage id="project.CardInfo.CurrentStatus" />
+          </p>
           <p>{currentStatus}</p>
         </div>
       </div>
     );
 
-    const post = localStorage.getItem("currentUser_postId");
+    const post = localStorage.getItem('currentUser_postId');
     let dropdownMenuFlag = 'none';
-    switch(post){
-      case "1":
-          dropdownMenuFlag = 'none';
-          break;
-      case "2":
-          dropdownMenuFlag = 'block';
-          break;
-      case "3":
-          dropdownMenuFlag = 'block';
-          break;
+    switch (post) {
+      case '1':
+        dropdownMenuFlag = 'none';
+        break;
+      case '2':
+        dropdownMenuFlag = 'block';
+        break;
+      case '3':
+        dropdownMenuFlag = 'block';
+        break;
     }
 
     let cardVisible = 'none';
-    switch(this.state.cardListVisible){
+    switch (this.state.cardListVisible) {
       case true:
         cardVisible = 'none';
-          break;
+        break;
       case false:
         cardVisible = 'block';
-          break;
+        break;
     }
 
     // const menu = ({item}) => (
@@ -1065,135 +1215,154 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     //     </Menu.Item>
     //   </Menu>
     // );
-
+    // debugger
     return (
- 
       <div className={styles.filterCardList}>
         <Card bordered={false}>
-            <div className={styles.tableListForm}>{this.renderForm()}</div>
-            
+          <div className={styles.tableListForm}>{this.renderForm()}</div>
         </Card>
         <br />
-        <div style={{display:cardVisible}}>{/* card显示 */}
-        <List<ListItemDataType>
-          rowKey="id"
-          grid={{ gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1 }}
-          loading={loading}
-          dataSource={list}
-          renderItem={item => (
-            <List.Item key={item.id}>
-              
-              <Card
-                hoverable={true}
-                //loading={true}
-                bodyStyle={{ paddingBottom: 20 }}
-                actions={[
-                  <Tooltip key="edit" title={formatMessage({ id: 'project.CardTooltip.EditTitle' })} >
-                    <Icon type="edit" onClick={() => this.handleModifyModalVisible(true, item)}/>
-                  </Tooltip>, 
-                  <Popconfirm
-                    title={formatMessage({ id: 'project.CardPopconfirm.Remove.Title' })}
-                    onConfirm = {() => this.handleRemove(item.id)}
-                    onCancel={this.removeCancel}
-                    okText={formatMessage({ id: 'project.CardPopconfirm.Remove.OkText' })}
-                    cancelText={formatMessage({ id: 'project.CardPopconfirm.Remove.CancelText' })}
-                  >
-                  <Tooltip key="delete" title={formatMessage({ id: 'project.CardTooltip.RemoveTitle' })} >
-                      <Icon type="delete" />
-                  </Tooltip>
-                  </Popconfirm>,
-                  <Popconfirm
+        <div style={{ display: cardVisible }}>
+          {/* card显示 */}
+          <List<ListItemDataType>
+            rowKey="id"
+            grid={{ gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1 }}
+            loading={loading}
+            dataSource={list}
+            renderItem={item => (
+              <List.Item key={item.id}>
+                <Card
+                  hoverable={true}
+                  //loading={true}
+                  bodyStyle={{ paddingBottom: 20 }}
+                  actions={[
+                    <Tooltip
+                      key="edit"
+                      title={formatMessage({ id: 'project.CardTooltip.EditTitle' })}
+                    >
+                      <Icon type="edit" onClick={() => this.handleModifyModalVisible(true, item)} />
+                    </Tooltip>,
+                    <Popconfirm
+                      title={formatMessage({ id: 'project.CardPopconfirm.Remove.Title' })}
+                      onConfirm={() => this.handleRemove(item.id)}
+                      onCancel={this.removeCancel}
+                      okText={formatMessage({ id: 'project.CardPopconfirm.Remove.OkText' })}
+                      cancelText={formatMessage({ id: 'project.CardPopconfirm.Remove.CancelText' })}
+                    >
+                      <Tooltip
+                        key="delete"
+                        title={formatMessage({ id: 'project.CardTooltip.RemoveTitle' })}
+                      >
+                        <Icon type="delete" />
+                      </Tooltip>
+                    </Popconfirm>,
+                    <Popconfirm
                       title={formatMessage({ id: 'project.CardPopconfirm.Complete.Title' })}
-                      onConfirm = {() => this.handleChangeStatus(item.id,4,item.status_id)}
+                      onConfirm={() => this.handleChangeStatus(item.id, 4, item.status_id)}
                       onCancel={this.completeCancel}
                       okText={formatMessage({ id: 'project.CardPopconfirm.Complete.OkText' })}
-                      cancelText={formatMessage({ id: 'project.CardPopconfirm.Complete.CancelText' })}
+                      cancelText={formatMessage({
+                        id: 'project.CardPopconfirm.Complete.CancelText',
+                      })}
                     >
-                  <Tooltip key="accomplish" title={formatMessage({ id: 'project.CardTooltip.CompleteTitle' })}>
-                      <Icon type="file-done" />
-                  </Tooltip>
-                  </Popconfirm>,
-                  <div style={{display:dropdownMenuFlag}}>
-                    <Dropdown key="ellipsis" overlay={this.listMenu({item})} trigger={['click']}>
-                      <Icon type="ellipsis" />
-                    </Dropdown> 
-                  </div>
-                 ,
-                ]}
-              >
-                
-                <Card.Meta avatar={<Avatar size="small" src={item.avatar} />} title={item.project_name} />
-                <span>{item.customer_name}</span>
-                <div className={styles.cardItemContent}>
-                  <CardInfo
-                    workingHour={item.plan_working_hours}
-                    currentStatus={item.status_name}
+                      <Tooltip
+                        key="accomplish"
+                        title={formatMessage({ id: 'project.CardTooltip.CompleteTitle' })}
+                      >
+                        <Icon type="file-done" />
+                      </Tooltip>
+                    </Popconfirm>,
+                    <div style={{ display: dropdownMenuFlag }}>
+                      <Dropdown
+                        key="ellipsis"
+                        overlay={this.listMenu({ item })}
+                        trigger={['click']}
+                      >
+                        <Icon type="ellipsis" />
+                      </Dropdown>
+                    </div>,
+                  ]}
+                >
+                  <Card.Meta
+                    avatar={<Avatar size="small" src={item.avatar} />}
+                    title={item.project_name}
                   />
-                </div>
-                <FormattedMessage id="project.CardMeta.StartTime" /><span>{item.start_time.toString().substring(0,10)}</span><br />
-                <FormattedMessage id="project.CardMeta.EndTime" /><span>{item.end_time.toString().substring(0,10)}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <FormattedMessage id="project.CardMeta.ActualTime" /><span>{item.actual_running_time+" h"}</span>
-              </Card>
-              
-            </List.Item>
-          )}
-        />
-        </div>
-        <div>       {/* table显示 */}
-          <StandardTable
-              //selectedRows={selectedRows}
-              loading={loading}
-              data={data}
-              columns={this.columns}
-              visible={this.state.tableListVisible}
-            />
-
-            
-        </div>          
- 
-        <div style={{marginTop:'2em',textAlign:'right'}}>     {/* 分页 */}
-            <Pagination
-              showSizeChanger = {true}
-              onShowSizeChange = {this.onShowSizeChange}
-              onChange = {this.onPageChange}
-              defaultCurrent={typeof(pagination)=="undefined"?1:pagination.current}
-              total={typeof(pagination)=="undefined"?0:pagination.total}
-              pageSize={typeof(pagination)=="undefined"?10:pagination.pageSize}
-              showQuickJumper={true}
-              //hideOnSinglePage={true}/* 只有一页时，隐藏分页 */
-            />
-        </div>
-
-          <CreateForm
-            {...createMethods}
-            createModalVisible={createModalVisible}
-            // values={stepFormValues}
-            apcList={apcList}
-            bdList={bdList}
-            pssList={pssList}
-            salesList={salesList}
-            customerList={customerList}
-            supportTypeList={supportTypeList}
-            fiscalList={fiscalList}
-            accountList={accountList}
+                  <span>{item.customer_name}</span>
+                  <div className={styles.cardItemContent}>
+                    <CardInfo
+                      workingHour={item.plan_working_hours}
+                      currentStatus={item.status_name}
+                    />
+                  </div>
+                  <FormattedMessage id="project.CardMeta.StartTime" />
+                  <span>{item.start_time.toString().substring(0, 10)}</span>
+                  <br />
+                  <FormattedMessage id="project.CardMeta.EndTime" />
+                  <span>{item.end_time.toString().substring(0, 10)}</span>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <FormattedMessage id="project.CardMeta.ActualTime" />
+                  <span>{item.actual_running_time + ' h'}</span>
+                </Card>
+              </List.Item>
+            )}
           />
+        </div>
+        <div>
+          {' '}
+          {/* table显示 */}
+          <StandardTable
+            //selectedRows={selectedRows}
+            loading={loading}
+            data={data}
+            columns={this.columns}
+            visible={this.state.tableListVisible}
+          />
+        </div>
 
-        {stepFormValues && Object.keys(stepFormValues).length ? (
-          
-          <ModifyForm
-          {...modifyMethods}
-          modifyModalVisible={modifyModalVisible}
+        <div style={{ marginTop: '2em', textAlign: 'right' }}>
+          {' '}
+          {/* 分页 */}
+          <Pagination
+            showSizeChanger={true}
+            onShowSizeChange={this.onShowSizeChange}
+            onChange={this.onPageChange}
+            defaultCurrent={typeof pagination == 'undefined' ? 1 : pagination.current}
+            total={typeof pagination == 'undefined' ? 0 : pagination.total}
+            pageSize={typeof pagination.pageSize == 'undefined' ? 10 : pagination.pageSize}
+            showQuickJumper={true}
+            //hideOnSinglePage={true}/* 只有一页时，隐藏分页 */
+          />
+        </div>
+
+        <CreateForm
+          {...createMethods}
+          createModalVisible={createModalVisible}
           values={stepFormValues}
           apcList={apcList}
           bdList={bdList}
           pssList={pssList}
           salesList={salesList}
           customerList={customerList}
+          supportTypeList={supportTypeList}
           fiscalList={fiscalList}
           accountList={accountList}
-          supportTypeList={supportTypeList}
-          projectRunStatusList={projectRunStatusList}
         />
+
+        {stepFormValues && Object.keys(stepFormValues).length ? (
+          <ModifyForm
+            {...modifyMethods}
+            modifyModalVisible={modifyModalVisible}
+            values={stepFormValues}
+            apcList={apcList}
+            bdList={bdList}
+            pssList={pssList}
+            salesList={salesList}
+            customerList={customerList}
+            fiscalList={fiscalList}
+            accountList={accountList}
+            supportTypeList={supportTypeList}
+            projectRunStatusList={projectRunStatusList}
+          />
         ) : null}
       </div>
     );
@@ -1201,34 +1370,46 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
 }
 
 const WarpForm = Form.create<SearchListApplicationsProps>({
-onFieldsChange({ form,dispatch }: SearchListApplicationsProps) {
-    let start_time_1 ;
-    let start_time_2 ;
+  onFieldsChange({ form, dispatch }: SearchListApplicationsProps) {
+    let start_time_1;
+    let start_time_2;
     let end_time_1;
-    let end_time_2 ;
-    start_time_1 = typeof(form.getFieldValue("start_time"))== "undefined" ? '':form.getFieldValue("start_time")[0].format('YYYY-MM-DD');
-    start_time_2 = typeof(form.getFieldValue("start_time"))== "undefined" ? '':form.getFieldValue("start_time")[1].format('YYYY-MM-DD');
-    end_time_1 = typeof(form.getFieldValue("end_time"))== "undefined" ? '':form.getFieldValue("end_time")[0].format('YYYY-MM-DD');
-    end_time_2 = typeof(form.getFieldValue("end_time"))== "undefined" ? '':form.getFieldValue("end_time")[1].format('YYYY-MM-DD');
+    let end_time_2;
+    start_time_1 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[0].format('YYYY-MM-DD');
+    start_time_2 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[1].format('YYYY-MM-DD');
+    end_time_1 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[0].format('YYYY-MM-DD');
+    end_time_2 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[1].format('YYYY-MM-DD');
     // 表单项变化时请求数据
     // 模拟查询表单生效
     // debugger
     dispatch({
       type: 'searchListApplications/fetch',
       payload: {
-        customer_id: form.getFieldValue("customer_id"),
-        project_name: form.getFieldValue("project_name"),
-        support_type: form.getFieldValue("support_type"),
-        status: form.getFieldValue("status"),
-        sales: form.getFieldValue("sales"),
-        apc: form.getFieldValue("apc"),
-        pss: form.getFieldValue("pss"),
-        bd: form.getFieldValue("bd"),
+        customer_id: form.getFieldValue('customer_id'),
+        project_name: form.getFieldValue('project_name'),
+        support_type: form.getFieldValue('support_type'),
+        status: form.getFieldValue('status'),
+        sales: form.getFieldValue('sales'),
+        apc: form.getFieldValue('apc'),
+        pss: form.getFieldValue('pss'),
+        bd: form.getFieldValue('bd'),
         start_time_1: start_time_1,
         start_time_2: start_time_2,
         end_time_1: end_time_1,
         end_time_2: end_time_2,
-        currentUser: localStorage.getItem("userId"),
+        currentUser: localStorage.getItem('userId'),
       },
     });
   },

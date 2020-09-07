@@ -1,8 +1,14 @@
 import request from '@/utils/request';
 import { WHListParams } from './data.d';
 
-export async function queryProjectDateMapping(params: WHListParams) {
-  return request('/api/project/selectProjectDateMappingList', {
+export async function queryProjectDateCalMapping(params: WHListParams) {
+  return request('/api/project/selectProjectDateMappingCalendarList', {
+    params,
+  });
+}
+
+export async function queryProjectDateCalMappingByDay(params: WHListParams) {
+  return request('/api/project/selectProjectDateMappingCalendarListByDay', {
     params,
   });
 }
@@ -12,7 +18,6 @@ export async function queryMember(params: any) {
     params,
   });
 }
-
 
 export async function removeProjectDateMapping(params: WHListParams) {
   return request('/api/rule', {
@@ -32,12 +37,15 @@ export async function addProjectDateMapping(params: WHListParams) {
   });
 }
 
-export async function updateProjectDateMapping(params: WHListParams) {
-  return request('/api/rule', {
+export async function updateProjectDateMapping(params: any) {
+  return request('/api/project/updateProjectDateMappingCalendarListByDay', {
     method: 'POST',
-    data: {
-      ...params,
-      method: 'update',
-    },
+    params,
+  });
+}
+
+export async function exportProjectDateCalMapping(params: any) {
+  return request('/api/project/ExportMemberWorkingHourCalendar', {
+    params,
   });
 }

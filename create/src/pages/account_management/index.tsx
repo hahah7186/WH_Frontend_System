@@ -14,7 +14,7 @@ import {
   Row,
   Select,
   message,
-  Popconfirm
+  Popconfirm,
 } from 'antd';
 import React, { Component, Fragment } from 'react';
 
@@ -28,14 +28,22 @@ import { StateType } from './model';
 import CreateForm from './components/CreateForm';
 import StandardTable, { StandardTableColumnProps } from './components/StandardTable';
 import UpdateForm, { FormValsType } from './components/UpdateForm';
-import { AccountTableListItem, AccountTableListPagination, AccountTableListParams,/*ExportItem*/FiscalYear,AccountNameSel,AccountType,MemberSelect } from './data.d';
+import {
+  AccountTableListItem,
+  AccountTableListPagination,
+  AccountTableListParams,
+  /*ExportItem*/ FiscalYear,
+  AccountNameSel,
+  AccountType,
+  MemberSelect,
+} from './data.d';
 
 import moment from 'moment';
 //import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 // import { formatMessage, setLocale, getLocale, FormattedMessage } from 'umi/locale';
 import styles from './style.less';
 //import ExportJsonExcel from "js-export-excel";
-import { formatMessage,FormattedMessage } from 'umi-plugin-react/locale';
+import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
 //const { TextArea } = Input;
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -61,10 +69,10 @@ interface AccountTableListState {
   selectedRows: AccountTableListItem[];
   formValues: { [key: string]: string };
   stepFormValues: Partial<AccountTableListItem>;
-  fiscalYearList:FiscalYear[];
-  accountNameList:AccountNameSel[];
-  accountTypeList:AccountType[];
-  apcList:MemberSelect[];
+  fiscalYearList: FiscalYear[];
+  accountNameList: AccountNameSel[];
+  accountTypeList: AccountType[];
+  apcList: MemberSelect[];
   bdList: MemberSelect[];
   pssList: MemberSelect[];
   salesList: MemberSelect[];
@@ -97,11 +105,11 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
     stepFormValues: {},
     fiscalYearList: [],
     accountNameList: [],
-    accountTypeList:[],
-    apcList:[],
-    bdList:[],
-    pssList:[],
-    salesList:[],
+    accountTypeList: [],
+    apcList: [],
+    bdList: [],
+    pssList: [],
+    salesList: [],
   };
 
   columns: StandardTableColumnProps[] = [
@@ -141,36 +149,37 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
       title: <FormattedMessage id="Account.TableColumn.Operation" />,
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}><FormattedMessage id="customer.CustomerColumnOperation.Modify" /></a>
+          <a onClick={() => this.handleUpdateModalVisible(true, record)}>
+            <FormattedMessage id="customer.CustomerColumnOperation.Modify" />
+          </a>
           <Divider type="vertical" />
           <Popconfirm
             title={formatMessage({ id: 'customer.CustomerColumnOperation.RemovePop' })}
-            onConfirm = {() => this.onDelete(record)}
+            onConfirm={() => this.onDelete(record)}
             onCancel={this.removeCancel}
             okText={formatMessage({ id: 'customer.CustomerColumnOperation.RemovePop.Confim' })}
             cancelText={formatMessage({ id: 'customer.CustomerColumnOperation.RemovePop.Cancel' })}
           >
-          <a href="#"><FormattedMessage id="customer.CustomerColumnOperation.Remove" /></a>
-
+            <a href="#">
+              <FormattedMessage id="customer.CustomerColumnOperation.Remove" />
+            </a>
           </Popconfirm>
-          
         </Fragment>
       ),
     },
   ];
 
-  onDelete=(record)=>{
+  onDelete = record => {
     // message.success("Removing a account is not allowed!");
     // return;
     this.handleRemove(record);
-  }
-  
+  };
+
   removeCancel(e) {
     message.error(formatMessage({ id: 'customer.CustomerRemoveCancel' }));
   }
 
   componentDidMount() {
-    
     const { dispatch } = this.props;
     const today = new Date();
     const year = today.getFullYear();
@@ -181,19 +190,18 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
       //   fiscal_year:year,
       // },
       callback: () => {
-
         const {
           actTableList: { data },
         } = this.props;
 
         this.setState({
-          fiscalYearList:data.fiscalYearList,
-          accountNameList:data.accountNameList,
-          accountTypeList:data.accountTypeList,
-          apcList:data.apcList,
-          bdList:data.bdList,
-          pssList:data.pssList,
-          salesList:data.salesList,
+          fiscalYearList: data.fiscalYearList,
+          accountNameList: data.accountNameList,
+          accountTypeList: data.accountTypeList,
+          apcList: data.apcList,
+          bdList: data.bdList,
+          pssList: data.pssList,
+          salesList: data.salesList,
         });
       },
     });
@@ -204,6 +212,7 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
     filtersArg: Record<keyof AccountTableListItem, string[]>,
     sorter: SorterResult<AccountTableListItem>,
   ) => {
+    debugger;
     const { dispatch } = this.props;
     const { formValues } = this.state;
 
@@ -243,22 +252,22 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
   };
 
   handleRemove = (fields: FormValsType) => {
-    const { dispatch,form } = this.props;
+    const { dispatch, form } = this.props;
     dispatch({
       type: 'actTableList/remove',
       payload: {
         account_id: fields.account_id,
         //用于返回搜索用
-        fs_fiscal_year:form.getFieldValue("fiscal_year"),
-       },
+        fs_fiscal_year: form.getFieldValue('fiscal_year'),
+      },
       callback: () => {
         const {
           actTableList: { data },
         } = this.props;
 
-        if(data.result == 1){
+        if (data.result == 1) {
           message.success(data.resultMessage);
-        }else{
+        } else {
           message.error(data.resultMessage);
         }
       },
@@ -266,8 +275,8 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
 
     this.handleUpdateModalVisible();
   };
-  
-  handleNotDeveloped = () =>{
+
+  handleNotDeveloped = () => {
     message.warn(formatMessage({ id: 'customer.CustomerSelectedBatch' }));
   };
 
@@ -278,14 +287,14 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
     });
   };
 
-
   handleSelectRows = (rows: AccountTableListItem[]) => {
     this.setState({
       selectedRows: rows,
     });
   };
-//点击查询按钮触发
-  handleSearch = (e: React.FormEvent) => {debugger
+  //点击查询按钮触发
+  handleSearch = (e: React.FormEvent) => {
+    // debugger
     e.preventDefault();
 
     const { dispatch, form } = this.props;
@@ -315,7 +324,8 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
     });
   };
 
-  handleUpdateModalVisible = (flag?: boolean, record?: FormValsType) => {debugger
+  handleUpdateModalVisible = (flag?: boolean, record?: FormValsType) => {
+    debugger;
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: record || {},
@@ -333,7 +343,7 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
         fiscal_year: fields.fiscal_year,
         budget: fields.budget,
         account_type_id: fields.account_type_id,
-        member_id:fields.member_id,
+        member_id: fields.member_id,
         sap_order: fields.sap_order,
         comments: fields.comments,
       },
@@ -342,10 +352,9 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
           actTableList: { data },
         } = this.props;
 
-        if(data.result == 1){
+        if (data.result == 1) {
           message.success(data.resultMessage);
-          
-        }else{
+        } else {
           message.error(data.resultMessage);
         }
       },
@@ -356,16 +365,14 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
 
   handleUpdate = (fields: FormValsType) => {
     // debugger
-    const { 
-      dispatch,
-      } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'actTableList/update',
       payload: {
         account_id: fields.account_id,
         account_name: fields.account_name,
         account_type_id: fields.account_type_id,
-        member_id:fields.member_id,
+        member_id: fields.member_id,
         fiscal_year: fields.fiscal_year,
         budget: fields.budget,
         sap_order: fields.sap_order,
@@ -376,9 +383,9 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
           actTableList: { data },
         } = this.props;
 
-        if(data.result == 1){
+        if (data.result == 1) {
           message.success(formatMessage({ id: 'customer.CustomerOnModifySuccessTips' }));
-        }else{
+        } else {
           message.error(formatMessage({ id: 'customer.CustomerOnModifyFailedTips' }));
         }
       },
@@ -388,26 +395,31 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
   };
 
   renderSimpleForm() {
-
-    
     const { form } = this.props;
-    const fislcalYearOptions = typeof(this.state.fiscalYearList)=="undefined"?[]:this.state.fiscalYearList.map(d => <Option key={d.fiscal_id}>{d.fiscal_year}</Option>);
-    const accountNameOptions = typeof(this.state.accountNameList)=="undefined"?[]:this.state.accountNameList.map(d => <Option key={d.account_id}>{d.account_name}</Option>);
-    
+    const fislcalYearOptions =
+      typeof this.state.fiscalYearList == 'undefined'
+        ? []
+        : this.state.fiscalYearList.map(d => <Option key={d.fiscal_id}>{d.fiscal_year}</Option>);
+    const accountNameOptions =
+      typeof this.state.accountNameList == 'undefined'
+        ? []
+        : this.state.accountNameList.map(d => <Option key={d.account_id}>{d.account_name}</Option>);
+
     const { getFieldDecorator } = form;
     const today = new Date();
     //const year = today.getFullYear();
 
-    
-
-    const getFiscalYear = (fiscalYearList:FiscalYear[]) =>{
+    const getFiscalYear = (fiscalYearList: FiscalYear[]) => {
       let returnVal = -1;
-      if(typeof(fiscalYearList)!="undefined"){
-          fiscalYearList.forEach((item)=>{
-          if(moment((item.fiscal_year-1)+"1001").isBefore(moment()) && moment(item.fiscal_year+"0930").isAfter(moment())){
-              returnVal = item.fiscal_id;
+      if (typeof fiscalYearList != 'undefined') {
+        fiscalYearList.forEach(item => {
+          if (
+            moment(item.fiscal_year - 1 + '1001').isBefore(moment()) &&
+            moment(item.fiscal_year + '0930').isAfter(moment())
+          ) {
+            returnVal = item.fiscal_id;
           }
-          });
+        });
       }
       return returnVal;
     };
@@ -420,23 +432,33 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
           <Col md={5} sm={24}>
             <FormItem label={formatMessage({ id: 'Account.SearchItem.AccountName.Title' })}>
               {getFieldDecorator('account_name')(
-                 <Select placeholder={formatMessage({ id: 'customer.CustomerSelectTips' })} notFoundContent={"No Data"} allowClear={true} style={{width: '100%' }}>
-                 {accountNameOptions}
-                  </Select>,
+                <Select
+                  placeholder={formatMessage({ id: 'customer.CustomerSelectTips' })}
+                  notFoundContent={'No Data'}
+                  allowClear={true}
+                  style={{ width: '100%' }}
+                >
+                  {accountNameOptions}
+                </Select>,
               )}
             </FormItem>
           </Col>
-{/*           <Col md={5} sm={24}>
+          {/*           <Col md={5} sm={24}>
             <FormItem label={formatMessage({ id: 'customer.CustomerNameSearchEN' })}>
               {getFieldDecorator('customer_name_en')(<Input placeholder={formatMessage({ id: 'customer.CustomerInputTips' })} />)}
             </FormItem>
           </Col> */}
           <Col md={5} sm={24}>
             <FormItem label={formatMessage({ id: 'Account.SearchItem.FiscalYear.Title' })}>
-              {getFieldDecorator('fiscal_year',{
-                initialValue: initialFiscalYear+"",
+              {getFieldDecorator('fiscal_year', {
+                initialValue: initialFiscalYear + '',
               })(
-                <Select placeholder={formatMessage({ id: 'customer.CustomerSelectTips' })} notFoundContent={"No Data"} allowClear={true} style={{width: '100%' }}>
+                <Select
+                  placeholder={formatMessage({ id: 'customer.CustomerSelectTips' })}
+                  notFoundContent={'No Data'}
+                  allowClear={true}
+                  style={{ width: '100%' }}
+                >
                   {fislcalYearOptions}
                 </Select>,
               )}
@@ -472,8 +494,19 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
       loading,
     } = this.props;
     //const newData = typeof(data)== "undefined" ? '':{};
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues,fiscalYearList,accountTypeList,apcList,bdList,pssList,salesList } = this.state;
-    debugger
+    const {
+      selectedRows,
+      modalVisible,
+      updateModalVisible,
+      stepFormValues,
+      fiscalYearList,
+      accountTypeList,
+      apcList,
+      bdList,
+      pssList,
+      salesList,
+    } = this.state;
+    // debugger
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
@@ -489,7 +522,7 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-              <FormattedMessage id="Account.SearchItem.BtnNewCreateAccount" />
+                <FormattedMessage id="Account.SearchItem.BtnNewCreateAccount" />
               </Button>
               {/* <textarea>12312</textarea> */}
               {selectedRows.length > 0 && (
@@ -497,7 +530,7 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
                   <Button icon="delete" onClick={() => this.handleNotDeveloped()}>
                     {formatMessage({ id: 'customer.CustomerButtonBatchDeletion' })}
                   </Button>
-                 </span>
+                </span>
               )}
             </div>
             <StandardTable
@@ -508,18 +541,19 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
               expandedRowRender={record => <p style={{ margin: 0 }}>{record.comments}</p>}
-            /> 
+            />
           </div>
         </Card>
-        <CreateForm 
-            {...parentMethods} 
-            fiscalYearList={fiscalYearList}             
-            apcList={apcList}
-            bdList={bdList}
-            pssList={pssList}
-            salesList={salesList}
-            accountTypeList={accountTypeList} 
-            modalVisible={modalVisible} />
+        <CreateForm
+          {...parentMethods}
+          fiscalYearList={fiscalYearList}
+          apcList={apcList}
+          bdList={bdList}
+          pssList={pssList}
+          salesList={salesList}
+          accountTypeList={accountTypeList}
+          modalVisible={modalVisible}
+        />
         {stepFormValues && Object.keys(stepFormValues).length ? (
           <UpdateForm
             {...updateMethods}

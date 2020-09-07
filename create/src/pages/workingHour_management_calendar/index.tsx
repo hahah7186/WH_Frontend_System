@@ -1,21 +1,5 @@
-import {
-  //Badge,
-  //Button,
-  Card,
-  //Col,
-  //DatePicker,
-  //Divider,
-  //Dropdown,
-  Form,
-  //Icon,
-  //Input,
-  //InputNumber,
-  //Menu,
-  //Row,
-  //Select,
-  message,
-} from 'antd';
-import React, { Component/*, Fragment */} from 'react';
+import { Icon, Badge, Card, Form, message, Calendar, Row, Col, Select, Button } from 'antd';
+import React, { Component /*, Fragment */ } from 'react';
 
 import { Dispatch } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
@@ -24,481 +8,554 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 //import moment from 'moment';
 import { WHStateType } from './model';
-//import CreateForm from './components/CreateForm';
+import CreateForm from './components/CreateForm';
 //import StandardTable, { StandardTableColumnProps } from './components/StandardTable';
-import EditableTable from './components/EditableTable/EditableTable';
+// import EditableTable from './components/EditableTable/EditableTable';
 //import UpdateForm, { FormValsType } from './components/UpdateForm';
-import { WHListItem, WHListComments/*WHListPagenation, WHListData,WHListParams */} from './data.d';
+// import { WHListItem, WHListComments/*WHListPagenation, WHListData,WHListParams */} from './data.d';
+// import LinesEllipsis from 'react-lines-ellipsis';
+// import styles from './style.less';
+import { Member, MemberSelect } from './data.d';
+import moment from 'moment';
+// import { WHListItem } from '../workingHour_management/data';
+// import { WHListDataByDay } from './data';
 
-import styles from './style.less';
-//import { formatMessage,FormattedMessage } from 'umi-plugin-react/locale';
-// const FormItem = Form.Item;
-// const { Option } = Select;
-// const getValue = (obj: { [x: string]: string[] }) =>
-//   Object.keys(obj)
-//     .map(key => obj[key])
-//     .join(',');
-
-//type IStatusMapType = 'default' | 'processing' | 'success' | 'error';
-//const statusMap = ['default', 'processing', 'success', 'error'];
-//const status = ['关闭', '运行中', '已上线', '异常'];
+const { Option } = Select;
 
 interface WHListProps extends FormComponentProps {
   dispatch: Dispatch<any>;
   loading: boolean;
   //listTableList: StateType;
-  listTableList:WHStateType;
+  dateProjectList: WHStateType;
+  //curDateProjectList: WHModelStateType;
 }
 
 interface WHListState {
-  //modalVisible: boolean;
+  modalVisible: boolean;
   //updateModalVisible: boolean;
   //expandForm: boolean;
   //selectedRows: TableListItem[];
-  formValues: { [key: string]: string };
+  // formValues: { [key: string]: string };
   //stepFormValues: Partial<TableListItem>;
+  // curSelDate: any;
+  // mode: any;
+  dateProjectList: WHStateType;
+  curSelDate: any;
+  curDateProjectList: any;
+  // memberList: MemberSelect[];
+  curSelMemId: any;
 }
+
+let curSelYear = moment().format('YYYY');
+let curSelMon = moment().format('MM');
+let defMode = 'month';
+// const colorMap = {
+//   0:"#aed6f1",
+//   1:"#85c1e9",
+//   2:"#5dade2",
+//   3:"#3498db",
+//   4:"#2e86c1",
+//   5:"#2874a6",
+//   6:"#21618c",
+//   7:"#1b4f72",
+//   8:"#154360",
+// }
+const overtimeColorMap = {
+  0: '#fffffe',
+  1: '#ffd2d2',
+  2: '#ffb5b5',
+  3: '#ff9797',
+  4: '#ff7575',
+  5: '#ff5151',
+  6: '#ff2d2d',
+  // 7:"#ff0000",
+  // 8:"#ea0000",
+  // 9:"#ce0000",
+  // 10:"#ae0000",
+  // 11:"#930000",
+  // 12:"#750000",
+  // 13:"#600000",
+  // 14:"#4d0000",
+  // 15:"#2f0000",
+  // 16:"#200000",
+};
+// const { getTwoToneColor } = Icon;
 
 /* eslint react/no-multi-comp:0 */
 @connect(
   ({
-    listTableList,
+    dateProjectList,
     loading,
   }: {
-    listTableList: WHStateType;
+    dateProjectList: WHStateType;
     loading: {
       models: {
         [key: string]: boolean;
       };
     };
   }) => ({
-    listTableList,
+    dateProjectList,
     loading: loading.models,
   }),
 )
-
 class WHList extends Component<WHListProps, WHListState> {
   state: WHListState = {
-    //modalVisible: false,
+    // memberList:[],
+    modalVisible: false,
     //updateModalVisible: false,
     //expandForm: false,
     //selectedRows: [],
-    formValues: {},
+    // formValues: {},
     //stepFormValues: {},
-  };
+    curSelDate: moment().format('YYYY-MM'),
+    // mode: "month"
+    curSelMemId: localStorage.getItem('userId'),
 
-  // columns: StandardTableColumnProps[] = [
-  //   {
-  //     title: '规则名称',
-  //     dataIndex: 'name',
-  //   },
-  //   {
-  //     title: '描述',
-  //     dataIndex: 'desc',
-  //   },
-  //   {
-  //     title: '服务调用次数',
-  //     dataIndex: 'callNo',
-  //     sorter: true,
-  //     align: 'right',
-  //     render: (val: string) => `${val} 万`,
-  //     // mark to display a total number
-  //     needTotal: true,
-  //   },
-  //   {
-  //     title: '状态',
-  //     dataIndex: 'status',
-  //     filters: [
-  //       {
-  //         text: status[0],
-  //         value: '0',
-  //       },
-  //       {
-  //         text: status[1],
-  //         value: '1',
-  //       },
-  //       {
-  //         text: status[2],
-  //         value: '2',
-  //       },
-  //       {
-  //         text: status[3],
-  //         value: '3',
-  //       },
-  //     ],
-  //     render(val: IStatusMapType) {
-  //       return <Badge status={statusMap[val]} text={status[val]} />;
-  //     },
-  //   },
-  //   {
-  //     title: '上次调度时间',
-  //     dataIndex: 'updatedAt',
-  //     sorter: true,
-  //     render: (val: string) => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
-  //   },
-  //   {
-  //     title: '操作',
-  //     render: (text, record) => (
-  //       <Fragment>
-  //         <a onClick={() => this.handleUpdateModalVisible(true, record)}>配置</a>
-  //         <Divider type="vertical" />
-  //         <a href="">订阅警报</a>
-  //       </Fragment>
-  //     ),
-  //   },
-  // ];
+    dateProjectList: {
+      data: {
+        dateProjectList: [],
+        dateProjectListByDay: {},
+        monthProjectList: [],
+        monthProjectListByMon: {},
+        result: -1,
+        resMsg: '',
+        memberList: [],
+      },
+    },
+    curDateProjectList: [],
+  };
 
   componentDidMount() {
+    // debugger
     const { dispatch } = this.props;
     dispatch({
-      type: 'listTableList/fetch',
-    });
-  }
-
-  // handleStandardTableChange = (
-  //   pagination: Partial<WHListPagenation>,
-  //   filtersArg: Record<keyof WHListItem, string[]>,
-  //   sorter: SorterResult<WHListItem>,
-  // ) => {
-  //   const { dispatch } = this.props;
-  //   const { formValues } = this.state;
-
-  //   const filters = Object.keys(filtersArg).reduce((obj, key) => {
-  //     const newObj = { ...obj };
-  //     newObj[key] = getValue(filtersArg[key]);
-  //     return newObj;
-  //   }, {});
-
-  //   const params: Partial<WHListParams> = {
-  //     currentPage: pagination.current,
-  //     pageSize: pagination.pageSize,
-  //     ...formValues,
-  //     ...filters,
-  //   };
-  //   if (sorter.field) {
-  //     params.sorter = `${sorter.field}_${sorter.order}`;
-  //   }
-
-  //   dispatch({
-  //     type: 'listTableList/fetch',
-  //     payload: params,
-  //   });
-  // };
-
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-    dispatch({
-      type: 'listTableList/fetch',
-      payload: {},
-    });
-  };
-
-  // toggleForm = () => {
-  //   const { expandForm } = this.state;
-  //   this.setState({
-  //     expandForm: !expandForm,
-  //   });
-  // };
-
-  // handleMenuClick = (e: { key: string }) => {
-  //   const { dispatch } = this.props;
-  //   const { selectedRows } = this.state;
-
-  //   if (!selectedRows) return;
-  //   switch (e.key) {
-  //     case 'remove':
-  //       dispatch({
-  //         type: 'listTableList/remove',
-  //         payload: {
-  //           key: selectedRows.map(row => row.key),
-  //         },
-  //         callback: () => {
-  //           this.setState({
-  //             selectedRows: [],
-  //           });
-  //         },
-  //       });
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
-  // handleSelectRows = (rows: TableListItem[]) => {
-  //   this.setState({
-  //     selectedRows: rows,
-  //   });
-  // };
-
-  // handleSearch = (e: React.FormEvent) => {
-  //   e.preventDefault();
-
-  //   const { dispatch, form } = this.props;
-
-  //   form.validateFields((err, fieldsValue) => {
-  //     if (err) return;
-
-  //     const values = {
-  //       ...fieldsValue,
-  //       updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-  //     };
-
-  //     this.setState({
-  //       formValues: values,
-  //     });
-
-  //     dispatch({
-  //       type: 'listTableList/fetch',
-  //       payload: values,
-  //     });
-  //   });
-  // };
-
-  // handleModalVisible = (flag?: boolean) => {
-  //   this.setState({
-  //     modalVisible: !!flag,
-  //   });
-  // };
-
-  // handleUpdateModalVisible = (flag?: boolean, record?: FormValsType) => {
-  //   this.setState({
-  //     updateModalVisible: !!flag,
-  //     stepFormValues: record || {},
-  //   });
-  // };
-
-  handleBatchAdd = (list: WHListItem[]/*{ desc: any }*/,comments: WHListComments[],userId: string) => {
-    //debugger
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'listTableList/add',
+      type: 'dateProjectList/fetch',
       payload: {
-        projectDateMappingList: JSON.stringify({list:list}),
-        commentsList: JSON.stringify({comments:comments}),
-        userId:userId,
+        curSelYear: curSelYear,
+        curSelMon: curSelMon,
+        defMode: defMode,
+        //初始只查询当前用户的userId
+        userId: localStorage.getItem('userId'),
+        curSelMemId: this.state.curSelMemId,
       },
       callback: () => {
         const {
-          listTableList:{data}
+          dateProjectList: { data },
         } = this.props;
- 
-        if(data.result == 1){
-          message.success('修改工时信息成功！');
-        }else{
-          message.error('修改工时信息失败！请重新尝试');
-        }
+
+        this.setState({
+          dateProjectList: {
+            data: {
+              dateProjectList: data.dateProjectList,
+              dateProjectListByDay: data.dateProjectListByDay,
+              monthProjectList: data.monthProjectList,
+              monthProjectListByMon: data.monthProjectListByMon,
+              result: data.result,
+              resMsg: data.resMsg,
+              memberList: data.memberList,
+            },
+          },
+        });
+      },
+    });
+  }
+
+  handleSearch = (memberId: any) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'dateProjectList/fetch',
+      payload: {
+        curSelYear: curSelYear,
+        curSelMon: curSelMon,
+        defMode: defMode,
+        //初始只查询当前用户的userId
+        userId: localStorage.getItem('userId'),
+        curSelMemId: memberId,
+      },
+      callback: () => {
+        const {
+          dateProjectList: { data },
+        } = this.props;
+
+        this.setState({
+          dateProjectList: {
+            data: {
+              dateProjectList: data.dateProjectList,
+              dateProjectListByDay: data.dateProjectListByDay,
+              monthProjectList: data.monthProjectList,
+              monthProjectListByMon: data.monthProjectListByMon,
+              result: data.result,
+              resMsg: data.resMsg,
+              memberList: data.memberList,
+            },
+          },
+        });
       },
     });
   };
 
-  // handleUpdate = (fields: FormValsType) => {
-  //   const { dispatch } = this.props;
-  //   dispatch({
-  //     type: 'listTableList/update',
-  //     payload: {
-  //       name: fields.name,
-  //       desc: fields.desc,
-  //       key: fields.key,
-  //     },
-  //   });
+  handleModify = (curDateProjectList: any[]) => {
+    // debugger
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'dateProjectList/update',
+      payload: {
+        curDateProjectList: JSON.stringify({ curDateProjectList: curDateProjectList }),
+        defMode: defMode,
+      },
+      callback: () => {
+        const {
+          dateProjectList: { data },
+        } = this.props;
 
-  //   message.success('配置成功');
-  //   //this.handleUpdateModalVisible();
-  // };
+        this.setState({
+          dateProjectList: {
+            data: {
+              dateProjectList: data.dateProjectList,
+              dateProjectListByDay: data.dateProjectListByDay,
+              monthProjectList: data.monthProjectList,
+              monthProjectListByMon: data.monthProjectListByMon,
+              result: data.result,
+              resMsg: data.resMsg,
+              memberList: data.memberList,
+            },
+          },
+        });
+      },
+    });
+  };
 
-  // renderSimpleForm() {
-  //   const { form } = this.props;
-  //   const { getFieldDecorator } = form;
-  //   return (
-  //     <Form onSubmit={this.handleSearch} layout="inline">
-  //       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="规则名称">
-  //             {getFieldDecorator('name')(<Input placeholder="请输入" />)}
-  //           </FormItem>
-  //         </Col>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="使用状态">
-  //             {getFieldDecorator('status')(
-  //               <Select placeholder="请选择" style={{ width: '100%' }}>
-  //                 <Option value="0">关闭</Option>
-  //                 <Option value="1">运行中</Option>
-  //               </Select>,
-  //             )}
-  //           </FormItem>
-  //         </Col>
-  //         <Col md={8} sm={24}>
-  //           <span className={styles.submitButtons}>
-  //             <Button type="primary" htmlType="submit">
-  //               查询
-  //             </Button>
-  //             <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-  //               重置
-  //             </Button>
-  //             <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-  //               展开 <Icon type="down" />
-  //             </a>
-  //           </span>
-  //         </Col>
-  //       </Row>
-  //     </Form>
-  //   );
-  // }
+  handleExport = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'dateProjectList/export',
+      payload: {
+        year: curSelYear,
+        month: curSelMon,
+      },
+      callback: () => {},
+    });
+  };
+  //切换日/月面板触发
+  handlePanelChange() {
+    // debugger
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'dateProjectList/fetch',
+      payload: {
+        curSelYear: curSelYear,
+        curSelMon: curSelMon,
+        defMode: defMode,
+        //初始只查询当前用户的userId
+        userId: localStorage.getItem('userId'),
+        curSelMemId: this.state.curSelMemId,
+      },
+      callback: () => {
+        const {
+          dateProjectList: { data },
+        } = this.props;
 
-  // renderAdvancedForm() {
-  //   const {
-  //     form: { getFieldDecorator },
-  //   } = this.props;
-  //   return (
-  //     <Form onSubmit={this.handleSearch} layout="inline">
-  //       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="规则名称">
-  //             {getFieldDecorator('name')(<Input placeholder="请输入" />)}
-  //           </FormItem>
-  //         </Col>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="使用状态">
-  //             {getFieldDecorator('status')(
-  //               <Select placeholder="请选择" style={{ width: '100%' }}>
-  //                 <Option value="0">关闭</Option>
-  //                 <Option value="1">运行中</Option>
-  //               </Select>,
-  //             )}
-  //           </FormItem>
-  //         </Col>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="调用次数">
-  //             {getFieldDecorator('number')(<InputNumber style={{ width: '100%' }} />)}
-  //           </FormItem>
-  //         </Col>
-  //       </Row>
-  //       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="更新日期">
-  //             {getFieldDecorator('date')(
-  //               <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />,
-  //             )}
-  //           </FormItem>
-  //         </Col>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="使用状态">
-  //             {getFieldDecorator('status3')(
-  //               <Select placeholder="请选择" style={{ width: '100%' }}>
-  //                 <Option value="0">关闭</Option>
-  //                 <Option value="1">运行中</Option>
-  //               </Select>,
-  //             )}
-  //           </FormItem>
-  //         </Col>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="使用状态">
-  //             {getFieldDecorator('status4')(
-  //               <Select placeholder="请选择" style={{ width: '100%' }}>
-  //                 <Option value="0">关闭</Option>
-  //                 <Option value="1">运行中</Option>
-  //               </Select>,
-  //             )}
-  //           </FormItem>
-  //         </Col>
-  //       </Row>
-  //       <div style={{ overflow: 'hidden' }}>
-  //         <div style={{ float: 'right', marginBottom: 24 }}>
-  //           <Button type="primary" htmlType="submit">
-  //             查询
-  //           </Button>
-  //           <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-  //             重置
-  //           </Button>
-  //           <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-  //             收起 <Icon type="up" />
-  //           </a>
-  //         </div>
-  //       </div>
-  //     </Form>
-  //   );
-  // }
+        this.setState({
+          dateProjectList: {
+            data: {
+              dateProjectList: data.dateProjectList,
+              dateProjectListByDay: data.dateProjectListByDay,
+              monthProjectList: data.monthProjectList,
+              monthProjectListByMon: data.monthProjectListByMon,
+              result: data.result,
+              resMsg: data.resMsg,
+              memberList: data.memberList,
+            },
+          },
+        });
+      },
+    });
+  }
 
-  // renderForm() {
-  //   const { expandForm } = this.state;
-  //   return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
-  // }
+  handleSelDateChange(selDate: any) {
+    // debugger
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'dateProjectList/fetchByDay',
+    //   payload: {
+    //     selDate:selDate.format("YYYY-MM-DD"),
+    //     //初始只查询当前用户的userId
+    //     userId: localStorage.getItem("userId")
+    //    },
+    //   callback: () => {
+    //     const {
+    //       dateProjectList: { data },
+    //     } = this.props;
+    //     this.setState({
+    //       dateProjectList:{
+    //         data:{
+    //           dateProjectList: this.state.dateProjectList.data.dateProjectList,
+    //           dateProjectListByDay: data.dateProjectListByDay,
+    //           result:data.result,
+    //           resMsg:data.resMsg,
+    //         }
+    //       }
+    //     })
+    //   },
+    // });
+  }
+
+  dateCellRender = (value: any) => {
+    const listData: any[] = this.getListData(value);
+    return (
+      <ul className="events">
+        {listData.map(item => (
+          <li key={item.content}>
+            <div style={{ width: '100%' }}>
+              <div
+                style={{
+                  width: '50%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  display: 'inline-block',
+                }}
+              >
+                {item.content}
+              </div>
+              {/* <div style={{float:"left"}}> */}
+              {/* <Badge status={item.type} text={<LinesEllipsis text={item.content} maxLine='1' ellipsis='...' trimRight basedOn='letters'/>} /> */}
+              {/* </div> */}
+              {/* <Icon type="message" style={{ fontSize: '16px', color: '#08c' }} theme="twoTone" /> */}
+              {/* <div style={{float:"right"}}> */}
+              <div style={{ display: 'inline-block' }}>
+                <Badge
+                  count={item.workingHour + ' h'}
+                  style={{ backgroundColor: '#3498db', float: 'right' }}
+                />
+              </div>
+
+              {/* </div> */}
+              {/* <div style={{float:"right"}}> */}
+              {item.overtimeHour !== 0 ? (
+                <div style={{ display: 'inline-block' }}>
+                  <Badge
+                    count={item.overtimeHour + ' h'}
+                    style={{ backgroundColor: overtimeColorMap[item.overtimeHour], float: 'right' }}
+                  />
+                </div>
+              ) : (
+                <div style={{ display: 'inline-block' }}></div>
+              )}
+              {/* </div> */}
+            </div>
+          </li>
+        ))}
+      </ul>
+    );
+    // }
+  };
+
+  getListData = (value: any) => {
+    const renderDate = value.format('YYYY-MM-DD');
+
+    let listData: any = [];
+
+    // const srcList = this.props.dateProjectList.data.dateProjectList;
+
+    const srcList = this.state.dateProjectList.data.dateProjectList;
+
+    if (typeof srcList != 'undefined') {
+      srcList.map(d => {
+        if (d.date == renderDate && d.workingHour != 0) {
+          listData.push({
+            type: d.type,
+            content: d.projectName /*.length>8?d.projectName.substring(0,8)+"...":d.projectName*/,
+            workingHour: d.workingHour,
+            overtimeHour: d.overtimeHour,
+          });
+        }
+      });
+    }
+    return listData || [];
+  };
+
+  handleModalVisible = (flag?: boolean) => {
+    this.setState({
+      modalVisible: !!flag,
+    });
+  };
+
+  onExportBtnClick = event => {
+    this.handleExport();
+  };
+
+  onMemberSelect = (memberId: any) => {
+    this.setState({
+      curSelMemId: memberId,
+    });
+    this.handleSearch(memberId);
+  };
+
+  onSelect = (date: any) => {
+    const curSelDate = date.format('YYYY-MM-DD');
+    const curDateProjectList = this.state.dateProjectList.data.dateProjectListByDay[curSelDate];
+
+    this.setState({
+      curSelDate: curSelDate,
+      curDateProjectList: curDateProjectList,
+    });
+    // debugger
+    if (date.format('YYYY') == curSelYear && date.format('MM') == curSelMon) {
+      this.handleModalVisible(true);
+    }
+  };
+
+  onChange = (date: any) => {
+    const selDate: moment.Moment = date;
+    curSelYear = selDate.format('YYYY');
+    curSelMon = selDate.format('MM');
+  };
+
+  onPanelChange = (date: any, mode: any) => {
+    const selDate: moment.Moment = date;
+    curSelYear = selDate.format('YYYY');
+    curSelMon = selDate.format('MM');
+    defMode = mode;
+
+    this.handlePanelChange();
+  };
+
+  getMonthData = (value: any) => {
+    // if (value.month() === 8) {
+    //   return 1394;
+    // }
+    const renderDate = value.format('YYYY-MM');
+
+    let listData: any = [];
+    const srcList = this.state.dateProjectList.data.monthProjectListByMon;
+    // debugger
+    if (typeof srcList != 'undefined') {
+      srcList.map(d => {
+        if (d.Month == renderDate && d.workingHour != 0) {
+          listData.push({
+            content: d.projectName,
+            workingHour: d.workingHour,
+            overtimeHour: d.overtimeHour,
+          });
+        }
+      });
+    }
+    return listData || [];
+  };
+
+  monthCellRender = (value: any) => {
+    const listData: any[] = this.getMonthData(value);
+    // return num ? (
+    //   <div className="notes-month">
+    //     <section>{num}</section>
+    //     <span>Backlog number</span>
+    //   </div>
+    // ) : null;
+    return (
+      <ul className="events">
+        {listData.map(item => (
+          <li key={item.content}>
+            <div style={{ width: '100%' }}>
+              <div
+                style={{
+                  width: '50%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  display: 'inline-block',
+                }}
+              >
+                {item.content}
+              </div>
+              {/* <div style={{float:"left"}}> */}
+              {/* <Badge status={item.type} text={<LinesEllipsis text={item.content} maxLine='1' ellipsis='...' trimRight basedOn='letters'/>} /> */}
+              {/* </div> */}
+              {/* <Icon type="message" style={{ fontSize: '16px', color: '#08c' }} theme="twoTone" /> */}
+              {/* <div style={{float:"right"}}> */}
+              <div style={{ float: 'right', marginRight: '10%' }}>
+                <div style={{ display: 'inline-block' }}>
+                  <Badge
+                    count={item.workingHour + ' h'}
+                    style={{ backgroundColor: '#3498db', float: 'right' }}
+                  />
+                </div>
+
+                {/* </div> */}
+                {/* <div style={{float:"right"}}> */}
+                {item.overtimeHour !== 0 ? (
+                  <div style={{ display: 'inline-block' }}>
+                    <Badge
+                      count={item.overtimeHour + ' h'}
+                      style={{
+                        backgroundColor: overtimeColorMap[item.overtimeHour],
+                        float: 'right',
+                        opacity: '1',
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div style={{ display: 'inline-block' }}></div>
+                )}
+              </div>
+              {/* </div> */}
+            </div>
+          </li>
+        ))}
+      </ul>
+    );
+  };
 
   render() {
-    //  const {
-    //    listWHList: { data },
-    //    loading,
-    //  } = this.props;
-
-    //const { handleBatchAdd } = this.state;
-    // const menu = (
-    //   <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-    //     <Menu.Item key="remove">删除</Menu.Item>
-    //     <Menu.Item key="approval">批量审批</Menu.Item>
-    //   </Menu>
-    // );
-
-    // const parentMethods = {
-    //   handleAdd: this.handleAdd,
-    //   handleModalVisible: this.handleModalVisible,
-    // };
-    const addBatchMethods = {
-      handleBatchAdd: this.handleBatchAdd,
+    const { modalVisible, dateProjectList, curSelDate, curDateProjectList } = this.state;
+    const parentMethods = {
+      handleModalVisible: this.handleModalVisible,
+      handleModify: this.handleModify,
     };
+    const options = dateProjectList.data.memberList.map(d => (
+      <Option key={d.value}>{d.text}</Option>
+    ));
     return (
       <PageHeaderWrapper>
         <Card bordered={false}>
-          <div className={styles.tableList}>
-            {/* <div className={styles.tableListForm}>{this.renderForm()}</div> */}
-            {/* <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                新建
+          <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+            <Col md={5} sm={24}>
+              <Select
+                notFoundContent={'No Data'}
+                style={{ width: '100%' }}
+                defaultValue={localStorage.getItem('userId')}
+                onSelect={this.onMemberSelect}
+              >
+                {options}
+              </Select>
+            </Col>
+            {/* <Col md={5} sm={24}></Col> */}
+            <Col md={8} sm={24}>
+              <Button icon="export" onClick={this.onExportBtnClick}>
+                Export
               </Button>
-              {selectedRows.length > 0 && (
-                <span>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
-                    <Button>
-                      更多操作 <Icon type="down" />
-                    </Button>
-                  </Dropdown>
-                </span>
-              )}
-            </div> */}
-            {/* <StandardTable
-              selectedRows={selectedRows}
-              loading={loading}
-              data={data}
-              columns={this.columns}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-            /> */}
-            <EditableTable 
-             {...addBatchMethods}
-             dispatch = {this.props.dispatch}
-             listTableList = {this.props.listTableList}
-             //editable={true}
-             //values={stepFormValues}
-            />
-          </div>
+            </Col>
+          </Row>
         </Card>
-        {/* <CreateForm {...parentMethods} modalVisible={modalVisible} />
-        {stepFormValues && Object.keys(stepFormValues).length ? (
-          <UpdateForm
-            {...updateMethods}
-            updateModalVisible={updateModalVisible}
-            values={stepFormValues}
+        <Card bordered={false} style={{ marginBottom: '20px' }}>
+          <Calendar
+            //validRange = {[moment().startOf('month'),moment().endOf('month')]}
+            dateCellRender={this.dateCellRender}
+            monthCellRender={this.monthCellRender}
+            onChange={this.onChange}
+            onPanelChange={this.onPanelChange}
+            onSelect={this.onSelect}
           />
-        ) : null} */}
+        </Card>
+        <CreateForm
+          {...parentMethods}
+          modalVisible={modalVisible}
+          curDateProjectList={curDateProjectList}
+          curSelDate={curSelDate}
+        />
       </PageHeaderWrapper>
     );
   }
 }
-
-
 
 export default Form.create<WHListProps>()(WHList);

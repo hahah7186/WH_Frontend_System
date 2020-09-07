@@ -36,121 +36,80 @@ import React from 'react';
 //   currentPage: number;
 // }
 export interface WHListParams {
-   sorter: string;
-   status: string;
-   name: string;
-   pageSize: number;
-   currentPage: number;
- }
+  sorter: string;
+  status: string;
+  name: string;
+  pageSize: number;
+  currentPage: number;
+}
 
-export interface WHListPagenation{
+export interface WHListPagenation {
   total: number;
   pageSize: number;
   current: number;
 }
 
-export interface WHListItem{
-  key: number,
-  prj_name: string,
-  prj_id: number,
-  first: number,
-  second: number,
-  third:number,
-  fourth:number,
-  fifth:number,
-  sixth:number,
-  seventh:number,
-  eighth:number,
-  ninth:number,
-  tenth:number,
-  eleventh:number,
-  twelfth:number,
-  thirteenth:number,
-  fourteenth:number,
-  fifteenth:number,
-  sixteenth:number,
-  seventeenth:number,
-  eighteenth:number,
-  nineteenth:number,
-  twentieth:number,
-  twenty_first:number,
-  twenty_second :number,
-  twenty_third:number,
-  twenty_fourth:number,
-  twenty_fifth:number,
-  twenty_sixth:number,
-  twenty_seventh:number,
-  twenty_eighth:number,
-  twenty_ninth:number,
-  thirtieth:number,
-  thirtiety_first:number,
-  thirtiety_second:number,
-  month:number,
-  year:number,
-  comments:string,
-  sum:number,
+export interface WHListItem {
+  projectId: number;
+  projectName: string;
+  date: string;
+  memberId: number;
+  memberName: string;
+  workingHour: number;
+  overtimeHour: number;
+  comments: string;
+  type: string;
 }
 
-export interface WHListComments{
-  key: string,
-  first: string,
-  second: string,
-  third:string,
-  fourth:string,
-  fifth:string,
-  sixth:string,
-  seventh:string,
-  eighth:string,
-  ninth:string,
-  tenth:string,
-  eleventh:string,
-  twelfth:string,
-  thirteenth:string,
-  fourteenth:string,
-  fifteenth:string,
-  sixteenth:string,
-  seventeenth:string,
-  eighteenth:string,
-  nineteenth:string,
-  twentieth:string,
-  twenty_first:string,
-  twenty_second :string,
-  twenty_third:string,
-  twenty_fourth:string,
-  twenty_fifth:string,
-  twenty_sixth:string,
-  twenty_seventh:string,
-  twenty_eighth:string,
-  twenty_ninth:string,
-  thirtieth:string,
-  thirtiety_first:string,
-  thirtiety_second:string,
+export interface WHListItemM {
+  projectId: number;
+  projectName: number;
+  month: string;
+  memberId: number;
+  memberName: string;
+  workingHour: number;
+  overtimeHour: number;
 }
 
-export interface WHListData{
-  list: WHListItem[];
-  pagination: Partial<WHListPagenation>;
+// export interface WHListDataByDay{
+//   dateProjectListByDay: WHListItem[];
+//   result: number;
+//   resMsg: string;
+// }
+
+export interface WHListData {
+  dateProjectListByDay: any;
+  dateProjectList: WHListItem[];
+  monthProjectListByMon: any;
+  monthProjectList: WHListItemM[];
   result: number;
-  columns: WHListColumns[];
-  comments:WHListComments[];
+  resMsg: string;
+  memberList: MemberSelect[];
 }
 
 export interface WHListColumns {
   title: string;
   dataIndex: string;
-  key: string,
-  width: string,
-  editable: boolean,
-  fixed: string,
+  key: string;
+  width: string;
+  editable: boolean;
+  fixed: string;
 }
 
-
-export interface MemberSearch{
-  list:MemberSelect[];
-  count:number;
+export interface MemberSearch {
+  list: MemberSelect[];
+  count: number;
 }
 
-export interface MemberSelect{
-  value:string;
-  text:string;
+export interface MemberSelect {
+  value: string;
+  text: string;
+}
+
+export interface Member {
+  member_id: number;
+  member_name: string;
+  member_name_en: string;
+  role_id: number;
+  role_name: string;
 }

@@ -1,4 +1,5 @@
 import { /*DefaultFooter,*/ MenuDataItem, getMenuData, getPageTitle } from '@ant-design/pro-layout';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import DocumentTitle from 'react-document-title';
 import Link from 'umi/link';
 import React from 'react';
@@ -31,15 +32,29 @@ const UserLayout: React.SFC<UserLayoutProps> = props => {
   } = props;
   const { breadcrumb } = getMenuData(routes);
 
+  const title = getPageTitle({
+    pathname: location.pathname,
+    formatMessage,
+    breadcrumb,
+    ...props,
+  });
+
   return (
-    <DocumentTitle
+    <HelmetProvider>
+      {/* <DocumentTitle
       title={getPageTitle({
         pathname: location.pathname,
         breadcrumb,
         formatMessage,
         ...props,
       })}
-    >
+    > */}
+
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={title} />
+      </Helmet>
+
       <div className={styles.container}>
         <div className={styles.lang}>
           <SelectLang />
@@ -52,13 +67,16 @@ const UserLayout: React.SFC<UserLayoutProps> = props => {
                 <span className={styles.title}>PMA Working Hour System</span>
               </Link>
             </div>
-            <div className={styles.desc}> <FormattedMessage id="menu.welcome" /></div>
+            <div className={styles.desc}>
+              {' '}
+              <FormattedMessage id="menu.welcome" />
+            </div>
           </div>
           {children}
         </div>
         {/* <DefaultFooter /> */}
       </div>
-    </DocumentTitle>
+    </HelmetProvider>
   );
 };
 

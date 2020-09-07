@@ -26,7 +26,6 @@ export interface BasicLayoutProps extends ProLayoutProps {
   };
   settings: Settings;
   dispatch: Dispatch;
-  
 }
 export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
   breadcrumbNameMap: {
@@ -60,7 +59,11 @@ const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
           fontFamily: 'Arial',
         }}
       >
-        <a href="https://intranet.entry.siemens.com/osiep" target="_blank" rel="noopener noreferrer">
+        <a
+          href="https://intranet.entry.siemens.com/osiep"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {/* <img
             // src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
             src="../assets/logo_siemens.png"
@@ -79,17 +82,17 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
   /**
    * constructor
    */
-  
+
   const values = {
-    userId:localStorage.getItem("userId"),
-  } 
-  
+    userId: localStorage.getItem('userId'),
+  };
+
   useEffect(() => {
     if (dispatch) {
-       dispatch({
-         type: 'user/fetchCurrent',
-         payload: values,
-       });
+      dispatch({
+        type: 'user/fetchCurrent',
+        payload: values,
+      });
       dispatch({
         type: 'settings/getSetting',
       });
@@ -111,7 +114,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
       logo={logo}
       onCollapse={handleMenuCollapse}
       menuItemRender={(menuItemProps, defaultDom) => {
-        if (menuItemProps.isUrl) {
+        if (menuItemProps.isUrl || !menuItemProps.path) {
           return defaultDom;
         }
         return <Link to={menuItemProps.path}>{defaultDom}</Link>;

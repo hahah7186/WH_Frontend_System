@@ -1,4 +1,4 @@
-import { Alert, Checkbox/*, Icon */} from 'antd';
+import { Alert, Checkbox /*, Icon */ } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 import React, { Component } from 'react';
 // import { Redirect } from 'react-router-dom';
@@ -45,10 +45,7 @@ export interface FormDataType {
     submitting: loading.effects['userLogin/login'],
   }),
 )
-class UserLogin extends Component<
-  UserLoginProps,
-  UserLoginState
-> {
+class UserLogin extends Component<UserLoginProps, UserLoginState> {
   loginForm: FormComponentProps['form'] | undefined | null = undefined;
 
   state: UserLoginState = {
@@ -106,7 +103,6 @@ class UserLogin extends Component<
   );
 
   render() {
-
     const { userLogin, submitting } = this.props;
     const { status, type: loginType } = userLogin;
     const { type, autoLogin } = this.state;
@@ -115,6 +111,7 @@ class UserLogin extends Component<
     //     <Redirect to="/main_page"/>
     //   )
     // }
+    debugger;
     return (
       <div className={styles.main}>
         <LoginComponents
@@ -126,34 +123,36 @@ class UserLogin extends Component<
           }}
         >
           {/* <Tab key="account" tab={formatMessage({ id: 'user-login.login.tab-login-credentials' })}> */}
-            {status === 'error' && loginType === 'account' && !submitting &&
-              this.renderMessage(
-                formatMessage({ id: 'user-login.login.message-invalid-credentials' }),
-              )}
-            <UserName
-              name="userName"
-              placeholder={`${formatMessage({ id: 'user-login.login.userName' })}`}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'user-login.userName.required' }),
-                },
-              ]}
-            />
-            <Password
-              name="password"
-              placeholder={`${formatMessage({ id: 'user-login.login.password' })}`}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'user-login.password.required' }),
-                },
-              ]}
-              onPressEnter={e => {
-                e.preventDefault();
-                // this.loginForm.validateFields(this.handleSubmit);
-              }}
-            />
+          {status === 'error' &&
+            loginType === 'account' &&
+            !submitting &&
+            this.renderMessage(
+              formatMessage({ id: 'user-login.login.message-invalid-credentials' }),
+            )}
+          <UserName
+            name="userName"
+            placeholder={`${formatMessage({ id: 'user-login.login.userName' })}`}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'user-login.userName.required' }),
+              },
+            ]}
+          />
+          <Password
+            name="password"
+            placeholder={`${formatMessage({ id: 'user-login.login.password' })}`}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'user-login.password.required' }),
+              },
+            ]}
+            onPressEnter={e => {
+              e.preventDefault();
+              // this.loginForm.validateFields(this.handleSubmit);
+            }}
+          />
           {/* </Tab> */}
           {/* <Tab key="mobile" tab={formatMessage({ id: 'user-login.login.tab-login-mobile' })}>
             {status === 'error' &&

@@ -43,10 +43,7 @@ interface analysisState {
     loading: loading.effects['analysis/fetch'],
   }),
 )
-class Analysis extends Component<
-  analysisProps,
-  analysisState
-> {
+class Analysis extends Component<analysisProps, analysisState> {
   state: analysisState = {
     salesType: 'all',
     currentTabKey: '',
@@ -58,7 +55,7 @@ class Analysis extends Component<
   timeoutId: number = 0;
 
   componentDidMount() {
-    debugger
+    // debugger
     const { dispatch } = this.props;
     this.reqRef = requestAnimationFrame(() => {
       dispatch({
@@ -68,7 +65,7 @@ class Analysis extends Component<
   }
 
   componentWillUnmount() {
-    debugger
+    // debugger
     const { dispatch } = this.props;
     dispatch({
       type: 'analysis/clear',
@@ -127,7 +124,6 @@ class Analysis extends Component<
   };
 
   render() {
-    
     const { rangePickerValue, salesType, currentTabKey } = this.state;
     const { analysis, loading } = this.props;
     const {
@@ -147,7 +143,7 @@ class Analysis extends Component<
     } else {
       salesPieData = salesType === 'online' ? salesTypeDataOnline : salesTypeDataOffline;
     }
-    debugger
+    // debugger
     const menu = (
       <Menu>
         <Menu.Item>操作一</Menu.Item>

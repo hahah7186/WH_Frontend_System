@@ -2,7 +2,13 @@ import { AnyAction, Reducer } from 'redux';
 
 import { EffectsCommandMap } from 'dva';
 import { ListItemData } from './data.d';
-import { queryProjectList,updateProject,removeProject,completeProject,createProject } from './service';
+import {
+  queryProjectList,
+  updateProject,
+  removeProject,
+  completeProject,
+  createProject,
+} from './service';
 
 export interface StateType {
   data: ListItemData;
@@ -23,7 +29,7 @@ export interface ModelType {
     update: Effect;
     remove: Effect;
     complete: Effect;
-    create:Effect;
+    create: Effect;
   };
   reducers: {
     queryList: Reducer<StateType>;
@@ -38,8 +44,8 @@ const Model: ModelType = {
     data: {
       list: [],
       pagination: {},
-      result: -1,      
-      resultMessage:'',
+      result: -1,
+      resultMessage: '',
       apcList: [],
       bdList: [],
       pssList: [],
@@ -47,14 +53,13 @@ const Model: ModelType = {
       customerList: [],
       accountList: [],
       fiscalList: [],
-      supportTypeList:[],
-      projectRunStatusList:[],
+      supportTypeList: [],
+      projectRunStatusList: [],
     },
-
   },
 
   effects: {
-  *fetch({ payload,callback  }, { call, put }) {
+    *fetch({ payload, callback }, { call, put }) {
       const response = yield call(queryProjectList, payload);
       yield put({
         type: 'queryList',
@@ -63,7 +68,7 @@ const Model: ModelType = {
       });
       if (callback) callback();
     },
-  *update({ payload, callback }, { call, put }) {
+    *update({ payload, callback }, { call, put }) {
       const response = yield call(updateProject, payload);
       yield put({
         type: 'queryList',
@@ -71,7 +76,8 @@ const Model: ModelType = {
       });
       if (callback) callback();
     },
-  *create({ payload, callback }, { call, put }) {debugger
+    *create({ payload, callback }, { call, put }) {
+      debugger;
       const response = yield call(createProject, payload);
       yield put({
         type: 'queryList',
@@ -79,22 +85,22 @@ const Model: ModelType = {
       });
       if (callback) callback();
     },
-  *remove({ payload, callback }, { call, put }) {
-    const response = yield call(removeProject, payload);
-    yield put({
-      type: 'queryList',
-      payload: response,
-    });
-    if (callback) callback();
-  },
-  *complete({ payload, callback }, { call, put }) {
-    const response = yield call(completeProject, payload);
-    yield put({
-      type: 'queryList',
-      payload: response,
-    });
-    if (callback) callback();
-  },
+    *remove({ payload, callback }, { call, put }) {
+      const response = yield call(removeProject, payload);
+      yield put({
+        type: 'queryList',
+        payload: response,
+      });
+      if (callback) callback();
+    },
+    *complete({ payload, callback }, { call, put }) {
+      const response = yield call(completeProject, payload);
+      yield put({
+        type: 'queryList',
+        payload: response,
+      });
+      if (callback) callback();
+    },
   },
 
   reducers: {
