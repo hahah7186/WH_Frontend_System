@@ -715,6 +715,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
         dispatch({
           type: 'searchListApplications/create',
           payload: {
+            currentUser: localStorage.getItem('userId'),
             keys: fields.keys,
             accountName: fields.accountName,
             accountVol: fields.accountVol,
@@ -811,6 +812,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
         dispatch({
           type: 'searchListApplications/update',
           payload: {
+            currentUser: localStorage.getItem('userId'),
             currentPage: currentPage,
             pageSize: pageSize,
             project_id: fields.project_id,
@@ -898,6 +900,14 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     // const currentUserId = localStorage.getItem("userId");
     // const currentRoleId = localStorage.getItem("currentUser_roleId");
 
+    const postId = localStorage.getItem('currentUser_postId');
+    let numPostId = 1;
+    if (postId == null || postId.length == 0) {
+      numPostId = 1;
+    } else {
+      numPostId = parseInt(postId);
+    }
+    debugger;
     return (
       <Form layout="inline">
         {/* 第一行 */}
@@ -978,7 +988,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
           </Col>
         </Row>
         {/* 第二行 */}
-        <Row gutter={0}>
+        <Row gutter={0} style={{ display: 'none' }}>
           <Col span={6}>
             <FormItem label={formatMessage({ id: 'project.SearchItemApcMember' })}>
               {getFieldDecorator('apc', {})(
@@ -1041,36 +1051,40 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
               )}
             </FormItem>
           </Col>
-          <Col span={6}>
-            <Button style={{ marginLeft: '30em' }} onClick={this.handleFormReset}>
+          <Col span={12}>
+            <Button style={{ float: 'right', marginRight: '4em' }} onClick={this.handleFormReset}>
               <FormattedMessage id="customer.CustomerButtonReset" />
             </Button>
           </Col>
 
-          <Col span={3}></Col>
-          <Col span={3}></Col>
+          {/* <Col span={3}></Col>
+          <Col span={3}></Col> */}
         </Row>
         {/* 第四行 */}
         <Row gutter={0}>
           <Col span={6}>
-            <div className={styles.tableListOperator} style={{ marginTop: '2em' }}>
-              <Button
-                icon="plus"
-                type="primary"
-                onClick={() => this.handleCreateModalVisible(true)}
-              >
-                <FormattedMessage id="project.ButtonNewCreate" />
-              </Button>
-              <Button
-                icon="export"
-                style={{ marginLeft: '2em' }}
-                onClick={() =>
-                  message.warning(formatMessage({ id: 'project.ButtonExportProject.Tips' }))
-                }
-              >
-                <FormattedMessage id="project.ButtonExportProject" />
-              </Button>
-            </div>
+            {numPostId >= 3 ? (
+              <div className={styles.tableListOperator} style={{ marginTop: '2em' }}>
+                <Button
+                  icon="plus"
+                  type="primary"
+                  onClick={() => this.handleCreateModalVisible(true)}
+                >
+                  <FormattedMessage id="project.ButtonNewCreate" />
+                </Button>
+                <Button
+                  icon="export"
+                  style={{ marginLeft: '2em' }}
+                  onClick={() =>
+                    message.warning(formatMessage({ id: 'project.ButtonExportProject.Tips' }))
+                  }
+                >
+                  <FormattedMessage id="project.ButtonExportProject" />
+                </Button>
+              </div>
+            ) : (
+              <div className={styles.tableListOperator} style={{ marginTop: '2em' }}></div>
+            )}
           </Col>
           <Col span={6}></Col>
           <Col span={6}></Col>

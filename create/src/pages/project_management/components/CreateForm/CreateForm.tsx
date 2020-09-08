@@ -128,6 +128,7 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
 
   add = () => {
     const { form } = this.props;
+
     // can use data-binding to get
     const keys = form.getFieldValue('keys');
     const newKeys = keys.concat(itemId);
@@ -219,7 +220,7 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
   };
 
   onSupportTypeChange = value => {
-    if (value === '1') {
+    if (value === '2') {
       this.setState({
         sonoDisable: false,
       });
@@ -881,6 +882,7 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
         if (err) return;
         form.resetFields();
         handleCreate(fieldsValue);
+        itemId = 0;
       });
     };
 

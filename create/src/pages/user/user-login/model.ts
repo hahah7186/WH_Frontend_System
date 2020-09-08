@@ -67,8 +67,8 @@ const Model: ModelType = {
         //首先清除本地内存
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
-        localStorage.removeItem('currentUser_branchId');
-        localStorage.removeItem('currentUser_branchName');
+        // localStorage.removeItem('currentUser_branchId');
+        // localStorage.removeItem('currentUser_branchName');
         localStorage.removeItem('currentUser_email');
         localStorage.removeItem('currentUser_gId');
         localStorage.removeItem('currentUser_groupId');
@@ -81,11 +81,12 @@ const Model: ModelType = {
         localStorage.removeItem('currentUser_avatar');
         localStorage.removeItem('currentUser_postId');
         localStorage.removeItem('currentUser_postName');
+        debugger;
         //查询得当前用户信息，存入内存
         localStorage.setItem('token', response.token);
         localStorage.setItem('userId', response.user.id);
-        localStorage.setItem('currentUser_branchId', response.user.branch.value);
-        localStorage.setItem('currentUser_branchName', response.user.branch.text);
+        // localStorage.setItem('currentUser_branchId', response.user.branch.value);
+        // localStorage.setItem('currentUser_branchName', response.user.branch.text);
         localStorage.setItem('currentUser_email', response.user.email);
         localStorage.setItem('currentUser_gId', response.user.gId);
         localStorage.setItem('currentUser_groupId', response.user.group.value);
@@ -98,6 +99,7 @@ const Model: ModelType = {
         localStorage.setItem('currentUser_avatar', response.user.avatar);
         localStorage.setItem('currentUser_postId', response.user.post.value);
         localStorage.setItem('currentUser_postName', response.user.post.text);
+        debugger;
       }
     },
 
