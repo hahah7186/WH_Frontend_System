@@ -5,6 +5,7 @@ import {
   Input,
   Modal,
   /*Radio,*/ Select /*, Steps*/,
+  Space,
   List,
   InputNumber,
   Row,
@@ -22,9 +23,10 @@ import { WHStateType } from '../model';
 // import { ListItemDataType/*,MemberSelect*/,CustomerSelect,Member,supportType,AccountExportItem,FiscalYearItem } from '../../data.d';
 import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
 import { WHListItem } from '../data';
+import { Label } from 'bizcharts';
 
 const { TextArea } = Input;
-
+const { Option, OptGroup } = Select;
 let itemId = 0;
 
 let curDateProjectList: any[];
@@ -137,73 +139,89 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
         onCancel={() => handleModalVisible()}
         centered={true}
       >
-        <List
-          grid={{ gutter: 10, column: 4 }}
-          dataSource={curDateProjectList}
-          renderItem={item => (
-            <List.Item>
-              <Card
-                title={item.projectName}
-                hoverable={true}
-                headStyle={{ backgroundColor: '#A5E1E1' }}
-              >
-                <div>
-                  <Icon
-                    type="clock-circle"
-                    style={{ fontSize: '16px', color: '#4BB9B9' }}
-                    theme="outlined"
-                  />
-                  {'  Normal Working:'}
-                  <InputNumber
-                    size="large"
-                    max={8}
-                    min={0}
-                    defaultValue={item.workingHour}
-                    formatter={value =>
-                      ` ${value}     (hours)`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                    }
-                    style={{ width: '100%', marginTop: '1%' }}
-                    onChange={value => this.onNormalChange(value, item.projectId)}
-                  />
-                </div>
-                <div style={{ marginTop: '4%' }}>
-                  <Icon
-                    type="plus-circle"
-                    style={{ fontSize: '16px', color: '#4BB9B9' }}
-                    theme="outlined"
-                  />
-                  {'  Overtime:'}
-                  <InputNumber
-                    size="large"
-                    defaultValue={item.overtimeHour}
-                    max={6}
-                    min={0}
-                    formatter={value =>
-                      ` ${value}     (hours)`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                    }
-                    style={{ width: '100%', marginTop: '1%' }}
-                    onChange={value => this.onOvertimeChange(value, item.projectId)}
-                  />
-                </div>
-                <div style={{ marginTop: '4%' }}>
-                  <Icon
-                    type="profile"
-                    style={{ fontSize: '16px', color: '#4BB9B9' }}
-                    theme="outlined"
-                  />
-                  {'  Comments:'}
-                  <TextArea
-                    defaultValue={item.comments}
-                    placeholder="Please input the comments for working hour"
-                    style={{ height: '70px' }}
-                    allowClear
-                    onChange={this.onCommentChange.bind(this, item.projectId)}
-                  />
-                </div>
-              </Card>
-            </List.Item>
-          )}
-        />
+        <div>
+          <Space>
+            <Label>选择</Label>
+            <Select defaultValue="lucy" style={{ width: 200 }} /*onChange={handleChange}*/>
+              <OptGroup label="Manager">
+                <Option value="jack">Jack</Option>
+                <Option value="lucy">Lucy</Option>
+              </OptGroup>
+              <OptGroup label="Engineer">
+                <Option value="Yiminghe">yiminghe</Option>
+              </OptGroup>
+            </Select>
+          </Space>
+        </div>
+        <div>
+          <List
+            grid={{ gutter: 10, column: 4 }}
+            dataSource={curDateProjectList}
+            renderItem={item => (
+              <List.Item>
+                <Card
+                  title={item.projectName}
+                  hoverable={true}
+                  headStyle={{ backgroundColor: '#A5E1E1' }}
+                >
+                  <div>
+                    <Icon
+                      type="clock-circle"
+                      style={{ fontSize: '16px', color: '#4BB9B9' }}
+                      theme="outlined"
+                    />
+                    {'  Normal Working:'}
+                    <InputNumber
+                      size="large"
+                      max={8}
+                      min={0}
+                      defaultValue={item.workingHour}
+                      formatter={value =>
+                        ` ${value}     (hours)`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                      }
+                      style={{ width: '100%', marginTop: '1%' }}
+                      onChange={value => this.onNormalChange(value, item.projectId)}
+                    />
+                  </div>
+                  <div style={{ marginTop: '4%' }}>
+                    <Icon
+                      type="plus-circle"
+                      style={{ fontSize: '16px', color: '#4BB9B9' }}
+                      theme="outlined"
+                    />
+                    {'  Overtime:'}
+                    <InputNumber
+                      size="large"
+                      defaultValue={item.overtimeHour}
+                      max={6}
+                      min={0}
+                      formatter={value =>
+                        ` ${value}     (hours)`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                      }
+                      style={{ width: '100%', marginTop: '1%' }}
+                      onChange={value => this.onOvertimeChange(value, item.projectId)}
+                    />
+                  </div>
+                  <div style={{ marginTop: '4%' }}>
+                    <Icon
+                      type="profile"
+                      style={{ fontSize: '16px', color: '#4BB9B9' }}
+                      theme="outlined"
+                    />
+                    {'  Comments:'}
+                    <TextArea
+                      defaultValue={item.comments}
+                      placeholder="Please input the comments for working hour"
+                      style={{ height: '70px' }}
+                      allowClear
+                      onChange={this.onCommentChange.bind(this, item.projectId)}
+                    />
+                  </div>
+                </Card>
+              </List.Item>
+            )}
+          />
+        </div>
         ,{/* {formItems} */}
       </Modal>
     );

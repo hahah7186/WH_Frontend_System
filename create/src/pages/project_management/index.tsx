@@ -212,35 +212,34 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
       title: <FormattedMessage id="project.ColumnOperation" />,
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleModifyModalVisible(true, record)}>
-            <FormattedMessage id="project.ColumnOperation.Modify" />
-          </a>
-          {/* <Divider type="vertical" />
-            <Popconfirm
-                      title={formatMessage({ id: 'project.CardPopconfirm.Remove.Title' })}
-                      onConfirm = {() => this.handleRemove(record.id)}
-                      onCancel={this.removeCancel}
-                      okText={formatMessage({ id: 'project.CardPopconfirm.Remove.OkText' })}
-                      cancelText={formatMessage({ id: 'project.CardPopconfirm.Remove.CancelText' })}
-                    >
-              <a><FormattedMessage id="project.ColumnOperation.Remove" /></a>
-            </Popconfirm> */}
-          <Divider type="vertical" />
-          <Popconfirm
-            title={formatMessage({ id: 'project.CardPopconfirm.Complete.Title' })}
-            onConfirm={() => this.handleChangeStatus(record.id, 4, record.status_id)}
-            onCancel={this.completeCancel}
-            okText={formatMessage({ id: 'project.CardPopconfirm.Complete.OkText' })}
-            cancelText={formatMessage({ id: 'project.CardPopconfirm.Complete.CancelText' })}
-          >
-            <a>
-              <FormattedMessage id="project.ColumnOperation.Complete" />
-            </a>
-          </Popconfirm>
-          <Divider type="vertical" />
-          <Dropdown key="ellipsis" overlay={this.listMenu(record)} trigger={['click']}>
-            <Icon type="ellipsis" />
-          </Dropdown>
+          {parseInt(localStorage.getItem('currentUser_roleId') || '1') >= 3 ? (
+            <div>
+              <a onClick={() => this.handleModifyModalVisible(true, record)}>
+                <FormattedMessage id="project.ColumnOperation.Modify" />
+              </a>
+              <Divider type="vertical" />
+              <Popconfirm
+                title={formatMessage({ id: 'project.CardPopconfirm.Complete.Title' })}
+                onConfirm={() => this.handleChangeStatus(record.id, 4, record.status_id)}
+                onCancel={this.completeCancel}
+                okText={formatMessage({ id: 'project.CardPopconfirm.Complete.OkText' })}
+                cancelText={formatMessage({ id: 'project.CardPopconfirm.Complete.CancelText' })}
+              >
+                <a>
+                  <FormattedMessage id="project.ColumnOperation.Complete" />
+                </a>
+              </Popconfirm>
+              <Divider type="vertical" />
+
+              <Dropdown key="ellipsis" overlay={this.listMenu(record)} trigger={['click']}>
+                <Icon type="ellipsis" />
+              </Dropdown>
+            </div>
+          ) : (
+            <div>
+              <a onClick={() => this.handleModifyModalVisible(true, record)}>View</a>
+            </div>
+          )}
         </Fragment>
       ),
     },
@@ -900,6 +899,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     // const currentUserId = localStorage.getItem("userId");
     // const currentRoleId = localStorage.getItem("currentUser_roleId");
 
+    //const postId = localStorage.getItem('currentUser_postId');
     const postId = localStorage.getItem('currentUser_postId');
     let numPostId = 1;
     if (postId == null || postId.length == 0) {
@@ -907,7 +907,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     } else {
       numPostId = parseInt(postId);
     }
-    debugger;
+
     return (
       <Form layout="inline">
         {/* 第一行 */}
@@ -959,7 +959,6 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
               )}
             </FormItem>
           </Col>
-
           <Col span={6}>
             <FormItem label={formatMessage({ id: 'project.SearchItemCurrentStatus' })}>
               {getFieldDecorator('status')(

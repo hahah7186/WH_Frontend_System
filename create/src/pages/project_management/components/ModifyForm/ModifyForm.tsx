@@ -1035,6 +1035,16 @@ class ModifyForm extends Component<ModifyFormProps, ModifyState> {
         onCancel={() => cancelHandle()}
         afterClose={() => handleModifyModalVisible()}
         centered={true}
+        // footer={
+        //   [
+        //     <Button key="back" onClick={cancelHandle}>
+        //       Cancel
+        //     </Button>,
+        //     <Button key="submit" type="primary" onClick={okHandle}>
+        //       OK
+        //     </Button>,
+        //   ]
+        // }
       >
         {this.renderContent(formVals)}
       </Modal>
