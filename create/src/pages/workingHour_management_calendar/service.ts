@@ -7,11 +7,11 @@ export async function queryProjectDateCalMapping(params: WHListParams) {
   });
 }
 
-export async function queryProjectDateCalMappingByDay(params: WHListParams) {
-  return request('/api/project/selectProjectDateMappingCalendarListByDay', {
-    params,
-  });
-}
+// export async function queryProjectDateCalMappingByDay(params: WHListParams) {
+//   return request('/api/project/selectProjectDateMappingCalendarListByDay', {
+//     params,
+//   });
+// }
 
 export async function queryMember(params: any) {
   return request('/api/member/selectSubMemberList', {

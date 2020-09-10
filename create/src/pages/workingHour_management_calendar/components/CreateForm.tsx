@@ -5,7 +5,6 @@ import {
   Input,
   Modal,
   /*Radio,*/ Select /*, Steps*/,
-  Space,
   List,
   InputNumber,
   Row,
@@ -21,7 +20,7 @@ import moment from 'moment';
 import { FormComponentProps } from 'antd/es/form';
 import { WHStateType } from '../model';
 // import { ListItemDataType/*,MemberSelect*/,CustomerSelect,Member,supportType,AccountExportItem,FiscalYearItem } from '../../data.d';
-import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
+import { formatMessage, FormattedMessage, getLocale } from 'umi-plugin-react/locale';
 import { WHListItem } from '../data';
 import { Label } from 'bizcharts';
 
@@ -36,6 +35,7 @@ export interface CreateFormProps extends FormComponentProps {
   // dateProjectListByDay: WHListItem[];
   curDateProjectList: any[];
   curSelDate: any;
+  dateTypeList: any[];
   handleModalVisible: () => void;
   handleModify: (curDateProjectList: any[]) => void;
 }
@@ -45,11 +45,13 @@ export interface CreateFormProps extends FormComponentProps {
 
 export interface CreateState {
   curDateProjectList: any;
+  projectListVisible: boolean;
 }
 
 class CreateForm extends Component<CreateFormProps, CreateState> {
   state = {
     curDateProjectList: this.props.curDateProjectList,
+    projectListVisible: true,
   };
 
   formLayout = {
@@ -86,7 +88,6 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
   };
 
   onCommentChange = (projectId: any, event: any) => {
-    debugger;
     const changedValue = event.target.value;
     curDateProjectList = this.props.curDateProjectList;
     curDateProjectList.map(item => {
@@ -96,6 +97,37 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
     });
   };
 
+  handleDailyInformationChange = (value: any) => {
+    switch (value) {
+      case '1':
+        this.setState({
+          projectListVisible: true,
+        });
+        break;
+      case '2':
+        this.setState({
+          projectListVisible: false,
+        });
+        break;
+      case '3':
+        debugger;
+        this.setState({
+          projectListVisible: false,
+        });
+        break;
+      case '4':
+        this.setState({
+          projectListVisible: false,
+        });
+        break;
+      case '5':
+        this.setState({
+          projectListVisible: false,
+        });
+        break;
+    }
+  };
+
   render() {
     const {
       modalVisible /*, form, */,
@@ -103,16 +135,29 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
       handleModalVisible,
       curDateProjectList,
       curSelDate,
+      dateTypeList,
     } = this.props;
-
-    // let list:any[] = [];
-    // list = curDateProjectList;
-    // debugger
     const okHandle = () => {
       handleModify(curDateProjectList);
+      this.setState({
+        projectListVisible: true,
+      });
       handleModalVisible();
     };
 
+    const cancelHandle = () => {
+      this.setState({
+        projectListVisible: true,
+      });
+      handleModalVisible();
+    };
+
+    let displayDate = getDisplayDate(curSelDate);
+
+    const dateTypeOptions =
+      typeof dateTypeList == 'undefined'
+        ? []
+        : dateTypeList.map(d => <Option key={d.dateTypeId}>{d.dateTypeName}</Option>);
     // const cancelHandle = () =>{
     //   form.resetFields();
     //   itemId = 0;
@@ -132,28 +177,31 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
         width={950}
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
-        title={'  Working Hour Inputs   ' + curSelDate}
+        title={displayDate}
         visible={modalVisible}
         onOk={okHandle}
         keyboard={true}
-        onCancel={() => handleModalVisible()}
+        onCancel={cancelHandle}
         centered={true}
       >
         <div>
-          <Space>
-            <Label>选择</Label>
-            <Select defaultValue="lucy" style={{ width: 200 }} /*onChange={handleChange}*/>
-              <OptGroup label="Manager">
-                <Option value="jack">Jack</Option>
-                <Option value="lucy">Lucy</Option>
-              </OptGroup>
-              <OptGroup label="Engineer">
-                <Option value="Yiminghe">yiminghe</Option>
-              </OptGroup>
-            </Select>
-          </Space>
+          <label>Daily Information：</label>
+          <Select
+            defaultValue="1"
+            style={{ width: 300 }}
+            onChange={this.handleDailyInformationChange}
+          >
+            {/* <Option value="1">Work</Option>
+                <Option value="2">Annual Leave</Option>
+                <Option value="3">Sick Leave</Option>
+                <Option value="4">Public Holiday</Option>
+                <Option value="5">Others</Option> */}
+            {dateTypeOptions}
+          </Select>
         </div>
-        <div>
+        <div
+          style={{ marginTop: '30px', display: this.state.projectListVisible ? 'block' : 'none' }}
+        >
           <List
             grid={{ gutter: 10, column: 4 }}
             dataSource={curDateProjectList}
@@ -229,3 +277,82 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
 }
 
 export default Form.create<CreateFormProps>()(CreateForm);
+
+function getDisplayDate(curSelDate: any) {
+  let displayDate = '';
+  const locale = getLocale();
+  switch (locale) {
+    case 'en-US':
+      let enDate = new Date(curSelDate.replace(/-/g, '/'));
+      let enDateString = enDate.toDateString(); //"Tue, 01 Jan 2019 16:00:00 GMT"
+      //注意：此处时间为中国时区，如果是全球项目，需要转成【协调世界时】（UTC）
+      // let globalDate = date.toUTCString(); //"Wed Jan 02 2019"
+      //之后的处理是一样的
+      let enDateArray = enDateString.split(' '); //["Wed", "Jan", "02", "2019"]
+      displayDate = `${enDateArray[1]} ${enDateArray[2]}, ${enDateArray[3]}  ${enDateArray[0]}`;
+      break;
+    case 'zh-CN':
+      let cnDate = new Date(curSelDate.replace(/-/g, '/'));
+      var dayOfWeek = cnDate.getDay();
+      var days;
+      switch (dayOfWeek) {
+        case 1:
+          days = '星期一';
+          break;
+        case 2:
+          days = '星期二';
+          break;
+        case 3:
+          days = '星期三';
+          break;
+        case 4:
+          days = '星期四';
+          break;
+        case 5:
+          days = '星期五';
+          break;
+        case 6:
+          days = '星期六';
+          break;
+        case 0:
+          days = '星期日';
+          break;
+      }
+      // let cnDateString = cnDate.; //"Tue, 01 Jan 2019 16:00:00 GMT"
+      displayDate = `${cnDate.getFullYear()}年${cnDate.getMonth() +
+        1}月${cnDate.getDate()}日 ${days}`;
+      break;
+    case 'zh-TW':
+      let cntrDate = new Date(curSelDate.replace(/-/g, '/'));
+      var dayOfWeek = cntrDate.getDay();
+      var days;
+      switch (dayOfWeek) {
+        case 1:
+          days = '星期壹';
+          break;
+        case 2:
+          days = '星期贰';
+          break;
+        case 3:
+          days = '星期叁';
+          break;
+        case 4:
+          days = '星期肆';
+          break;
+        case 5:
+          days = '星期伍';
+          break;
+        case 6:
+          days = '星期陆';
+          break;
+        case 0:
+          days = '星期日';
+          break;
+      }
+      // let cnDateString = cnDate.; //"Tue, 01 Jan 2019 16:00:00 GMT"
+      displayDate = `${cntrDate.getFullYear()}年${cntrDate.getMonth() +
+        1}月${cntrDate.getDate()}日 ${days}`;
+      break;
+  }
+  return displayDate;
+}

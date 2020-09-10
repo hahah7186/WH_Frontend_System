@@ -85,6 +85,7 @@ export interface WHListData {
   result: number;
   resMsg: string;
   memberList: MemberSelect[];
+  dateTypeList: any[];
 }
 
 export interface WHListColumns {

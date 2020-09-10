@@ -6,7 +6,7 @@ import {
   removeProjectDateMapping,
   updateProjectDateMapping,
   queryMember,
-  queryProjectDateCalMappingByDay,
+  // queryProjectDateCalMappingByDay,
   exportProjectDateCalMapping,
 } from './service';
 
@@ -32,7 +32,7 @@ export interface ModelType {
   state: WHStateType;
   effects: {
     fetch: Effect;
-    fetchByDay: Effect;
+    // fetchByDay: Effect;
     add: Effect;
     remove: Effect;
     update: Effect;
@@ -57,6 +57,7 @@ const Model: ModelType = {
       result: -1,
       resMsg: '',
       memberList: [],
+      dateTypeList: [],
     },
     // member:{
     //   list:[],
@@ -83,15 +84,15 @@ const Model: ModelType = {
       });
       if (callback) callback();
     },
-    *fetchByDay({ payload, callback }, { call, put }) {
-      // debugger
-      const response = yield call(queryProjectDateCalMappingByDay, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
+    // *fetchByDay({ payload, callback }, { call, put }) {
+    //   // debugger
+    //   const response = yield call(queryProjectDateCalMappingByDay, payload);
+    //   yield put({
+    //     type: 'save',
+    //     payload: response,
+    //   });
+    //   if (callback) callback();
+    // },
     *fetchMember({ payload, callback }, { call, put }) {
       const response = yield call(queryMember, payload);
 

@@ -49,17 +49,7 @@ interface WHListState {
 let curSelYear = moment().format('YYYY');
 let curSelMon = moment().format('MM');
 let defMode = 'month';
-// const colorMap = {
-//   0:"#aed6f1",
-//   1:"#85c1e9",
-//   2:"#5dade2",
-//   3:"#3498db",
-//   4:"#2e86c1",
-//   5:"#2874a6",
-//   6:"#21618c",
-//   7:"#1b4f72",
-//   8:"#154360",
-// }
+
 const overtimeColorMap = {
   0: '#fffffe',
   1: '#ffd2d2',
@@ -68,20 +58,8 @@ const overtimeColorMap = {
   4: '#ff7575',
   5: '#ff5151',
   6: '#ff2d2d',
-  // 7:"#ff0000",
-  // 8:"#ea0000",
-  // 9:"#ce0000",
-  // 10:"#ae0000",
-  // 11:"#930000",
-  // 12:"#750000",
-  // 13:"#600000",
-  // 14:"#4d0000",
-  // 15:"#2f0000",
-  // 16:"#200000",
 };
-// const { getTwoToneColor } = Icon;
 
-/* eslint react/no-multi-comp:0 */
 @connect(
   ({
     dateProjectList,
@@ -120,6 +98,7 @@ class WHList extends Component<WHListProps, WHListState> {
         result: -1,
         resMsg: '',
         memberList: [],
+        dateTypeList: [],
       },
     },
     curDateProjectList: [],
@@ -153,6 +132,7 @@ class WHList extends Component<WHListProps, WHListState> {
               result: data.result,
               resMsg: data.resMsg,
               memberList: data.memberList,
+              dateTypeList: data.dateTypeList,
             },
           },
         });
@@ -187,6 +167,7 @@ class WHList extends Component<WHListProps, WHListState> {
               result: data.result,
               resMsg: data.resMsg,
               memberList: data.memberList,
+              dateTypeList: data.dateTypeList,
             },
           },
         });
@@ -218,6 +199,7 @@ class WHList extends Component<WHListProps, WHListState> {
               result: data.result,
               resMsg: data.resMsg,
               memberList: data.memberList,
+              dateTypeList: data.dateTypeList,
             },
           },
         });
@@ -265,6 +247,7 @@ class WHList extends Component<WHListProps, WHListState> {
               result: data.result,
               resMsg: data.resMsg,
               memberList: data.memberList,
+              dateTypeList: data.dateTypeList,
             },
           },
         });
@@ -552,6 +535,7 @@ class WHList extends Component<WHListProps, WHListState> {
           modalVisible={modalVisible}
           curDateProjectList={curDateProjectList}
           curSelDate={curSelDate}
+          dateTypeList={this.state.dateProjectList.data.dateTypeList}
         />
       </PageHeaderWrapper>
     );
