@@ -23,13 +23,14 @@ import { WHStateType } from '../model';
 import { formatMessage, FormattedMessage, getLocale } from 'umi-plugin-react/locale';
 import { WHListItem } from '../data';
 import { Label } from 'bizcharts';
+import { any } from 'prop-types';
 
 const { TextArea } = Input;
 const { Option, OptGroup } = Select;
 let itemId = 0;
 
 let curDateProjectList: any[];
-
+let selDateType: any = '1';
 export interface CreateFormProps extends FormComponentProps {
   modalVisible: boolean;
   // dateProjectListByDay: WHListItem[];
@@ -37,21 +38,23 @@ export interface CreateFormProps extends FormComponentProps {
   curSelDate: any;
   dateTypeList: any[];
   handleModalVisible: () => void;
-  handleModify: (curDateProjectList: any[]) => void;
+  handleModify: (curDateProjectList: any[], dateType: any) => void;
 }
 //定义控件
 // const FormItem = Form.Item;
 // const { Option,OptGroup } = Select;
 
 export interface CreateState {
-  curDateProjectList: any;
+  // curDateProjectList: any;
   projectListVisible: boolean;
+  // dateType: any;
 }
 
 class CreateForm extends Component<CreateFormProps, CreateState> {
   state = {
-    curDateProjectList: this.props.curDateProjectList,
+    // curDateProjectList: this.props.curDateProjectList,
     projectListVisible: true,
+    // dateType: any,
   };
 
   formLayout = {
@@ -102,30 +105,36 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
       case '1':
         this.setState({
           projectListVisible: true,
+          // dateType:value,
         });
         break;
       case '2':
         this.setState({
           projectListVisible: false,
+          // dateType:value,
         });
         break;
       case '3':
         debugger;
         this.setState({
           projectListVisible: false,
+          // dateType:value,
         });
         break;
       case '4':
         this.setState({
           projectListVisible: false,
+          // dateType:value,
         });
         break;
       case '5':
         this.setState({
           projectListVisible: false,
+          // dateType:value,
         });
         break;
     }
+    selDateType = value;
   };
 
   render() {
@@ -138,7 +147,7 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
       dateTypeList,
     } = this.props;
     const okHandle = () => {
-      handleModify(curDateProjectList);
+      handleModify(curDateProjectList, selDateType);
       this.setState({
         projectListVisible: true,
       });

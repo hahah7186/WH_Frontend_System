@@ -175,14 +175,17 @@ class WHList extends Component<WHListProps, WHListState> {
     });
   };
 
-  handleModify = (curDateProjectList: any[]) => {
-    // debugger
+  handleModify = (curDateProjectList: any[], dateType: any) => {
+    debugger;
     const { dispatch } = this.props;
     dispatch({
       type: 'dateProjectList/update',
       payload: {
         curDateProjectList: JSON.stringify({ curDateProjectList: curDateProjectList }),
         defMode: defMode,
+        dateType: dateType,
+        curSelMemId: this.state.curSelMemId,
+        curSelDate: this.state.curSelDate,
       },
       callback: () => {
         const {
