@@ -58,7 +58,7 @@ class UpdateForm extends Component<UpdateFormProps, UpdateFormState> {
 
   constructor(props: UpdateFormProps) {
     super(props);
-
+    debugger;
     this.state = {
       formVals: {
         account_id: props.values.account_id,

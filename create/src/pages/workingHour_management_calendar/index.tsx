@@ -9,13 +9,14 @@ import { connect } from 'dva';
 //import moment from 'moment';
 import { WHStateType } from './model';
 import CreateForm from './components/CreateForm';
+import UpdateForm from './components/UpdateForm';
 //import StandardTable, { StandardTableColumnProps } from './components/StandardTable';
 // import EditableTable from './components/EditableTable/EditableTable';
 //import UpdateForm, { FormValsType } from './components/UpdateForm';
 // import { WHListItem, WHListComments/*WHListPagenation, WHListData,WHListParams */} from './data.d';
 // import LinesEllipsis from 'react-lines-ellipsis';
 // import styles from './style.less';
-import { Member, MemberSelect } from './data.d';
+import { Member, MemberSelect, DatetypeMapping } from './data.d';
 import moment from 'moment';
 // import { WHListItem } from '../workingHour_management/data';
 // import { WHListDataByDay } from './data';
@@ -42,6 +43,7 @@ interface WHListState {
   dateProjectList: WHStateType;
   curSelDate: any;
   curDateProjectList: any;
+  curDatetypeMapping: any;
   // memberList: MemberSelect[];
   curSelMemId: any;
 }
@@ -99,9 +101,11 @@ class WHList extends Component<WHListProps, WHListState> {
         resMsg: '',
         memberList: [],
         dateTypeList: [],
+        dateTypeMappingList: [],
       },
     },
     curDateProjectList: [],
+    curDatetypeMapping: {},
   };
 
   componentDidMount() {
@@ -133,6 +137,7 @@ class WHList extends Component<WHListProps, WHListState> {
               resMsg: data.resMsg,
               memberList: data.memberList,
               dateTypeList: data.dateTypeList,
+              dateTypeMappingList: data.dateTypeMappingList,
             },
           },
         });
@@ -168,6 +173,7 @@ class WHList extends Component<WHListProps, WHListState> {
               resMsg: data.resMsg,
               memberList: data.memberList,
               dateTypeList: data.dateTypeList,
+              dateTypeMappingList: data.dateTypeMappingList,
             },
           },
         });
@@ -203,6 +209,7 @@ class WHList extends Component<WHListProps, WHListState> {
               resMsg: data.resMsg,
               memberList: data.memberList,
               dateTypeList: data.dateTypeList,
+              dateTypeMappingList: data.dateTypeMappingList,
             },
           },
         });
@@ -211,15 +218,41 @@ class WHList extends Component<WHListProps, WHListState> {
   };
 
   handleExport = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'dateProjectList/export',
-      payload: {
-        year: curSelYear,
-        month: curSelMon,
-      },
-      callback: () => {},
-    });
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'dateProjectList/export',
+    //   payload: {
+    //     year: curSelYear,
+    //     month: curSelMon,
+    //   },
+    //   callback: () => {},
+    // });
+
+    const values = {
+      year: curSelYear,
+      month: curSelMon,
+      userId: localStorage.getItem('userId'),
+    };
+
+    var selDate = this.state.curSelDate;
+
+    var oReq = new XMLHttpRequest();
+    oReq.open('POST', '/api/project/ExportMemberWorkingHourCalendar', true);
+    oReq.responseType = 'blob';
+    oReq.setRequestHeader('Content-Type', 'application/json');
+    oReq.onload = function(oEvent) {
+      var content = oReq.response;
+      var elink = document.createElement('a');
+      elink.download = 'WorkingHourRecords.xls'; //xls   因为后台输入是csv'格式，用xls显示的不理想
+      elink.style.display = 'none';
+      var blob = new Blob([content]);
+      //var blob = new Blob([content], { type: 'application/vnd.ms-excel'});//text/csv,charset=GBK
+      elink.href = URL.createObjectURL(blob);
+      document.body.appendChild(elink);
+      elink.click();
+      document.body.removeChild(elink);
+    };
+    oReq.send(JSON.stringify(values));
   };
   //切换日/月面板触发
   handlePanelChange() {
@@ -251,6 +284,7 @@ class WHList extends Component<WHListProps, WHListState> {
               resMsg: data.resMsg,
               memberList: data.memberList,
               dateTypeList: data.dateTypeList,
+              dateTypeMappingList: data.dateTypeMappingList,
             },
           },
         });
@@ -302,23 +336,27 @@ class WHList extends Component<WHListProps, WHListState> {
                   display: 'inline-block',
                 }}
               >
-                {item.content}
+                {item.dateInfoId == 1 ? item.content : item.dateInfoName}
               </div>
               {/* <div style={{float:"left"}}> */}
               {/* <Badge status={item.type} text={<LinesEllipsis text={item.content} maxLine='1' ellipsis='...' trimRight basedOn='letters'/>} /> */}
               {/* </div> */}
               {/* <Icon type="message" style={{ fontSize: '16px', color: '#08c' }} theme="twoTone" /> */}
               {/* <div style={{float:"right"}}> */}
-              <div style={{ display: 'inline-block' }}>
-                <Badge
-                  count={item.workingHour + ' h'}
-                  style={{ backgroundColor: '#3498db', float: 'right' }}
-                />
-              </div>
+              {item.dateInfoId == 1 ? (
+                <div style={{ display: 'inline-block' }}>
+                  <Badge
+                    count={item.workingHour + ' h'}
+                    style={{ backgroundColor: '#3498db', float: 'right' }}
+                  />
+                </div>
+              ) : (
+                <div style={{ display: 'inline-block' }}></div>
+              )}
 
               {/* </div> */}
               {/* <div style={{float:"right"}}> */}
-              {item.overtimeHour !== 0 ? (
+              {item.dateInfoId == 1 && item.overtimeHour !== 0 ? (
                 <div style={{ display: 'inline-block' }}>
                   <Badge
                     count={item.overtimeHour + ' h'}
@@ -345,25 +383,66 @@ class WHList extends Component<WHListProps, WHListState> {
     // const srcList = this.props.dateProjectList.data.dateProjectList;
 
     const srcList = this.state.dateProjectList.data.dateProjectList;
+    const dateTypeMappingList = this.state.dateProjectList.data.dateTypeMappingList;
 
-    if (typeof srcList != 'undefined') {
-      srcList.map(d => {
-        if (d.date == renderDate && d.workingHour != 0) {
+    // if (typeof srcList != 'undefined') {
+    //   srcList.map(d => {
+    //     if (d.date == renderDate && d.workingHour != 0) {
+    //       listData.push({
+    //         type: d.type,
+    //         content: d.projectName /*.length>8?d.projectName.substring(0,8)+"...":d.projectName*/,
+    //         workingHour: d.workingHour,
+    //         overtimeHour: d.overtimeHour,
+    //       });
+    //     }
+    //   });
+    // }
+
+    if (typeof srcList != 'undefined' && typeof dateTypeMappingList != 'undefined') {
+      dateTypeMappingList.map(d => {
+        if (d.date == renderDate && d.dateTypeId != 1) {
+          //非工作日
           listData.push({
+            dateInfoId: d.dateTypeId,
+            dateInfoName: d.dateTypeName,
             type: d.type,
-            content: d.projectName /*.length>8?d.projectName.substring(0,8)+"...":d.projectName*/,
-            workingHour: d.workingHour,
-            overtimeHour: d.overtimeHour,
+            content: '',
+            workingHour: 0,
+            overtimeHour: 0,
+          });
+        } else if (d.date == renderDate && d.dateTypeId == 1) {
+          //工作日
+          srcList.map(s => {
+            if (s.date == renderDate && s.workingHour != 0) {
+              listData.push({
+                dateInfoId: d.dateTypeId,
+                dateInfoName: d.dateTypeName,
+                type: s.type,
+                content:
+                  s.projectName /*.length>8?d.projectName.substring(0,8)+"...":d.projectName*/,
+                workingHour: s.workingHour,
+                overtimeHour: s.overtimeHour,
+              });
+            }
           });
         }
       });
     }
+
     return listData || [];
   };
 
-  handleModalVisible = (flag?: boolean) => {
+  handleModalVisible = (
+    curSelDate?: any,
+    curDateProjectList?: any,
+    curDatetypeMapping?: any,
+    flag?: boolean,
+  ) => {
     this.setState({
       modalVisible: !!flag,
+      curDatetypeMapping: curDatetypeMapping,
+      curSelDate: curSelDate,
+      curDateProjectList: curDateProjectList,
     });
   };
 
@@ -382,13 +461,35 @@ class WHList extends Component<WHListProps, WHListState> {
     const curSelDate = date.format('YYYY-MM-DD');
     const curDateProjectList = this.state.dateProjectList.data.dateProjectListByDay[curSelDate];
 
-    this.setState({
-      curSelDate: curSelDate,
-      curDateProjectList: curDateProjectList,
+    const dateTypeMappingList = this.state.dateProjectList.data.dateTypeMappingList;
+    const curDatetypeMapping: DatetypeMapping = {
+      date: '',
+      dateTypeId: 0,
+      dateTypeName: '',
+      memberId: 0,
+      memberName: '',
+      memberNameEn: '',
+    };
+
+    dateTypeMappingList.map(d => {
+      if (d.date == curSelDate) {
+        curDatetypeMapping.date = d.date;
+        curDatetypeMapping.dateTypeId = d.dateTypeId;
+        curDatetypeMapping.dateTypeName = d.dateTypeName;
+        curDatetypeMapping.memberId = d.memberId;
+        curDatetypeMapping.memberName = d.memberName;
+        curDatetypeMapping.memberNameEn = d.memberNameEn;
+      }
     });
-    // debugger
+
+    // this.setState({
+    //   curSelDate: curSelDate,
+    //   curDateProjectList: curDateProjectList,
+    //   curDatetypeMapping: curDatetypeMapping,
+    // });
+
     if (date.format('YYYY') == curSelYear && date.format('MM') == curSelMon) {
-      this.handleModalVisible(true);
+      this.handleModalVisible(curSelDate, curDateProjectList, curDatetypeMapping, true);
     }
   };
 
@@ -493,14 +594,22 @@ class WHList extends Component<WHListProps, WHListState> {
   };
 
   render() {
-    const { modalVisible, dateProjectList, curSelDate, curDateProjectList } = this.state;
+    const {
+      modalVisible,
+      dateProjectList,
+      curSelDate,
+      curDateProjectList,
+      curDatetypeMapping,
+    } = this.state;
     const parentMethods = {
       handleModalVisible: this.handleModalVisible,
       handleModify: this.handleModify,
     };
-    const options = dateProjectList.data.memberList.map(d => (
-      <Option key={d.value}>{d.text}</Option>
-    ));
+
+    const options =
+      typeof dateProjectList.data.memberList != 'undefined'
+        ? dateProjectList.data.memberList.map(d => <Option key={d.value}>{d.text}</Option>)
+        : '';
     return (
       <PageHeaderWrapper>
         <Card bordered={false}>
@@ -533,13 +642,16 @@ class WHList extends Component<WHListProps, WHListState> {
             onSelect={this.onSelect}
           />
         </Card>
-        <CreateForm
-          {...parentMethods}
-          modalVisible={modalVisible}
-          curDateProjectList={curDateProjectList}
-          curSelDate={curSelDate}
-          dateTypeList={this.state.dateProjectList.data.dateTypeList}
-        />
+        {curDatetypeMapping && Object.keys(curDatetypeMapping).length ? (
+          <UpdateForm
+            {...parentMethods}
+            modalVisible={modalVisible}
+            curDateProjectList={curDateProjectList}
+            curDatetypeMapping={curDatetypeMapping}
+            curSelDate={curSelDate}
+            dateTypeList={this.state.dateProjectList.data.dateTypeList}
+          />
+        ) : null}
       </PageHeaderWrapper>
     );
   }

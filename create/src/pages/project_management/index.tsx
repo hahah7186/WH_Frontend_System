@@ -185,8 +185,12 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
       dataIndex: 'actual_running_time',
     },
     {
+      title: <FormattedMessage id="project.ColumnOvertimeWorkingHours" />,
+      dataIndex: 'overtime_running_time',
+    },
+    {
       title: <FormattedMessage id="project.ColumnSupportType" />,
-      dataIndex: 'support_type',
+      dataIndex: 'support_type_name',
     },
     // {
     //   title: <FormattedMessage id="project.ColumnSalesVolume" />,
@@ -1406,7 +1410,6 @@ const WarpForm = Form.create<SearchListApplicationsProps>({
         : form.getFieldValue('end_time')[1].format('YYYY-MM-DD');
     // 表单项变化时请求数据
     // 模拟查询表单生效
-    // debugger
     dispatch({
       type: 'searchListApplications/fetch',
       payload: {

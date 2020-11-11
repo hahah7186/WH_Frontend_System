@@ -59,6 +59,8 @@ export interface WHListItem {
   overtimeHour: number;
   comments: string;
   type: string;
+  // dateInforId: number;
+  // dateInforName: string;
 }
 
 export interface WHListItemM {
@@ -86,6 +88,7 @@ export interface WHListData {
   resMsg: string;
   memberList: MemberSelect[];
   dateTypeList: any[];
+  dateTypeMappingList: any[];
 }
 
 export interface WHListColumns {
@@ -113,4 +116,13 @@ export interface Member {
   member_name_en: string;
   role_id: number;
   role_name: string;
+}
+
+export interface DatetypeMapping {
+  date: string;
+  dateTypeId: number;
+  dateTypeName: string;
+  memberId: number;
+  memberName: string;
+  memberNameEn: string;
 }

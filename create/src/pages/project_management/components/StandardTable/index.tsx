@@ -1,7 +1,7 @@
-import { Alert, Table,Card, } from 'antd';
+import { Alert, Table, Card } from 'antd';
 import { ColumnProps, TableRowSelection, TableProps } from 'antd/es/table';
 import React, { Component, Fragment } from 'react';
-import moment from "moment";
+import moment from 'moment';
 import { ListItemDataType } from '../../data.d';
 import styles from './index.less';
 
@@ -13,7 +13,7 @@ export interface StandardTableProps<T> extends Omit<TableProps<T>, 'columns'> {
     list: ListItemDataType[];
     //pagination: StandardTableProps<ListItemDataType>['pagination'];
   };
-  visible:boolean;
+  visible: boolean;
   //selectedRows: ListItemDataType[];
   //onSelectRow: (rows: any) => void;
 }
@@ -103,57 +103,56 @@ class StandardTable extends Component<StandardTableProps<ListItemDataType>, Stan
   };
 
   render() {
-    const { selectedRowKeys, /*needTotalList*/ } = this.state;
-    const { visible,data, rowKey, ...rest } = this.props;
+    const { selectedRowKeys /*needTotalList*/ } = this.state;
+    const { visible, data, rowKey, ...rest } = this.props;
     // debugger
     let tableVisible = 'none';
-    switch(visible){
+    switch (visible) {
       case true:
         tableVisible = 'none';
-          break;
+        break;
       case false:
         tableVisible = 'block';
-          break;
+        break;
     }
 
-
-    const { list = [],/* pagination = false*/ } = data || {};
-debugger
+    const { list = [] /* pagination = false*/ } = data || {};
+    debugger;
     let renderList = list;
-    renderList.forEach((item)=>{
-      item.engineers = "";
-      item.bd = "";
-      item.pss = "";
-      item.sales = "";
+    renderList.forEach(item => {
+      item.engineers = '';
+      item.bd = '';
+      item.pss = '';
+      item.sales = '';
       const prjMembers = item.member;
-      prjMembers.forEach((mem)=>{
-        switch(mem.role_id){
-          case 1://apc
-            if(item.apc == ""){
+      prjMembers.forEach(mem => {
+        switch (mem.role_id) {
+          case 1: //apc
+            if (item.apc == '') {
               item.apc = mem.member_name;
-            }else{
-              item.apc = item.apc + "," + mem.member_name;
+            } else {
+              item.apc = item.apc + ',' + mem.member_name;
             }
             break;
-          case 2://bd
-            if(item.bd == ""){
+          case 2: //bd
+            if (item.bd == '') {
               item.bd = mem.member_name;
-            }else{
-              item.bd = item.bd + "," + mem.member_name;
+            } else {
+              item.bd = item.bd + ',' + mem.member_name;
             }
             break;
-          case 3://pss
-            if(item.pss == ""){
+          case 3: //pss
+            if (item.pss == '') {
               item.pss = mem.member_name;
-            }else{
-              item.pss = item.pss + "," + mem.member_name;
+            } else {
+              item.pss = item.pss + ',' + mem.member_name;
             }
             break;
-          case 4://sales
-            if(item.sales == ""){
+          case 4: //sales
+            if (item.sales == '') {
               item.sales = mem.member_name;
-            }else{
-              item.sales = item.sales + "," + mem.member_name;
+            } else {
+              item.sales = item.sales + ',' + mem.member_name;
             }
             break;
         }
@@ -161,39 +160,33 @@ debugger
 
       const prjEngineers = item.engineer;
 
-      prjEngineers.forEach((eng)=>{
-        if(item.engineers == ""){
+      prjEngineers.forEach(eng => {
+        if (item.engineers == '') {
           item.engineers = eng.member_name;
-        }else{
-          item.engineers = item.engineers + "," + eng.member_name;
+        } else {
+          item.engineers = item.engineers + ',' + eng.member_name;
         }
       });
 
-
-
-
-      item.str_start_time = item.start_time.toString().substring(0,10);
-      item.str_end_time = item.end_time.toString().substring(0,10);
-      item.str_update_time = item.update_time.toString().substring(0,10);
+      item.str_start_time = item.start_time.toString().substring(0, 10);
+      item.str_end_time = item.end_time.toString().substring(0, 10);
+      item.str_update_time = item.update_time.toString().substring(0, 10);
     });
 
-   return (
-      
-        <div className={styles.standardTable} style={{display:tableVisible}}>
-          <Card bordered={false}>
-          
+    return (
+      <div className={styles.standardTable} style={{ display: tableVisible }}>
+        <Card bordered={false}>
           <Table
             // visible={visible}
-            rowKey='project_id'
+            rowKey="project_id"
             //rowSelection={rowSelection}
             dataSource={renderList}
             pagination={false}
             onChange={this.handleTableChange}
             {...rest}
           />
-          </Card>
-        </div>
-      
+        </Card>
+      </div>
     );
   }
 }

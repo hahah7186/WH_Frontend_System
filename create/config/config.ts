@@ -115,12 +115,12 @@ export default {
           redirect: '/user/user-login',
           authorith: ['admin', 'user'],
         },
-        // {
-        //   name: 'main_page',
-        //   path: '/main_page',
-        //   component: './main_page',
-        //   icon: 'dashboard',
-        // },
+        {
+          name: 'main_page',
+          path: '/main_page',
+          component: './main_page',
+          icon: 'dashboard',
+        },
         {
           name: 'account_management',
           path: '/account_management',

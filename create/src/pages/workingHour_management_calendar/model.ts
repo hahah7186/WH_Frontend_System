@@ -58,6 +58,7 @@ const Model: ModelType = {
       resMsg: '',
       memberList: [],
       dateTypeList: [],
+      dateTypeMappingList: [],
     },
     // member:{
     //   list:[],

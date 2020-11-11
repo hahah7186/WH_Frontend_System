@@ -1,39 +1,74 @@
-import { Button, DatePicker, Form, Input, Modal, Radio, Select, Steps } from 'antd';
+import {
+  /*Button,*/ Card,
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  /*Radio,*/ Select /*, Steps*/,
+  List,
+  InputNumber,
+  Row,
+  Col,
+  Slider,
+  Divider,
+  Icon,
+  Button,
+  message,
+} from 'antd';
 import React, { Component } from 'react';
-
+import moment from 'moment';
 import { FormComponentProps } from 'antd/es/form';
-import { TableListItem } from '../data.d';
+import { WHStateType } from '../model';
+// import { ListItemDataType/*,MemberSelect*/,CustomerSelect,Member,supportType,AccountExportItem,FiscalYearItem } from '../../data.d';
+import { formatMessage, FormattedMessage, getLocale } from 'umi-plugin-react/locale';
+import { WHListItem, DatetypeMapping } from '../data';
+import { Label } from 'bizcharts';
+import { any } from 'prop-types';
 
-export interface FormValsType extends Partial<TableListItem> {
-  target?: string;
-  template?: string;
-  type?: string;
-  time?: string;
-  frequency?: string;
-}
+const { TextArea } = Input;
+const { Option, OptGroup } = Select;
+let itemId = 0;
+
+let curDateProjectList: any[];
+
+// export interface FormValsType extends Partial<TableListItem> {
+//   target?: string;
+//   template?: string;
+//   type?: string;
+//   time?: string;
+//   frequency?: string;
+// }
 
 export interface UpdateFormProps extends FormComponentProps {
-  handleUpdateModalVisible: (flag?: boolean, formVals?: FormValsType) => void;
-  handleUpdate: (values: FormValsType) => void;
-  updateModalVisible: boolean;
-  values: Partial<TableListItem>;
+  handleModalVisible: (flag?: boolean) => void;
+  handleModify: (curDateProjectList: any[], dateType: any) => void;
+  modalVisible: boolean;
+  // dateProjectListByDay: WHListItem[];
+  curDateProjectList: any[];
+  curDatetypeMapping: any;
+  curSelDate: any;
+  dateTypeList: any[];
 }
-const FormItem = Form.Item;
-const { Step } = Steps;
-const { TextArea } = Input;
-const { Option } = Select;
-const RadioGroup = Radio.Group;
+// const FormItem = Form.Item;
+// const { Step } = Steps;
+// const { TextArea } = Input;
+// const { Option } = Select;
+// const RadioGroup = Radio.Group;
 
 export interface UpdateFormState {
-  formVals: FormValsType;
-  currentStep: number;
+  // modalKey: number;
+  // curDateProjectList: any;
+  //projectListVisible: boolean;
+  // // dateType: any;
+  selDateType: number;
+  curDatetypeMapping: DatetypeMapping;
 }
 
 class UpdateForm extends Component<UpdateFormProps, UpdateFormState> {
   static defaultProps = {
-    handleUpdate: () => {},
-    handleUpdateModalVisible: () => {},
-    values: {},
+    handleModify: () => {},
+    handleModalVisible: () => {},
+    curDatetypeMapping: {},
   };
 
   formLayout = {
@@ -43,194 +78,323 @@ class UpdateForm extends Component<UpdateFormProps, UpdateFormState> {
 
   constructor(props: UpdateFormProps) {
     super(props);
-
+    debugger;
     this.state = {
-      formVals: {
-        name: props.values.name,
-        desc: props.values.desc,
-        key: props.values.key,
-        target: '0',
-        template: '0',
-        type: '1',
-        time: '',
-        frequency: 'month',
+      // modalKey:0,
+      //projectListVisible: props.curDatetypeMapping.dateTypeId == 1 ? true : false,
+      selDateType:
+        props.curDatetypeMapping.dateTypeId == 0 ? 1 : props.curDatetypeMapping.dateTypeId,
+      curDatetypeMapping: {
+        date: props.curDatetypeMapping.date,
+        dateTypeId: props.curDatetypeMapping.dateTypeId,
+        dateTypeName: props.curDatetypeMapping.dateTypeName,
+        memberId: props.curDatetypeMapping.memberId,
+        memberName: props.curDatetypeMapping.memberName,
+        memberNameEn: props.curDatetypeMapping.memberNameEn,
       },
-      currentStep: 0,
     };
   }
 
-  handleNext = (currentStep: number) => {
-    const { form, handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const formVals = { ...oldValue, ...fieldsValue };
-      this.setState(
-        {
-          formVals,
-        },
-        () => {
-          if (currentStep < 2) {
-            this.forward();
-          } else {
-            handleUpdate(formVals);
-          }
-        },
-      );
+  // componentWillMount() {
+  //   debugger
+  //   this.setState({
+  //     projectListVisible: this.props.curDatetypeMapping.dateTypeId == 1 ? true : false,
+  //     selDateType: this.props.curDatetypeMapping.dateTypeId == 0 ? 1 : this.props.curDatetypeMapping.dateTypeId,
+  //     curDatetypeMapping :{
+  //       date: this.props.curDatetypeMapping.date,
+  //       dateTypeId: this.props.curDatetypeMapping.dateTypeId,
+  //       dateTypeName: this.props.curDatetypeMapping.dateTypeName,
+  //       memberId: this.props.curDatetypeMapping.memberId,
+  //       memberName: this.props.curDatetypeMapping.memberName,
+  //       memberNameEn: this.props.curDatetypeMapping.memberNameEn,
+  //     },
+  //   })
+  // }
+
+  onNormalChange = (value: any, projectId: any) => {
+    curDateProjectList = this.props.curDateProjectList;
+    curDateProjectList.map(item => {
+      if (item.projectId === projectId) {
+        item.workingHour = value;
+      }
     });
   };
 
-  backward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep - 1,
+  onOvertimeChange = (value: any, projectId: any) => {
+    curDateProjectList = this.props.curDateProjectList;
+    curDateProjectList.map(item => {
+      if (item.projectId === projectId) {
+        item.overtimeHour = value;
+      }
     });
   };
 
-  forward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep + 1,
+  onCommentChange = (projectId: any, event: any) => {
+    const changedValue = event.target.value;
+    curDateProjectList = this.props.curDateProjectList;
+    curDateProjectList.map(item => {
+      if (item.projectId === projectId) {
+        item.comments = changedValue;
+      }
     });
   };
 
-  renderContent = (currentStep: number, formVals: FormValsType) => {
-    const { form } = this.props;
-    if (currentStep === 1) {
-      return [
-        <FormItem key="target" {...this.formLayout} label="监控对象">
-          {form.getFieldDecorator('target', {
-            initialValue: formVals.target,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="0">表一</Option>
-              <Option value="1">表二</Option>
-            </Select>,
-          )}
-        </FormItem>,
-        <FormItem key="template" {...this.formLayout} label="规则模板">
-          {form.getFieldDecorator('template', {
-            initialValue: formVals.template,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="0">规则模板一</Option>
-              <Option value="1">规则模板二</Option>
-            </Select>,
-          )}
-        </FormItem>,
-        <FormItem key="type" {...this.formLayout} label="规则类型">
-          {form.getFieldDecorator('type', {
-            initialValue: formVals.type,
-          })(
-            <RadioGroup>
-              <Radio value="0">强</Radio>
-              <Radio value="1">弱</Radio>
-            </RadioGroup>,
-          )}
-        </FormItem>,
-      ];
+  handleDailyInformationChange = (value: any) => {
+    // selDateType = value;
+    switch (value) {
+      case '1':
+        // projectListVisible = true;
+        this.setState({
+          //projectListVisible: true,
+          selDateType: value,
+          // dateType:value,
+        });
+        break;
+      case '2':
+        // projectListVisible = false;
+        this.setState({
+          //projectListVisible: false,
+          selDateType: value,
+          // dateType:value,
+        });
+        break;
+      case '3':
+        // projectListVisible = false;
+        this.setState({
+          //projectListVisible: false,
+          selDateType: value,
+          // dateType:value,
+        });
+        break;
+      case '4':
+        // projectListVisible = false;
+        this.setState({
+          //projectListVisible: false,
+          selDateType: value,
+          // dateType:value,
+        });
+        break;
+      case '5':
+        // projectListVisible = false;
+        this.setState({
+          //projectListVisible: false,
+          selDateType: value,
+          // dateType:value,
+        });
+        break;
     }
-    if (currentStep === 2) {
-      return [
-        <FormItem key="time" {...this.formLayout} label="开始时间">
-          {form.getFieldDecorator('time', {
-            rules: [{ required: true, message: '请选择开始时间！' }],
-          })(
-            <DatePicker
-              style={{ width: '100%' }}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              placeholder="选择开始时间"
-            />,
-          )}
-        </FormItem>,
-        <FormItem key="frequency" {...this.formLayout} label="调度周期">
-          {form.getFieldDecorator('frequency', {
-            initialValue: formVals.frequency,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="month">月</Option>
-              <Option value="week">周</Option>
-            </Select>,
-          )}
-        </FormItem>,
-      ];
-    }
-    return [
-      <FormItem key="name" {...this.formLayout} label="规则名称">
-        {form.getFieldDecorator('name', {
-          rules: [{ required: true, message: '请输入规则名称！' }],
-          initialValue: formVals.name,
-        })(<Input placeholder="请输入" />)}
-      </FormItem>,
-      <FormItem key="desc" {...this.formLayout} label="规则描述">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }],
-          initialValue: formVals.desc,
-        })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
-      </FormItem>,
-    ];
   };
 
-  renderFooter = (currentStep: number) => {
-    const { handleUpdateModalVisible, values } = this.props;
-    if (currentStep === 1) {
-      return [
-        <Button key="back" style={{ float: 'left' }} onClick={this.backward}>
-          上一步
-        </Button>,
-        <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
-          取消
-        </Button>,
-        <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
-          下一步
-        </Button>,
-      ];
+  getDisplayDate(curSelDate: any) {
+    let displayDate = '';
+    const locale = getLocale();
+    switch (locale) {
+      case 'en-US':
+        let enDate = new Date(curSelDate.replace(/-/g, '/'));
+        let enDateString = enDate.toDateString(); //"Tue, 01 Jan 2019 16:00:00 GMT"
+        //注意：此处时间为中国时区，如果是全球项目，需要转成【协调世界时】（UTC）
+        // let globalDate = date.toUTCString(); //"Wed Jan 02 2019"
+        //之后的处理是一样的
+        let enDateArray = enDateString.split(' '); //["Wed", "Jan", "02", "2019"]
+        displayDate = `${enDateArray[1]} ${enDateArray[2]}, ${enDateArray[3]}  ${enDateArray[0]}`;
+        break;
+      case 'zh-CN':
+        let cnDate = new Date(curSelDate.replace(/-/g, '/'));
+        var dayOfWeek = cnDate.getDay();
+        var days;
+        switch (dayOfWeek) {
+          case 1:
+            days = '星期一';
+            break;
+          case 2:
+            days = '星期二';
+            break;
+          case 3:
+            days = '星期三';
+            break;
+          case 4:
+            days = '星期四';
+            break;
+          case 5:
+            days = '星期五';
+            break;
+          case 6:
+            days = '星期六';
+            break;
+          case 0:
+            days = '星期日';
+            break;
+        }
+        // let cnDateString = cnDate.; //"Tue, 01 Jan 2019 16:00:00 GMT"
+        displayDate = `${cnDate.getFullYear()}年${cnDate.getMonth() +
+          1}月${cnDate.getDate()}日 ${days}`;
+        break;
+      case 'zh-TW':
+        let cntrDate = new Date(curSelDate.replace(/-/g, '/'));
+        var dayOfWeek = cntrDate.getDay();
+        var days;
+        switch (dayOfWeek) {
+          case 1:
+            days = '星期壹';
+            break;
+          case 2:
+            days = '星期贰';
+            break;
+          case 3:
+            days = '星期叁';
+            break;
+          case 4:
+            days = '星期肆';
+            break;
+          case 5:
+            days = '星期伍';
+            break;
+          case 6:
+            days = '星期陆';
+            break;
+          case 0:
+            days = '星期日';
+            break;
+        }
+        // let cnDateString = cnDate.; //"Tue, 01 Jan 2019 16:00:00 GMT"
+        displayDate = `${cntrDate.getFullYear()}年${cntrDate.getMonth() +
+          1}月${cntrDate.getDate()}日 ${days}`;
+        break;
     }
-    if (currentStep === 2) {
-      return [
-        <Button key="back" style={{ float: 'left' }} onClick={this.backward}>
-          上一步
-        </Button>,
-        <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
-          取消
-        </Button>,
-        <Button key="submit" type="primary" onClick={() => this.handleNext(currentStep)}>
-          完成
-        </Button>,
-      ];
-    }
-    return [
-      <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
-        取消
-      </Button>,
-      <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
-        下一步
-      </Button>,
-    ];
-  };
+    return displayDate;
+  }
 
   render() {
-    const { updateModalVisible, handleUpdateModalVisible, values } = this.props;
-    const { currentStep, formVals } = this.state;
+    const {
+      modalVisible /*, form, */,
+      handleModify,
+      handleModalVisible,
+      curDateProjectList,
+      curDatetypeMapping,
+      curSelDate,
+      dateTypeList,
+    } = this.props;
+    debugger;
+    const okHandle = () => {
+      handleModify(curDateProjectList, this.state.selDateType);
+      // this.setState({
+      //   //projectListVisible: true,
+      //   modalKey: this.state.modalKey + 1,
+      // });
+      handleModalVisible();
+    };
+
+    const cancelHandle = () => {
+      // this.setState({
+      //   //projectListVisible: true,
+      //   modalKey: this.state.modalKey + 1,
+      // });
+      handleModalVisible();
+    };
+
+    let displayDate = this.getDisplayDate(curSelDate);
+
+    const dateTypeOptions =
+      typeof dateTypeList == 'undefined'
+        ? []
+        : dateTypeList.map(d => <Option key={d.dateTypeId}>{d.dateTypeName}</Option>);
 
     return (
       <Modal
-        width={640}
+        width={950}
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
-        title="规则配置"
-        visible={updateModalVisible}
-        footer={this.renderFooter(currentStep)}
-        onCancel={() => handleUpdateModalVisible(false, values)}
-        afterClose={() => handleUpdateModalVisible()}
+        title={displayDate}
+        visible={modalVisible}
+        onOk={okHandle}
+        onCancel={() => handleModalVisible(false)}
+        afterClose={() => handleModalVisible()}
+        // key={this.state.modalKey}
       >
-        <Steps style={{ marginBottom: 28 }} size="small" current={currentStep}>
-          <Step title="基本信息" />
-          <Step title="配置规则属性" />
-          <Step title="设定调度周期" />
-        </Steps>
-        {this.renderContent(currentStep, formVals)}
+        <div>
+          <label>Daily Information：</label>
+          <Select
+            defaultValue={this.state.selDateType + ''}
+            style={{ width: 300 }}
+            onChange={this.handleDailyInformationChange}
+          >
+            {/* <Option value="1">Work</Option>
+                <Option value="2">Annual Leave</Option>
+                <Option value="3">Sick Leave</Option>
+                <Option value="4">Public Holiday</Option>
+                <Option value="5">Others</Option> */}
+            {dateTypeOptions}
+          </Select>
+        </div>
+        <div style={{ marginTop: '30px', display: this.state.selDateType == 1 ? 'block' : 'none' }}>
+          <List
+            grid={{ gutter: 10, column: 4 }}
+            dataSource={curDateProjectList}
+            renderItem={item => (
+              <List.Item>
+                <Card
+                  title={item.projectName}
+                  hoverable={true}
+                  headStyle={{ backgroundColor: '#A5E1E1' }}
+                >
+                  <div>
+                    <Icon
+                      type="clock-circle"
+                      style={{ fontSize: '16px', color: '#4BB9B9' }}
+                      theme="outlined"
+                    />
+                    {'  Normal Working:'}
+                    <InputNumber
+                      size="large"
+                      max={8}
+                      min={0}
+                      defaultValue={item.workingHour}
+                      formatter={value =>
+                        ` ${value}     (hours)`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                      }
+                      style={{ width: '100%', marginTop: '1%' }}
+                      onChange={value => this.onNormalChange(value, item.projectId)}
+                    />
+                  </div>
+                  <div style={{ marginTop: '4%' }}>
+                    <Icon
+                      type="plus-circle"
+                      style={{ fontSize: '16px', color: '#4BB9B9' }}
+                      theme="outlined"
+                    />
+                    {'  Overtime:'}
+                    <InputNumber
+                      size="large"
+                      defaultValue={item.overtimeHour}
+                      max={6}
+                      min={0}
+                      formatter={value =>
+                        ` ${value}     (hours)`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                      }
+                      style={{ width: '100%', marginTop: '1%' }}
+                      onChange={value => this.onOvertimeChange(value, item.projectId)}
+                    />
+                  </div>
+                  <div style={{ marginTop: '4%' }}>
+                    <Icon
+                      type="profile"
+                      style={{ fontSize: '16px', color: '#4BB9B9' }}
+                      theme="outlined"
+                    />
+                    {'  Comments:'}
+                    <TextArea
+                      defaultValue={item.comments}
+                      placeholder="Please input the comments for working hour"
+                      style={{ height: '70px' }}
+                      allowClear
+                      onChange={this.onCommentChange.bind(this, item.projectId)}
+                    />
+                  </div>
+                </Card>
+              </List.Item>
+            )}
+          />
+        </div>
       </Modal>
     );
   }

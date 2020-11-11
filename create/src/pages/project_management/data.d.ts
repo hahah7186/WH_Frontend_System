@@ -9,29 +9,29 @@
 //   count:number;
 // }
 
-export interface MemberSelect{
-  value:number;
-  text:string;
+export interface MemberSelect {
+  value: number;
+  text: string;
 }
 
-export interface CustomerSelect{
-  value:number;
-  text:string;
+export interface CustomerSelect {
+  value: number;
+  text: string;
 }
 
-export interface Member{
-  member_id:number;
-  member_name:string;
-  member_name_en:string;
-  role_id:number;
-  role_name:string;
+export interface Member {
+  member_id: number;
+  member_name: string;
+  member_name_en: string;
+  role_id: number;
+  role_name: string;
 }
 
 export interface ListItemDataType {
   id: number;
   customer_id: number;
   customer_name: string;
-  project_id:number;
+  project_id: number;
   project_name: string;
   project_code: string;
   support_type_id: number;
@@ -40,15 +40,15 @@ export interface ListItemDataType {
   apc: string;
   sales: string;
   pss: string;
-  bd:string;
-  arrEngineerId:string[];
+  bd: string;
+  arrEngineerId: string[];
   engineers: string;
   owner_id: number;
   owner: string;
-  arrSalesId:string[],
-  arrPssId: string[],
-  arrBdId:string[],
-  arrApcId:string[],
+  arrSalesId: string[];
+  arrPssId: string[];
+  arrBdId: string[];
+  arrApcId: string[];
   start_time: Date;
   end_time: Date;
   update_time: Date;
@@ -60,23 +60,23 @@ export interface ListItemDataType {
   run_status_id: number;
   run_status_name: string;
   plan_working_hours: number;
-  plan_budget:number;
+  plan_budget: number;
   actual_running_time: number;
+  overtime_running_time: number;
   sales_order_volume: number;
   comments: string;
   avatar: string;
   member: Member[];
   engineer: Member[];
-  accountName: number[],
-  accountVol: number[],
-  fiscalYear: number[],
-  keys:number[],
-  accounts:AccountItems,
-  hour_rate:number,
-  so_no:string,
-  project_run_status_id:number;
-  project_run_status_name:string;
-  
+  accountName: number[];
+  accountVol: number[];
+  fiscalYear: number[];
+  keys: number[];
+  accounts: AccountItems;
+  hour_rate: number;
+  so_no: string;
+  project_run_status_id: number;
+  project_run_status_name: string;
 }
 
 export interface ListPagination {
@@ -91,11 +91,11 @@ export interface ListItemData {
   bdList: MemberSelect[];
   pssList: MemberSelect[];
   salesList: MemberSelect[];
-  customerList:CustomerSelect[];
-  fiscalList:FiscalYearItem[];
-  accountList:AccountExportItem[];
-  supportTypeList:supportType[];
-  projectRunStatusList:projectRunStatus[];
+  customerList: CustomerSelect[];
+  fiscalList: FiscalYearItem[];
+  accountList: AccountExportItem[];
+  supportTypeList: supportType[];
+  projectRunStatusList: projectRunStatus[];
   pagination: Partial<ListPagination>;
   result: number;
   resultMessage: string;
@@ -120,10 +120,10 @@ export class FiscalYearItem {
 }
 
 export class AccountItems {
-  accountName:number[];
-  accountVol:number[];
-  fiscalYear:number[];
-  keys:number[];
+  accountName: number[];
+  accountVol: number[];
+  fiscalYear: number[];
+  keys: number[];
 }
 
 export class supportType {

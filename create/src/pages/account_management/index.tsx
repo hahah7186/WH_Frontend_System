@@ -325,7 +325,6 @@ class AccountTableList extends Component<AccountTableListProps, AccountTableList
   };
 
   handleUpdateModalVisible = (flag?: boolean, record?: FormValsType) => {
-    debugger;
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: record || {},

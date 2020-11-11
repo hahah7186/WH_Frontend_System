@@ -21,7 +21,7 @@ import { FormComponentProps } from 'antd/es/form';
 import { WHStateType } from '../model';
 // import { ListItemDataType/*,MemberSelect*/,CustomerSelect,Member,supportType,AccountExportItem,FiscalYearItem } from '../../data.d';
 import { formatMessage, FormattedMessage, getLocale } from 'umi-plugin-react/locale';
-import { WHListItem } from '../data';
+import { WHListItem, DatetypeMapping } from '../data';
 import { Label } from 'bizcharts';
 import { any } from 'prop-types';
 
@@ -30,11 +30,14 @@ const { Option, OptGroup } = Select;
 let itemId = 0;
 
 let curDateProjectList: any[];
-let selDateType: any = '1';
+// let selDateType: any = -1;
+// let projectListVisible: boolean = false;
+
 export interface CreateFormProps extends FormComponentProps {
   modalVisible: boolean;
   // dateProjectListByDay: WHListItem[];
   curDateProjectList: any[];
+  curDatetypeMapping: any;
   curSelDate: any;
   dateTypeList: any[];
   handleModalVisible: () => void;
@@ -45,17 +48,26 @@ export interface CreateFormProps extends FormComponentProps {
 // const { Option,OptGroup } = Select;
 
 export interface CreateState {
+  // modalKey: number;
   // curDateProjectList: any;
   projectListVisible: boolean;
-  // dateType: any;
+  // // dateType: any;
+  selDateType: number;
+  curDatetypeMapping: DatetypeMapping;
 }
 
 class CreateForm extends Component<CreateFormProps, CreateState> {
-  state = {
-    // curDateProjectList: this.props.curDateProjectList,
-    projectListVisible: true,
-    // dateType: any,
+  static defaultProps = {
+    handleModify: () => {},
+    handleModalVisible: () => {},
+    curDatetypeMapping: {},
   };
+  // state = {
+  //   // curDateProjectList: this.props.curDateProjectList,
+  //   projectListVisible: false,
+  //   // // dateType: any,
+  //   // selDateType: -1,
+  // };
 
   formLayout = {
     labelCol: { span: 7 },
@@ -64,13 +76,56 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
 
   constructor(props: CreateFormProps) {
     super(props);
-    // this.setState({
-    //   curDateProjectList:this.props.curDateProjectList
-    // });
-    // this.state = {
-    //   curDateProjectList:this.props.curDateProjectList
-    // };
+
+    this.state = {
+      projectListVisible: props.curDatetypeMapping.dateTypeId == 1 ? true : false,
+      selDateType:
+        props.curDatetypeMapping.dateTypeId == 0 ? 1 : props.curDatetypeMapping.dateTypeId,
+      curDatetypeMapping: {
+        date: props.curDatetypeMapping.date,
+        dateTypeId: props.curDatetypeMapping.dateTypeId,
+        dateTypeName: props.curDatetypeMapping.dateTypeName,
+        memberId: props.curDatetypeMapping.memberId,
+        memberName: props.curDatetypeMapping.memberName,
+        memberNameEn: props.curDatetypeMapping.memberNameEn,
+      },
+    };
   }
+
+  //   constructor(props: CreateFormProps) {
+  //     super(props);
+  // debugger
+  //     this.state = {
+  //       formVals: {
+  //         member_id:props.values.member_id,
+  //         member_name:props.values.member_name,
+  //         member_name_en:props.values.member_name_en,
+  //         family_name:props.values.family_name,
+  //         given_name:props.values.given_name,
+  //         role_id:props.values.role_id,
+  //         role_name:props.values.role_name,
+  //         post_id:props.values.post_id,
+  //         post_name:props.values.post_name,
+  //         group_id:props.values.group_id,
+  //         group_name:props.values.group_name,
+  //         branch_id:props.values.branch_id,
+  //         branch_name:props.values.branch_name,
+  //         g_id:props.values.g_id,
+  //         mobile:props.values.mobile,
+  //         org_name:props.values.org_name,
+  //         email:props.values.email,
+  //       },
+  //       // currentStep: 0,
+  //     };
+  //   }
+
+  // componentDidMount() {
+  //   debugger
+  //   this.setState({
+  //     projectListVisible: this.props.curDatetypeMapping.dateTypeId == 1 ? true : false,
+  //     selDateType: this.props.curDatetypeMapping.dateTypeId,
+  //   });
+  // }
 
   onNormalChange = (value: any, projectId: any) => {
     curDateProjectList = this.props.curDateProjectList;
@@ -101,40 +156,49 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
   };
 
   handleDailyInformationChange = (value: any) => {
+    // selDateType = value;
     switch (value) {
       case '1':
+        // projectListVisible = true;
         this.setState({
           projectListVisible: true,
+          selDateType: value,
           // dateType:value,
         });
         break;
       case '2':
+        // projectListVisible = false;
         this.setState({
           projectListVisible: false,
+          selDateType: value,
           // dateType:value,
         });
         break;
       case '3':
-        debugger;
+        // projectListVisible = false;
         this.setState({
           projectListVisible: false,
+          selDateType: value,
           // dateType:value,
         });
         break;
       case '4':
+        // projectListVisible = false;
         this.setState({
           projectListVisible: false,
+          selDateType: value,
           // dateType:value,
         });
         break;
       case '5':
+        // projectListVisible = false;
         this.setState({
           projectListVisible: false,
+          selDateType: value,
           // dateType:value,
         });
         break;
     }
-    selDateType = value;
   };
 
   render() {
@@ -143,23 +207,31 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
       handleModify,
       handleModalVisible,
       curDateProjectList,
+      //curDatetypeMapping,
       curSelDate,
       dateTypeList,
     } = this.props;
+
+    // const selDateType = this.props.curDatetypeMapping == 0? 1:this.props.curDatetypeMapping.dateTypeId;
+    // projectListVisible = selDateType == 1 ? true : false;
+    //const { curDatetypeMapping } = this.state;
+
     const okHandle = () => {
-      handleModify(curDateProjectList, selDateType);
-      this.setState({
-        projectListVisible: true,
-      });
+      handleModify(curDateProjectList, this.state.selDateType);
+      // this.setState({
+      //   //projectListVisible: true,
+      //   modalKey: this.state.modalKey + 1,
+      // });
       handleModalVisible();
     };
 
-    const cancelHandle = () => {
-      this.setState({
-        projectListVisible: true,
-      });
-      handleModalVisible();
-    };
+    // const cancelHandle = () => {
+    //   // this.setState({
+    //   //   //projectListVisible: true,
+    //   //   modalKey: this.state.modalKey + 1,
+    //   // });
+    //   handleModalVisible();
+    // };
 
     let displayDate = getDisplayDate(curSelDate);
 
@@ -167,19 +239,6 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
       typeof dateTypeList == 'undefined'
         ? []
         : dateTypeList.map(d => <Option key={d.dateTypeId}>{d.dateTypeName}</Option>);
-    // const cancelHandle = () =>{
-    //   form.resetFields();
-    //   itemId = 0;
-    //   this.setState({
-    //     formVals:{
-    //       sales_order_volume:0,
-    //     },
-    //     sonoDisable:true,
-    //     arrPercentage:[],
-    //     planBudget:0,
-    //   });
-    //   handleCreateModalVisible(false, values);
-    // };
 
     return (
       <Modal
@@ -190,13 +249,14 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
         visible={modalVisible}
         onOk={okHandle}
         keyboard={true}
-        onCancel={cancelHandle}
+        onCancel={() => handleModalVisible()}
         centered={true}
+        // key={this.state.modalKey}
       >
         <div>
           <label>Daily Information：</label>
           <Select
-            defaultValue="1"
+            defaultValue={this.state.selDateType + ''}
             style={{ width: 300 }}
             onChange={this.handleDailyInformationChange}
           >
@@ -285,8 +345,6 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
   }
 }
 
-export default Form.create<CreateFormProps>()(CreateForm);
-
 function getDisplayDate(curSelDate: any) {
   let displayDate = '';
   const locale = getLocale();
@@ -365,3 +423,5 @@ function getDisplayDate(curSelDate: any) {
   }
   return displayDate;
 }
+
+export default Form.create<CreateFormProps>()(CreateForm);
