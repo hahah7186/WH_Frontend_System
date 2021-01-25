@@ -1,7 +1,7 @@
 import { Effect } from 'dva';
 import { Reducer } from 'redux';
 
-import { queryCurrent, query as queryUsers } from '@/services/user';
+import { changePassword, queryCurrent, query as queryUsers } from '@/services/user';
 
 export interface CurrentUser {
   avatar?: string;
@@ -14,6 +14,7 @@ export interface CurrentUser {
   role?: userRole;
   branch?: userBranch;
   mobile?: string;
+  result?: number;
 }
 
 export interface userGroup {
@@ -29,6 +30,10 @@ export interface userBranch {
   value: number;
 }
 
+export interface StateType {
+  result: number;
+}
+
 export interface UserModelState {
   currentUser?: CurrentUser;
 }
@@ -39,10 +44,12 @@ export interface UserModelType {
   effects: {
     fetch: Effect;
     fetchCurrent: Effect;
+    changePassword: Effect;
   };
   reducers: {
     saveCurrentUser: Reducer<UserModelState>;
     changeNotifyCount: Reducer<UserModelState>;
+    modifyPassword: Reducer<StateType>;
   };
 }
 
@@ -63,17 +70,23 @@ const UserModel: UserModelType = {
     },
     *fetchCurrent({ payload }, { call, put }) {
       const response = yield call(queryCurrent, payload);
-      // debugger
       yield put({
         type: 'saveCurrentUser',
         payload: response,
       });
     },
+    *changePassword({ payload, callback }, { call, put }) {
+      const response = yield call(changePassword, payload);
+      yield put({
+        type: 'modifyPassword',
+        payload: response,
+      });
+      if (callback) callback();
+    },
   },
 
   reducers: {
     saveCurrentUser(state, action) {
-      // debugger
       return {
         ...state,
         currentUser: action.payload || {},
@@ -85,7 +98,6 @@ const UserModel: UserModelType = {
       },
       action,
     ) {
-      // debugger
       return {
         ...state,
         currentUser: {
@@ -93,6 +105,12 @@ const UserModel: UserModelType = {
           //notifyCount: action.payload.totalCount,
           //unreadCount: action.payload.unreadCount,
         },
+      };
+    },
+    modifyPassword(state, action) {
+      return {
+        ...state,
+        result: action.payload,
       };
     },
   },

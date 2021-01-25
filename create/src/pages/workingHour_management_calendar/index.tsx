@@ -182,7 +182,6 @@ class WHList extends Component<WHListProps, WHListState> {
   };
 
   handleModify = (curDateProjectList: any[], dateType: any) => {
-    debugger;
     const { dispatch } = this.props;
     dispatch({
       type: 'dateProjectList/update',
@@ -322,6 +321,7 @@ class WHList extends Component<WHListProps, WHListState> {
 
   dateCellRender = (value: any) => {
     const listData: any[] = this.getListData(value);
+    debugger;
     return (
       <ul className="events">
         {listData.map(item => (
@@ -336,14 +336,22 @@ class WHList extends Component<WHListProps, WHListState> {
                   display: 'inline-block',
                 }}
               >
-                {item.dateInfoId == 1 ? item.content : item.dateInfoName}
+                {item.dateInfoId == 1 ||
+                item.dateInfoId == 2 ||
+                item.dateInfoId == 3 ||
+                item.dateInfoId == 4
+                  ? item.content
+                  : item.dateInfoName}
               </div>
               {/* <div style={{float:"left"}}> */}
               {/* <Badge status={item.type} text={<LinesEllipsis text={item.content} maxLine='1' ellipsis='...' trimRight basedOn='letters'/>} /> */}
               {/* </div> */}
               {/* <Icon type="message" style={{ fontSize: '16px', color: '#08c' }} theme="twoTone" /> */}
               {/* <div style={{float:"right"}}> */}
-              {item.dateInfoId == 1 ? (
+              {item.dateInfoId == 1 ||
+              item.dateInfoId == 2 ||
+              item.dateInfoId == 3 ||
+              item.dateInfoId == 4 ? (
                 <div style={{ display: 'inline-block' }}>
                   <Badge
                     count={item.workingHour + ' h'}
@@ -356,7 +364,11 @@ class WHList extends Component<WHListProps, WHListState> {
 
               {/* </div> */}
               {/* <div style={{float:"right"}}> */}
-              {item.dateInfoId == 1 && item.overtimeHour !== 0 ? (
+              {(item.dateInfoId == 1 ||
+                item.dateInfoId == 2 ||
+                item.dateInfoId == 3 ||
+                item.dateInfoId == 4) &&
+              item.overtimeHour !== 0 ? (
                 <div style={{ display: 'inline-block' }}>
                   <Badge
                     count={item.overtimeHour + ' h'}
@@ -400,7 +412,13 @@ class WHList extends Component<WHListProps, WHListState> {
 
     if (typeof srcList != 'undefined' && typeof dateTypeMappingList != 'undefined') {
       dateTypeMappingList.map(d => {
-        if (d.date == renderDate && d.dateTypeId != 1) {
+        if (
+          d.date == renderDate &&
+          d.dateTypeId != 1 &&
+          d.dateTypeId != 2 &&
+          d.dateTypeId != 3 &&
+          d.dateTypeId != 4
+        ) {
           //非工作日
           listData.push({
             dateInfoId: d.dateTypeId,
@@ -410,7 +428,10 @@ class WHList extends Component<WHListProps, WHListState> {
             workingHour: 0,
             overtimeHour: 0,
           });
-        } else if (d.date == renderDate && d.dateTypeId == 1) {
+        } else if (
+          d.date == renderDate &&
+          (d.dateTypeId == 1 || d.dateTypeId == 2 || d.dateTypeId == 3 || d.dateTypeId == 4)
+        ) {
           //工作日
           srcList.map(s => {
             if (s.date == renderDate && s.workingHour != 0) {
@@ -618,7 +639,7 @@ class WHList extends Component<WHListProps, WHListState> {
               <Select
                 notFoundContent={'No Data'}
                 style={{ width: '100%' }}
-                defaultValue={localStorage.getItem('userId')}
+                defaultValue={localStorage.getItem('userId') + ''}
                 onSelect={this.onMemberSelect}
               >
                 {options}

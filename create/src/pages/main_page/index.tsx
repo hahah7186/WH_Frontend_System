@@ -111,15 +111,15 @@ class Analysis extends Component<analysisProps, analysisState> {
   isActive = (type: 'today' | 'week' | 'month' | 'year') => {
     const { rangePickerValue } = this.state;
     const value = getTimeDistance(type);
-    if (!rangePickerValue[0] || !rangePickerValue[1]) {
-      return '';
-    }
-    if (
-      rangePickerValue[0].isSame(value[0], 'day') &&
-      rangePickerValue[1].isSame(value[1], 'day')
-    ) {
-      return styles.currentDate;
-    }
+    // if (!rangePickerValue[0] || !rangePickerValue[1]) {
+    //   return '';
+    // }
+    // if (
+    //   rangePickerValue[0].isSame(value[0], 'day') &&
+    //   rangePickerValue[1].isSame(value[1], 'day')
+    // ) {
+    //   return styles.currentDate;
+    // }
     return '';
   };
 

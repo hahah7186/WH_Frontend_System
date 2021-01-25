@@ -78,7 +78,7 @@ class UpdateForm extends Component<UpdateFormProps, UpdateFormState> {
 
   constructor(props: UpdateFormProps) {
     super(props);
-    debugger;
+
     this.state = {
       // modalKey:0,
       //projectListVisible: props.curDatetypeMapping.dateTypeId == 1 ? true : false,
@@ -140,49 +140,52 @@ class UpdateForm extends Component<UpdateFormProps, UpdateFormState> {
   };
 
   handleDailyInformationChange = (value: any) => {
+    this.setState({
+      selDateType: parseInt(value),
+    });
     // selDateType = value;
-    switch (value) {
-      case '1':
-        // projectListVisible = true;
-        this.setState({
-          //projectListVisible: true,
-          selDateType: value,
-          // dateType:value,
-        });
-        break;
-      case '2':
-        // projectListVisible = false;
-        this.setState({
-          //projectListVisible: false,
-          selDateType: value,
-          // dateType:value,
-        });
-        break;
-      case '3':
-        // projectListVisible = false;
-        this.setState({
-          //projectListVisible: false,
-          selDateType: value,
-          // dateType:value,
-        });
-        break;
-      case '4':
-        // projectListVisible = false;
-        this.setState({
-          //projectListVisible: false,
-          selDateType: value,
-          // dateType:value,
-        });
-        break;
-      case '5':
-        // projectListVisible = false;
-        this.setState({
-          //projectListVisible: false,
-          selDateType: value,
-          // dateType:value,
-        });
-        break;
-    }
+    // switch (value) {
+    //   case '1':
+    //     // projectListVisible = true;
+    //     this.setState({
+    //       //projectListVisible: true,
+    //       selDateType: parseInt(value),
+    //       // dateType:value,
+    //     });
+    //     break;
+    //   case '2':
+    //     // projectListVisible = false;
+    //     this.setState({
+    //       //projectListVisible: false,
+    //       selDateType: parseInt(value),
+    //       // dateType:value,
+    //     });
+    //     break;
+    //   case '3':
+    //     // projectListVisible = false;
+    //     this.setState({
+    //       //projectListVisible: false,
+    //       selDateType: parseInt(value),
+    //       // dateType:value,
+    //     });
+    //     break;
+    //   case '4':
+    //     // projectListVisible = false;
+    //     this.setState({
+    //       //projectListVisible: false,
+    //       selDateType: parseInt(value),
+    //       // dateType:value,
+    //     });
+    //     break;
+    //   case '5':
+    //     // projectListVisible = false;
+    //     this.setState({
+    //       //projectListVisible: false,
+    //       selDateType: parseInt(value),
+    //       // dateType:value,
+    //     });
+    //     break;
+    // }
   };
 
   getDisplayDate(curSelDate: any) {
@@ -274,7 +277,7 @@ class UpdateForm extends Component<UpdateFormProps, UpdateFormState> {
       curSelDate,
       dateTypeList,
     } = this.props;
-    debugger;
+
     const okHandle = () => {
       handleModify(curDateProjectList, this.state.selDateType);
       // this.setState({
@@ -326,7 +329,18 @@ class UpdateForm extends Component<UpdateFormProps, UpdateFormState> {
             {dateTypeOptions}
           </Select>
         </div>
-        <div style={{ marginTop: '30px', display: this.state.selDateType == 1 ? 'block' : 'none' }}>
+        <div
+          style={{
+            marginTop: '30px',
+            display:
+              this.state.selDateType == 1 ||
+              this.state.selDateType == 2 ||
+              this.state.selDateType == 3 ||
+              this.state.selDateType == 4
+                ? 'block'
+                : 'none',
+          }}
+        >
           <List
             grid={{ gutter: 10, column: 4 }}
             dataSource={curDateProjectList}

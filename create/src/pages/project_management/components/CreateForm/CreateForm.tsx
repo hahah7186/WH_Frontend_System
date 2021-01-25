@@ -220,7 +220,7 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
   };
 
   onSupportTypeChange = value => {
-    if (value === '2') {
+    if (value === '1') {
       this.setState({
         sonoDisable: false,
       });

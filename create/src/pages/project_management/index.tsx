@@ -128,7 +128,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     cardListVisible: true,
 
     expandForm: false,
-    //formValues: {},
+    //formValues: {},f
     stepFormValues: {},
     apcList: [],
     bdList: [],
@@ -841,6 +841,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
             start_time: moment(fields.start_time).format('YYYY-MM-DD HH:mm:ss'),
             status: fields.status_id,
             project_run_status: fields.project_run_status_id,
+            support_type: fields.support_type,
             support_reason: fields.support_reason,
             update_time: moment(fields.update_time).format('YYYY-MM-DD HH:mm:ss'),
             update_user: localStorage.getItem('userId'),
@@ -1304,7 +1305,11 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
                     avatar={<Avatar size="small" src={item.avatar} />}
                     title={item.project_name}
                   />
-                  <span>{item.customer_name}</span>
+                  <span>
+                    {item.customer_name.length > 24
+                      ? item.customer_name.substring(0, 23) + '...'
+                      : item.customer_name}
+                  </span>
                   <div className={styles.cardItemContent}>
                     <CardInfo
                       workingHour={item.plan_working_hours}

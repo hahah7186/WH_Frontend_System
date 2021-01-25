@@ -329,7 +329,7 @@ class ModifyForm extends Component<ModifyFormProps, ModifyState> {
       projectRunStatusList,
     } = this.props;
     const dateFormat = 'YYYY/MM/DD';
-    debugger;
+
     const apcOptions = apcList.map(d => <Option key={d.member_id}>{d.member_name}</Option>);
     const bdOptions = bdList.map(d => <Option key={d.member_id}>{d.member_name}</Option>);
     const pssOptions = pssList.map(d => <Option key={d.member_id}>{d.member_name}</Option>);

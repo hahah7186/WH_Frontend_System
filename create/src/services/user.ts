@@ -5,8 +5,13 @@ export async function query(): Promise<any> {
 }
 
 export async function queryCurrent(params: any): Promise<any> {
-  // debugger
   return request('/api/member/selectMemberById', {
+    params,
+  });
+}
+
+export async function changePassword(params: any): Promise<any> {
+  return request('/api/member/changePassword', {
     params,
   });
 }
