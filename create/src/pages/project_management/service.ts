@@ -17,7 +17,6 @@ export async function updateProject(params: ListItemDataType) {
   return request('/api/project/updateProjectById', {
     params,
   });
-
 }
 
 export async function removeProject(params: any) {
@@ -34,6 +33,12 @@ export async function completeProject(params: any) {
 
 export async function createProject(params: any) {
   return request('/api/project/createProject', {
+    params,
+  });
+}
+
+export async function exportProjectDateCalMapping(params: any) {
+  return request('/api/project/ExportProjectList', {
     params,
   });
 }

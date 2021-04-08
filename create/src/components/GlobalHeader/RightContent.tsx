@@ -1,4 +1,4 @@
-import { Icon, Tooltip,Select } from 'antd';
+import { Icon, Tooltip, Select } from 'antd';
 import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
@@ -76,11 +76,9 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
           <Icon type="question-circle-o" />
         </a>
       </Tooltip> */}
+
       <Avatar />
       <SelectLang className={styles.action} />
-{/*       <Select>
- 
-      </Select> */}
     </div>
   );
 };

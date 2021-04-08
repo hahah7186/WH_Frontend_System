@@ -340,6 +340,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     let start_time_2;
     let end_time_1;
     let end_time_2;
+
     start_time_1 =
       typeof form.getFieldValue('start_time') == 'undefined'
         ? ''
@@ -461,6 +462,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
       },
     });
   };
+
   //更新project状态
   handleUpdateModalVisible = (flag?: boolean, item?: FormValsType) => {
     this.setState({
@@ -482,6 +484,63 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     this.setState({
       createModalVisible: !!flag,
     });
+  };
+
+  handleExportProjectList = () => {
+    const { form } = this.props;
+
+    let start_time_1;
+    let start_time_2;
+    let end_time_1;
+    let end_time_2;
+    debugger;
+    start_time_1 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[0].format('YYYY-MM-DD');
+    start_time_2 =
+      typeof form.getFieldValue('start_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('start_time')[1].format('YYYY-MM-DD');
+    end_time_1 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[0].format('YYYY-MM-DD');
+    end_time_2 =
+      typeof form.getFieldValue('end_time') == 'undefined'
+        ? ''
+        : form.getFieldValue('end_time')[1].format('YYYY-MM-DD');
+
+    const values = {
+      project_name: form.getFieldValue('project_name'),
+      customer_id: form.getFieldValue('customer_id'),
+      support_type: form.getFieldValue('support_type'),
+      status: form.getFieldValue('status'),
+      start_time_1: start_time_1,
+      start_time_2: start_time_2,
+      end_time_1: end_time_1,
+      end_time_2: end_time_2,
+      currentUser: localStorage.getItem('userId'),
+    };
+    var myDate = new Date();
+
+    var oReq = new XMLHttpRequest();
+    oReq.open('POST', '/api/project/ExportProjectList', true);
+    oReq.responseType = 'blob';
+    oReq.setRequestHeader('Content-Type', 'application/json');
+    oReq.onload = function(oEvent) {
+      var content = oReq.response;
+      var elink = document.createElement('a');
+      elink.download = 'ProjectList_' + myDate.toLocaleDateString() + '.xls'; //xls
+      elink.style.display = 'none';
+      var blob = new Blob([content]);
+      //var blob = new Blob([content], { type: 'application/vnd.ms-excel'});//text/csv,charset=GBK
+      elink.href = URL.createObjectURL(blob);
+      document.body.appendChild(elink);
+      elink.click();
+      document.body.removeChild(elink);
+    };
+    oReq.send(JSON.stringify(values));
   };
 
   handleUpdate = (fields: FormValsType) => {
@@ -1080,7 +1139,8 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
                   icon="export"
                   style={{ marginLeft: '2em' }}
                   onClick={() =>
-                    message.warning(formatMessage({ id: 'project.ButtonExportProject.Tips' }))
+                    // message.warning(formatMessage({ id: 'project.ButtonExportProject.Tips' }))
+                    this.handleExportProjectList()
                   }
                 >
                   <FormattedMessage id="project.ButtonExportProject" />

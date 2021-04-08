@@ -253,6 +253,7 @@ class WHList extends Component<WHListProps, WHListState> {
     };
     oReq.send(JSON.stringify(values));
   };
+
   //切换日/月面板触发
   handlePanelChange() {
     // debugger
