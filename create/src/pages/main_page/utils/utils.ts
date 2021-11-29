@@ -6,6 +6,7 @@ export function fixedZero(val: number) {
 }
 
 export function getTimeDistance(type: 'today' | 'week' | 'month' | 'year'): RangePickerValue {
+  debugger;
   const now = new Date();
   const oneDay = 1000 * 60 * 60 * 24;
 

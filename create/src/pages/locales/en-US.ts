@@ -174,6 +174,7 @@ export default {
   'project.NewCreateForm.Column.ProjectName': 'Project Name',
   'project.NewCreateForm.Column.ProjectName.RulesMessage':
     'Please enter at least one character project name!',
+  'project.NewCreateForm.Column.So_No': 'SO NO.',
   'project.NewCreateForm.Column.CustomerName.RulesMessage': 'Please select a customer!',
   'project.NewCreateForm.Column.Owner.RulesMessage': 'Please select a owner!',
   'project.NewCreateForm.Column.Engineers.RulesMessage': 'Please select a engineers!',

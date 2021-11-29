@@ -1,38 +1,47 @@
-import { Card, Col, DatePicker, Row, Tabs } from 'antd';
+import { Card, Col, DatePicker, Row, Tabs, Switch } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 
 import { RangePickerValue } from 'antd/es/date-picker/interface';
 import React from 'react';
 import numeral from 'numeral';
-import { VisitDataType } from '../data.d';
+import { RankingListData, VisitDataType } from '../data.d';
 import { Bar } from './Charts';
 import styles from '../style.less';
+import Yuan from '../utils/Yuan';
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
 
-const rankingListData: { title: string; total: number }[] = [];
-for (let i = 0; i < 7; i += 1) {
-  rankingListData.push({
-    title: formatMessage({ id: 'analysis.analysis.test' }, { no: i }),
-    total: 323234,
-  });
-}
+// const rankingListData: { title: string; total: number }[] = [];
+// for (let i = 0; i < 7; i += 1) {
+//   rankingListData.push({
+//     title: formatMessage({ id: 'analysis.analysis.test' }, { no: i }),
+//     total: 323234,
+//   });
+// }
 
 const SalesCard = ({
   rangePickerValue,
   salesData,
+  salesVolume,
   isActive,
   handleRangePickerChange,
+  handleSwitchView,
   loading,
   selectDate,
+  rankingListData,
+  rankingListVolume,
 }: {
   rangePickerValue: RangePickerValue;
   isActive: (key: 'today' | 'week' | 'month' | 'year') => string;
   salesData: VisitDataType[];
+  salesVolume: VisitDataType[];
   loading: boolean;
   handleRangePickerChange: (dates: RangePickerValue, dateStrings: [string, string]) => void;
+  handleSwitchView: (checked: boolean) => void;
   selectDate: (key: 'today' | 'week' | 'month' | 'year') => void;
+  rankingListData: RankingListData[];
+  rankingListVolume: RankingListData[];
 }) => (
   <Card loading={loading} bordered={false} bodyStyle={{ padding: 0 }}>
     <div className={styles.salesCard}>
@@ -51,6 +60,15 @@ const SalesCard = ({
               </a>
               <a className={isActive('year')} onClick={() => selectDate('year')}>
                 <FormattedMessage id="analysis.analysis.all-year" defaultMessage="All Year" />
+              </a>
+              <a>
+                <Switch
+                  size="default"
+                  checkedChildren={formatMessage({ id: 'analysis.analysis.switchCheck' })}
+                  unCheckedChildren={formatMessage({ id: 'analysis.analysis.switchunCheck' })}
+                  onChange={checked => handleSwitchView(checked)}
+                  defaultChecked
+                />
               </a>
             </div>
             <RangePicker
@@ -71,7 +89,7 @@ const SalesCard = ({
             <Col xl={16} lg={12} md={12} sm={24} xs={24}>
               <div className={styles.salesBar}>
                 <Bar
-                  height={295}
+                  height={400}
                   title={
                     <FormattedMessage
                       id="analysis.analysis.sales-trend"
@@ -102,6 +120,7 @@ const SalesCard = ({
                       <span className={styles.rankingItemValue}>
                         {numeral(item.total).format('0,0')}
                       </span>
+                      <span>&nbsp;h</span>
                     </li>
                   ))}
                 </ul>
@@ -117,14 +136,14 @@ const SalesCard = ({
             <Col xl={16} lg={12} md={12} sm={24} xs={24}>
               <div className={styles.salesBar}>
                 <Bar
-                  height={292}
+                  height={400}
                   title={
                     <FormattedMessage
                       id="analysis.analysis.visits-trend"
                       defaultMessage="Visits Trend"
                     />
                   }
-                  data={salesData}
+                  data={salesVolume}
                 />
               </div>
             </Col>
@@ -137,7 +156,7 @@ const SalesCard = ({
                   />
                 </h4>
                 <ul className={styles.rankingList}>
-                  {rankingListData.map((item, i) => (
+                  {rankingListVolume.map((item, i) => (
                     <li key={item.title}>
                       <span className={`${styles.rankingItemNumber} ${i < 3 ? styles.active : ''}`}>
                         {i + 1}
@@ -145,7 +164,7 @@ const SalesCard = ({
                       <span className={styles.rankingItemTitle} title={item.title}>
                         {item.title}
                       </span>
-                      <span>{numeral(item.total).format('0,0')}</span>
+                      <span>{`￥${numeral(item.total).format('0,0')}`}</span>
                     </li>
                   ))}
                 </ul>

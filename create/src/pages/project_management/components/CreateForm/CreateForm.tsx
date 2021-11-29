@@ -220,7 +220,8 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
   };
 
   onSupportTypeChange = value => {
-    if (value === '1') {
+    var tenDigits = Math.floor((Number(value) % 100) / 10);
+    if (tenDigits === 1) {
       this.setState({
         sonoDisable: false,
       });

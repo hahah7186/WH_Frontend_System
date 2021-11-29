@@ -77,7 +77,6 @@ const Model: ModelType = {
       if (callback) callback();
     },
     *create({ payload, callback }, { call, put }) {
-      debugger;
       const response = yield call(createProject, payload);
       yield put({
         type: 'queryList',

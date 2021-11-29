@@ -131,7 +131,7 @@ class ModifyForm extends Component<ModifyFormProps, ModifyState> {
         end_time: props.values.end_time,
         update_time: props.values.update_time,
         // status_id: props.values.status_id,
-
+        so_no: props.values.so_no,
         sales_order_volume: props.values.sales_order_volume,
         comments: props.values.comments,
         engineers: props.values.engineers,
@@ -804,7 +804,29 @@ class ModifyForm extends Component<ModifyFormProps, ModifyState> {
               )}
             </FormItem>
           </Col>
+
+          <Col span={12}>
+            <FormItem
+              key="so_no"
+              {...this.formLayout}
+              label={formatMessage({ id: 'project.NewCreateForm.Column.So_No' })}
+            >
+              {form.getFieldDecorator('so_no', {
+                // rules: [
+                //   {
+                //     required: true,
+                //     message: formatMessage({
+                //       id: 'project.NewCreateForm.Column.ProjectName.RulesMessage',
+                //     }),
+                //     min: 1,
+                //   },
+                // ],
+                initialValue: formVals.so_no,
+              })(<Input placeholder="SO NO." />)}
+            </FormItem>
+          </Col>
         </Row>
+
         <Row gutter={0}>
           <Col span={12}>
             <FormItem

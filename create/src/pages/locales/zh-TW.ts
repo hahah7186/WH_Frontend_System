@@ -162,6 +162,7 @@ export default {
   'project.NewCreateForm.Column.ProjectNo.placeholder': '###自動生成###',
   'project.NewCreateForm.Column.ProjectName': '項目名稱',
   'project.NewCreateForm.Column.ProjectName.RulesMessage': '請輸入至少一個字符的項目名稱！',
+  'project.NewCreateForm.Column.So_No': 'SO NO.',
   'project.NewCreateForm.Column.CustomerName.RulesMessage': '請選擇一個客戶!',
   'project.NewCreateForm.Column.Owner.RulesMessage': '請選擇一個所有者！',
   'project.NewCreateForm.Column.Engineers.RulesMessage': '請選擇工程師!',

@@ -310,7 +310,7 @@ class CreateForm extends Component<CreateFormProps, CreateState> {
                     <InputNumber
                       size="large"
                       defaultValue={item.overtimeHour}
-                      max={6}
+                      max={16}
                       min={0}
                       formatter={value =>
                         ` ${value}     (hours)`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')

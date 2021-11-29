@@ -1,11 +1,13 @@
 import { Card, Col, Row, Tabs } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 import React from 'react';
-import { OfflineChartData, OfflineDataType } from '../data.d';
+import { OfflineChartData, OfflineDataType, SearchDataType } from '../data.d';
 
 import { TimelineChart, Pie } from './Charts';
 import NumberInfo from './NumberInfo';
 import styles from '../style.less';
+
+const TopSearch = React.lazy(() => import('./TopSearch'));
 
 const CustomTab = ({
   data,
@@ -25,11 +27,11 @@ const CustomTab = ({
           />
         }
         gap={2}
-        total={`${data.cvr * 100}%`}
-        theme={currentKey !== data.name ? 'light' : undefined}
+        total={data.cvr}
+        theme={currentKey !== data.id ? 'light' : undefined}
       />
     </Col>
-    <Col span={12} style={{ paddingTop: 36 }}>
+    {/* <Col span={12} style={{ paddingTop: 36 }}>
       <Pie
         animate={false}
         inner={0.55}
@@ -38,7 +40,7 @@ const CustomTab = ({
         percent={data.cvr * 100}
         height={64}
       />
-    </Col>
+    </Col> */}
   </Row>
 );
 
@@ -48,27 +50,35 @@ const OfflineData = ({
   activeKey,
   loading,
   offlineData,
-  offlineChartData,
+  // offlineChartData,
+  searchData,
   handleTabChange,
 }: {
   activeKey: string;
   loading: boolean;
   offlineData: OfflineDataType[];
-  offlineChartData: OfflineChartData[];
+  // offlineChartData: OfflineChartData[];
+  searchData: SearchDataType[];
   handleTabChange: (activeKey: string) => void;
 }) => (
   <Card loading={loading} className={styles.offlineCard} bordered={false} style={{ marginTop: 32 }}>
     <Tabs activeKey={activeKey} onChange={handleTabChange}>
-      {offlineData.map(shop => (
-        <TabPane tab={<CustomTab data={shop} currentTabKey={activeKey} />} key={shop.name}>
+      {offlineData.map(customer => (
+        <TabPane tab={<CustomTab data={customer} currentTabKey={activeKey} />} key={customer.id}>
           <div style={{ padding: '0 24px' }}>
-            <TimelineChart
+            {/* <TimelineChart
               height={400}
               data={offlineChartData}
               titleMap={{
                 y1: formatMessage({ id: 'analysis.analysis.traffic' }),
                 y2: formatMessage({ id: 'analysis.analysis.payments' }),
               }}
+            /> */}
+            <TopSearch
+              loading={loading}
+              // visitData2={visitData2}
+              searchData={searchData}
+              // dropdownGroup={dropdownGroup}
             />
           </div>
         </TabPane>

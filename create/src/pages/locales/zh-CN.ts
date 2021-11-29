@@ -163,6 +163,7 @@ export default {
   'project.NewCreateForm.Column.ProjectNo.placeholder': '###自动生成###',
   'project.NewCreateForm.Column.ProjectName': '项目名称',
   'project.NewCreateForm.Column.ProjectName.RulesMessage': '请输入至少一个字符的项目名称！',
+  'project.NewCreateForm.Column.So_No': 'SO NO.',
   'project.NewCreateForm.Column.CustomerName.RulesMessage': '请选择一个客户!',
   'project.NewCreateForm.Column.Owner.RulesMessage': '请选择一个所有者!',
   'project.NewCreateForm.Column.Engineers.RulesMessage': '请选择工程师!',

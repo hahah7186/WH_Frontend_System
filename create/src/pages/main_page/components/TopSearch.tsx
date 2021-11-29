@@ -11,47 +11,49 @@ import styles from '../style.less';
 
 const columns = [
   {
-    title: <FormattedMessage id="analysis.table.rank" defaultMessage="Rank" />,
-    dataIndex: 'index',
-    key: 'index',
+    title: <FormattedMessage id="analysis.table.rank" defaultMessage="projectId" />,
+    dataIndex: 'projectId',
+    key: 'projectId',
   },
   {
-    title: (
-      <FormattedMessage id="analysis.table.search-keyword" defaultMessage="Search keyword" />
-    ),
-    dataIndex: 'keyword',
-    key: 'keyword',
-    render: (text: React.ReactNode) => <a href="/">{text}</a>,
+    title: <FormattedMessage id="analysis.table.search-keyword" defaultMessage="Search keyword" />,
+    dataIndex: 'projectName',
+    key: 'projectName',
+    // render: (text: React.ReactNode) => <a href="/">{text}</a>,
   },
   {
-    title: <FormattedMessage id="analysis.table.users" defaultMessage="Users" />,
-    dataIndex: 'count',
-    key: 'count',
-    sorter: (a: { count: number }, b: { count: number }) => a.count - b.count,
-    className: styles.alignRight,
+    title: <FormattedMessage id="analysis.table.users" defaultMessage="workingHour" />,
+    dataIndex: 'workingHour',
+    key: 'workingHour',
+    // sorter: (a: { count: number }, b: { count: number }) => a.count - b.count,
+    // className: styles.alignRight,
   },
   {
-    title: <FormattedMessage id="analysis.table.weekly-range" defaultMessage="Weekly Range" />,
-    dataIndex: 'range',
-    key: 'range',
-    sorter: (a: { range: number }, b: { range: number }) => a.range - b.range,
-    render: (text: React.ReactNode, record: { status: number }) => (
-      <Trend flag={record.status === 1 ? 'down' : 'up'}>
-        <span style={{ marginRight: 4 }}>{text}%</span>
-      </Trend>
-    ),
+    title: <FormattedMessage id="analysis.table.weekly-range" defaultMessage="supportType" />,
+    dataIndex: 'supportType',
+    key: 'supportType',
+  },
+  {
+    title: <FormattedMessage id="analysis.table.weekly-range" defaultMessage="startTime" />,
+    dataIndex: 'startTime',
+    key: 'startTime',
+  },
+  {
+    title: <FormattedMessage id="analysis.table.weekly-range" defaultMessage="endTime" />,
+    dataIndex: 'endTime',
+    key: 'endTime',
   },
 ];
 
 const TopSearch = ({
   loading,
-  visitData2,
+  // visitData2,
   searchData,
-  dropdownGroup,
-}: {
+}: // dropdownGroup,
+{
   loading: boolean;
-  visitData2: VisitDataType[];
-  dropdownGroup: React.ReactNode;
+  // visitData2: VisitDataType[];
+  // dropdownGroup: React.ReactNode;
   searchData: SearchDataType[];
 }) => (
   <Card
@@ -63,12 +65,12 @@ const TopSearch = ({
         defaultMessage="Online Top Search"
       />
     }
-    extra={dropdownGroup}
+    // extra={dropdownGroup}
     style={{
       height: '100%',
     }}
   >
-    <Row gutter={68} type="flex">
+    {/* <Row gutter={68} type="flex">
       <Col sm={12} xs={24} style={{ marginBottom: 24 }}>
         <NumberInfo
           subTitle={
@@ -117,7 +119,7 @@ const TopSearch = ({
         />
         <MiniArea line height={45} data={visitData2} />
       </Col>
-    </Row>
+    </Row> */}
     <Table<any>
       rowKey={record => record.index}
       size="small"

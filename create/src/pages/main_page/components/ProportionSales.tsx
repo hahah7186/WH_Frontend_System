@@ -17,7 +17,7 @@ const ProportionSales = ({
 }: {
   loading: boolean;
   dropdownGroup: React.ReactNode;
-  salesType: 'all' | 'online' | 'stores';
+  salesType: 'branchCustomerNumber' | 'branchProjectNumber' | 'branchProjectCostNumber';
   salesPieData: VisitDataType[];
   handleChangeSalesType?: (e: RadioChangeEvent) => void;
 }) => (
@@ -39,14 +39,17 @@ const ProportionSales = ({
         {dropdownGroup}
         <div className={styles.salesTypeRadio}>
           <Radio.Group value={salesType} onChange={handleChangeSalesType}>
-            <Radio.Button value="all">
-              <FormattedMessage id="analysis.channel.all" defaultMessage="ALL" />
+            <Radio.Button value="branchCustomerNumber">
+              <FormattedMessage id="analysis.channel.all" defaultMessage="branchCustomerNumber" />
             </Radio.Button>
-            <Radio.Button value="online">
-              <FormattedMessage id="analysis.channel.online" defaultMessage="Online" />
+            <Radio.Button value="branchProjectNumber">
+              <FormattedMessage id="analysis.channel.online" defaultMessage="branchProjectNumber" />
             </Radio.Button>
-            <Radio.Button value="stores">
-              <FormattedMessage id="analysis.channel.stores" defaultMessage="Stores" />
+            <Radio.Button value="branchProjectCostNumber">
+              <FormattedMessage
+                id="analysis.channel.stores"
+                defaultMessage="branchProjectCostNumber"
+              />
             </Radio.Button>
           </Radio.Group>
         </div>
@@ -60,10 +63,12 @@ const ProportionSales = ({
       <Pie
         hasLegend
         subTitle={<FormattedMessage id="analysis.analysis.sales" defaultMessage="Sales" />}
-        total={() => <Yuan>{salesPieData.reduce((pre, now) => now.y + pre, 0)}</Yuan>}
+        total={() => {
+          salesPieData.reduce((pre, now) => now.y + pre, 0);
+        }}
         data={salesPieData}
-        valueFormat={value => <Yuan>{value}</Yuan>}
-        height={248}
+        valueFormat={value => value}
+        height={500}
         lineWidth={4}
       />
     </div>

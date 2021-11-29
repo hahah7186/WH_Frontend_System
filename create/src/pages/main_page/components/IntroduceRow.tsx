@@ -4,7 +4,14 @@ import { FormattedMessage } from 'umi-plugin-react/locale';
 import React from 'react';
 import numeral from 'numeral';
 import { ChartCard, MiniArea, MiniBar, MiniProgress, Field } from './Charts';
-import { VisitDataType } from '../data.d';
+import {
+  VisitDataType,
+  TotalWorkingHour,
+  ProjectFiscalYear,
+  TeamInfo,
+  TotalWorkingHourFiscalYear,
+  CustomerInfo,
+} from '../data.d';
 import Trend from './Trend';
 import Yuan from '../utils/Yuan';
 import styles from '../style.less';
@@ -18,42 +25,59 @@ const topColResponsiveProps = {
   style: { marginBottom: 24 },
 };
 
-const IntroduceRow = ({ loading, visitData }: { loading: boolean; visitData: VisitDataType[] }) => (
+const IntroduceRow = ({
+  loading,
+  visitData,
+  totalWorkingHour,
+  projectFiscalYear,
+  // teamInfo,
+  customerInfo,
+  totalWorkingHourFiscalYear,
+}: {
+  loading: boolean;
+  visitData: VisitDataType[];
+  totalWorkingHour: TotalWorkingHour;
+  projectFiscalYear: ProjectFiscalYear;
+  // teamInfo: TeamInfo;
+  customerInfo: CustomerInfo;
+  totalWorkingHourFiscalYear: TotalWorkingHourFiscalYear;
+}) => (
   <Row gutter={24} type="flex">
     <Col {...topColResponsiveProps}>
       <ChartCard
         bordered={false}
         title={
-          <FormattedMessage id="analysis.analysis.total-sales" defaultMessage="Total Sales" />
+          <FormattedMessage
+            id="analysis.analysis.working-hour"
+            defaultMessage="Total Working Hour"
+          />
         }
         action={
           <Tooltip
-            title={
-              <FormattedMessage id="analysis.analysis.introduce" defaultMessage="Introduce" />
-            }
+            title={<FormattedMessage id="analysis.analysis.introduce" defaultMessage="Introduce" />}
           >
             <Icon type="info-circle-o" />
           </Tooltip>
         }
         loading={loading}
-        total={() => <Yuan>126560</Yuan>}
+        total={() => totalWorkingHour.totalHour}
         footer={
           <Field
             label={
               <FormattedMessage id="analysis.analysis.day-sales" defaultMessage="Daily Sales" />
             }
-            value={`￥${numeral(12423).format('0,0')}`}
+            value={`￥${numeral(totalWorkingHour.totalMoney).format('0,0')}`}
           />
         }
         contentHeight={46}
       >
         <Trend flag="up" style={{ marginRight: 16 }}>
-          <FormattedMessage id="analysis.analysis.week" defaultMessage="Weekly Changes" />
-          <span className={styles.trendText}>12%</span>
+          <FormattedMessage id="analysis.analysis.normal-hour" defaultMessage="Weekly Changes" />
+          <span className={styles.trendText}>{totalWorkingHour.normalHour}</span>
         </Trend>
-        <Trend flag="down">
-          <FormattedMessage id="analysis.analysis.day" defaultMessage="Daily Changes" />
-          <span className={styles.trendText}>11%</span>
+        <Trend flag="up">
+          <FormattedMessage id="analysis.analysis.overtime-hour" defaultMessage="Daily Changes" />
+          <span className={styles.trendText}>{totalWorkingHour.overtimeHour}</span>
         </Trend>
       </ChartCard>
     </Col>
@@ -62,28 +86,33 @@ const IntroduceRow = ({ loading, visitData }: { loading: boolean; visitData: Vis
       <ChartCard
         bordered={false}
         loading={loading}
-        title={<FormattedMessage id="analysis.analysis.visits" defaultMessage="Visits" />}
+        title={
+          <FormattedMessage id="analysis.analysis.workingHourFiscalYear" defaultMessage="Visits" />
+        }
         action={
           <Tooltip
             title={
-              <FormattedMessage id="analysis.analysis.introduce" defaultMessage="Introduce" />
+              <FormattedMessage
+                id="analysis.analysis.introduceWorkingHourFiscalYear"
+                defaultMessage="Introduce"
+              />
             }
           >
             <Icon type="info-circle-o" />
           </Tooltip>
         }
-        total={numeral(8846).format('0,0')}
+        total={numeral(totalWorkingHourFiscalYear.totalWorkingHourFiscalYear).format('0,0')}
         footer={
           <Field
             label={
               <FormattedMessage id="analysis.analysis.day-visits" defaultMessage="Daily Visits" />
             }
-            value={numeral(1234).format('0,0')}
+            value={`￥${numeral(totalWorkingHourFiscalYear.totalFiscalYearVolume).format('0,0')}`}
           />
         }
         contentHeight={46}
       >
-        <MiniArea color="#975FE4" data={visitData} />
+        <MiniBar color="#48D1CC" data={visitData} />
       </ChartCard>
     </Col>
     <Col {...topColResponsiveProps}>
@@ -94,27 +123,46 @@ const IntroduceRow = ({ loading, visitData }: { loading: boolean; visitData: Vis
         action={
           <Tooltip
             title={
-              <FormattedMessage id="analysis.analysis.introduce" defaultMessage="Introduce" />
+              <FormattedMessage
+                id="analysis.analysis.introduceProjectNumberFiscalYear"
+                defaultMessage="Introduce"
+              />
             }
           >
             <Icon type="info-circle-o" />
           </Tooltip>
         }
-        total={numeral(6560).format('0,0')}
+        total={numeral(projectFiscalYear.projectNumber).format('0,0')}
         footer={
           <Field
             label={
               <FormattedMessage
                 id="analysis.analysis.conversion-rate"
-                defaultMessage="Conversion Rate"
+                defaultMessage="Total project number"
               />
             }
-            value="60%"
+            value={projectFiscalYear.totalProjectNumber}
           />
         }
         contentHeight={46}
       >
-        <MiniBar data={visitData} />
+        {/* <Trend flag="up" style={{ marginRight: 16 }}>
+          <FormattedMessage id="analysis.analysis.normal-hour" defaultMessage="Weekly Changes" />
+          <span className={styles.trendText}>{totalWorkingHour.normalHour}</span>
+        </Trend>
+        <Trend flag="up">
+          <FormattedMessage id="analysis.analysis.overtime-hour" defaultMessage="Daily Changes" />
+          <span className={styles.trendText}>{totalWorkingHour.overtimeHour}</span>
+        </Trend> */}
+        <MiniProgress
+          percent={Math.round(
+            (projectFiscalYear.projectNumber * 100) / projectFiscalYear.totalProjectNumber,
+          )}
+          strokeWidth={8}
+          target={100}
+          color="#48D1CC"
+        />
+        {/* <MiniBar data={visitData} /> */}
       </ChartCard>
     </Col>
     <Col {...topColResponsiveProps}>
@@ -123,35 +171,58 @@ const IntroduceRow = ({ loading, visitData }: { loading: boolean; visitData: Vis
         bordered={false}
         title={
           <FormattedMessage
-            id="analysis.analysis.operational-effect"
+            id="analysis.analysis.supportCustomerFiscalYear"
             defaultMessage="Operational Effect"
           />
         }
         action={
           <Tooltip
             title={
-              <FormattedMessage id="analysis.analysis.introduce" defaultMessage="Introduce" />
+              <FormattedMessage
+                id="analysis.analysis.introduceSupportCustomer"
+                defaultMessage="Introduce"
+              />
             }
           >
             <Icon type="info-circle-o" />
           </Tooltip>
         }
-        total="78%"
+        total={customerInfo.customerNumberForSupport}
         footer={
-          <div style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
-            <Trend flag="up" style={{ marginRight: 16 }}>
-              <FormattedMessage id="analysis.analysis.week" defaultMessage="Weekly Changes" />
-              <span className={styles.trendText}>12%</span>
-            </Trend>
-            <Trend flag="down">
-              <FormattedMessage id="analysis.analysis.day" defaultMessage="Weekly Changes" />
-              <span className={styles.trendText}>11%</span>
-            </Trend>
-          </div>
+          // <div style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
+          //   <Trend flag="up" style={{ marginRight: 18 }}>
+          //     <FormattedMessage id="analysis.analysis.bdnumber" defaultMessage="BD Number" />
+          //     <span className={styles.trendText}>{}</span>
+          //   </Trend>
+          //   <Trend flag="down" style={{ marginRight: 18 }}>
+          //     <FormattedMessage id="analysis.analysis.pssnumber" defaultMessage="PSS Number" />
+          //     <span className={styles.trendText}>{}</span>
+          //   </Trend>
+          //   <Trend flag="up">
+          //     <FormattedMessage id="analysis.analysis.salesnumber" defaultMessage="Sales Number" />
+          //     <span className={styles.trendText}>{}</span>
+          //   </Trend>
+          // </div>
+          <Field
+            label={
+              <FormattedMessage
+                id="analysis.analysis.totalCustomerNumber"
+                defaultMessage="Total customer number"
+              />
+            }
+            value={customerInfo.customerNumber}
+          />
         }
         contentHeight={46}
       >
-        <MiniProgress percent={78} strokeWidth={8} target={80} color="#13C2C2" />
+        <MiniProgress
+          percent={Math.round(
+            (customerInfo.customerNumberForSupport * 100) / customerInfo.customerNumber,
+          )}
+          strokeWidth={8}
+          target={100}
+          color="#48D1CC"
+        />
       </ChartCard>
     </Col>
   </Row>

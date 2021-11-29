@@ -54,6 +54,7 @@ const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
       {/* {defaultDom} */}
       <div
         style={{
+          marginTop: '60px',
           padding: '0px 24px 24px',
           textAlign: 'center',
           fontFamily: 'Arial',
@@ -70,7 +71,7 @@ const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
             width="82px"
             alt="siemens logo"
           /> */}
-          <span>Copyright &copy; 2019 Siemens DI FA PMA APC</span>
+          <span>Copyright &copy; 2022 Siemens DI FA PMA APC</span>
         </a>
       </div>
     </>

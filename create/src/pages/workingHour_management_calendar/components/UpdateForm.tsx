@@ -83,7 +83,7 @@ class UpdateForm extends Component<UpdateFormProps, UpdateFormState> {
       // modalKey:0,
       //projectListVisible: props.curDatetypeMapping.dateTypeId == 1 ? true : false,
       selDateType:
-        props.curDatetypeMapping.dateTypeId == 0 ? 1 : props.curDatetypeMapping.dateTypeId,
+        props.curDatetypeMapping.dateTypeId == 0 ? 0 : props.curDatetypeMapping.dateTypeId,
       curDatetypeMapping: {
         date: props.curDatetypeMapping.date,
         dateTypeId: props.curDatetypeMapping.dateTypeId,
@@ -279,12 +279,20 @@ class UpdateForm extends Component<UpdateFormProps, UpdateFormState> {
     } = this.props;
 
     const okHandle = () => {
-      handleModify(curDateProjectList, this.state.selDateType);
-      // this.setState({
-      //   //projectListVisible: true,
-      //   modalKey: this.state.modalKey + 1,
-      // });
-      handleModalVisible();
+      if (this.state.selDateType === 0) {
+        message.error('You have not selected any date type options. Cannot submit.');
+      } else {
+        let sumWorkingHour = 0;
+        curDateProjectList.map(item => (sumWorkingHour = sumWorkingHour + item.workingHour));
+        if (sumWorkingHour > 8) {
+          message.error(
+            'The total working time of the day is more than 8 hours, please check again.',
+          );
+        } else {
+          handleModify(curDateProjectList, this.state.selDateType);
+          handleModalVisible();
+        }
+      }
     };
 
     const cancelHandle = () => {
@@ -297,10 +305,14 @@ class UpdateForm extends Component<UpdateFormProps, UpdateFormState> {
 
     let displayDate = this.getDisplayDate(curSelDate);
 
+    // dateTypeList.push({'dateTypeId':0,'dateTypeName':'Please select date type...'})
+    dateTypeList.sort();
     const dateTypeOptions =
       typeof dateTypeList == 'undefined'
         ? []
         : dateTypeList.map(d => <Option key={d.dateTypeId}>{d.dateTypeName}</Option>);
+
+    // dateTypeOptions.push(<Option key='0'>Please select...</Option>)
 
     return (
       <Modal
@@ -336,7 +348,9 @@ class UpdateForm extends Component<UpdateFormProps, UpdateFormState> {
               this.state.selDateType == 1 ||
               this.state.selDateType == 2 ||
               this.state.selDateType == 3 ||
-              this.state.selDateType == 4
+              this.state.selDateType == 4 ||
+              this.state.selDateType == 5 ||
+              this.state.selDateType == 6
                 ? 'block'
                 : 'none',
           }}
@@ -380,7 +394,7 @@ class UpdateForm extends Component<UpdateFormProps, UpdateFormState> {
                     <InputNumber
                       size="large"
                       defaultValue={item.overtimeHour}
-                      max={6}
+                      max={16}
                       min={0}
                       formatter={value =>
                         ` ${value}     (hours)`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')

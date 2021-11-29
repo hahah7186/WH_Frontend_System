@@ -332,7 +332,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     this.setState({
       pagination: {
         pageSize: pageSize,
-        currentPage: page,
+        current: page,
       },
     });
 
@@ -387,7 +387,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     this.setState({
       pagination: {
         pageSize: size,
-        currentPage: current,
+        current: current,
       },
     });
 
@@ -493,7 +493,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     let start_time_2;
     let end_time_1;
     let end_time_2;
-    debugger;
+    // debugger;
     start_time_1 =
       typeof form.getFieldValue('start_time') == 'undefined'
         ? ''
@@ -868,7 +868,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
 
     const currentPage = this.state.pagination.current;
     const pageSize = this.state.pagination.pageSize;
-    // debugger
+
     form.validateFields((err, values) => {
       if (!err) {
         dispatch({
@@ -939,6 +939,13 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
     const { form } = this.props;
     const { getFieldDecorator } = form;
     // debugger
+    const supportTypeOption =
+      typeof this.state.supportTypeList == 'undefined'
+        ? []
+        : this.state.supportTypeList.map(d => (
+            <Option key={d.support_type_id}>{d.support_type_name}</Option>
+          ));
+
     const apcOptions =
       typeof this.state.apcList == 'undefined'
         ? []
@@ -993,7 +1000,7 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
                   placeholder={formatMessage({ id: 'project.SearchSelectTips' })}
                   style={{ width: '15em' }}
                 >
-                  <Option value="1">
+                  {/* <Option value="1">
                     <FormattedMessage id="project.SupportTypeOption.After" />
                   </Option>
                   <Option value="2">
@@ -1001,7 +1008,8 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
                   </Option>
                   <Option value="3">
                     <FormattedMessage id="project.SupportTypeOption.Train" />
-                  </Option>
+                  </Option> */}
+                  {supportTypeOption}
                 </Select>,
               )}
             </FormItem>
@@ -1114,8 +1122,9 @@ class SearchListApplications extends Component<SearchListApplicationsProps> {
               )}
             </FormItem>
           </Col>
-          <Col span={12}>
-            <Button style={{ float: 'right', marginRight: '4em' }} onClick={this.handleFormReset}>
+          <Col span={6}></Col>
+          <Col span={6}>
+            <Button style={{ float: 'left' }} onClick={this.handleFormReset}>
               <FormattedMessage id="customer.CustomerButtonReset" />
             </Button>
           </Col>

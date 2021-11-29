@@ -340,7 +340,9 @@ class WHList extends Component<WHListProps, WHListState> {
                 {item.dateInfoId == 1 ||
                 item.dateInfoId == 2 ||
                 item.dateInfoId == 3 ||
-                item.dateInfoId == 4
+                item.dateInfoId == 4 ||
+                item.dateInfoId == 5 ||
+                item.dateInfoId == 6
                   ? item.content
                   : item.dateInfoName}
               </div>
@@ -352,7 +354,9 @@ class WHList extends Component<WHListProps, WHListState> {
               {item.dateInfoId == 1 ||
               item.dateInfoId == 2 ||
               item.dateInfoId == 3 ||
-              item.dateInfoId == 4 ? (
+              item.dateInfoId == 4 ||
+              item.dateInfoId == 5 ||
+              item.dateInfoId == 6 ? (
                 <div style={{ display: 'inline-block' }}>
                   <Badge
                     count={item.workingHour + ' h'}
@@ -368,7 +372,9 @@ class WHList extends Component<WHListProps, WHListState> {
               {(item.dateInfoId == 1 ||
                 item.dateInfoId == 2 ||
                 item.dateInfoId == 3 ||
-                item.dateInfoId == 4) &&
+                item.dateInfoId == 4 ||
+                item.dateInfoId == 5 ||
+                item.dateInfoId == 6) &&
               item.overtimeHour !== 0 ? (
                 <div style={{ display: 'inline-block' }}>
                   <Badge
@@ -418,7 +424,9 @@ class WHList extends Component<WHListProps, WHListState> {
           d.dateTypeId != 1 &&
           d.dateTypeId != 2 &&
           d.dateTypeId != 3 &&
-          d.dateTypeId != 4
+          d.dateTypeId != 4 &&
+          d.dateTypeId != 5 &&
+          d.dateTypeId != 6
         ) {
           //非工作日
           listData.push({
@@ -431,11 +439,16 @@ class WHList extends Component<WHListProps, WHListState> {
           });
         } else if (
           d.date == renderDate &&
-          (d.dateTypeId == 1 || d.dateTypeId == 2 || d.dateTypeId == 3 || d.dateTypeId == 4)
+          (d.dateTypeId == 1 ||
+            d.dateTypeId == 2 ||
+            d.dateTypeId == 3 ||
+            d.dateTypeId == 4 ||
+            d.dateTypeId == 5 ||
+            d.dateTypeId == 6)
         ) {
           //工作日
           srcList.map(s => {
-            if (s.date == renderDate && s.workingHour != 0) {
+            if (s.date == renderDate && (s.workingHour != 0 || s.overtimeHour != 0)) {
               listData.push({
                 dateInfoId: d.dateTypeId,
                 dateInfoName: d.dateTypeName,

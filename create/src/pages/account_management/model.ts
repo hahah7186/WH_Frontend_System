@@ -34,19 +34,20 @@ const Model: ModelType = {
       list: [],
       pagination: {},
       result: -1,
-      resultMessage:"",
-      fiscalYearList:[],
-      accountNameList:[],
-      accountTypeList:[],
-      apcList:[],
-      bdList:[],
-      pssList:[],
-      salesList:[],
+      resultMessage: '',
+      fiscalYearList: [],
+      accountNameList: [],
+      accountTypeList: [],
+      apcList: [],
+      bdList: [],
+      pssList: [],
+      salesList: [],
     },
   },
-//处理异步操作
+  //处理异步操作
   effects: {
-    *fetch({ payload,callback }, { call, put }) {
+    *fetch({ payload, callback }, { call, put }) {
+      debugger;
       const response = yield call(queryAccount, payload);
       yield put({
         type: 'save',
@@ -79,7 +80,7 @@ const Model: ModelType = {
       if (callback) callback();
     },
   },
-//处理同步操作
+  //处理同步操作
   reducers: {
     save(state, action) {
       return {
